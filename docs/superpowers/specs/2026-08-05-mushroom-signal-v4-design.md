@@ -37,6 +37,11 @@ staged effort (see §3) — don't let its complexity block shipping the GPS/pin 
 - **Continuous location tracking** — this is one-shot "where am I right now" capture for
   pinning a find, not a background tracking feature. No location history is recorded
   beyond what's attached to a logged find.
+- **Trip/route recording** (breadcrumb trail of a whole forest walk, for retracing your
+  steps and reviewing "best routes" later) — genuinely valuable idea, raised and
+  deliberately parked 2026-08-05: this needs a phone in your pocket while walking, not a
+  Mac, so it's really a future iOS-companion-app feature, not something to design against
+  this macOS app. Keep in mind for whenever an iOS build becomes real; not a task now.
 - **Guaranteeing photo-ID accuracy** — see §3's safety framing. This spec designs the
   *mechanism*, not a promise of reliable identification, especially for dangerous
   lookalikes.
