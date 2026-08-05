@@ -8,7 +8,10 @@ let package = Package(
         .library(name: "MushroomSignalCore", targets: ["MushroomSignalCore"])
     ],
     targets: [
-        .target(name: "MushroomSignalCore"),
+        .target(
+            name: "MushroomSignalCore",
+            resources: [.process("Data/species.json")]
+        ),
         .testTarget(
             name: "MushroomSignalCoreTests",
             dependencies: ["MushroomSignalCore"]
