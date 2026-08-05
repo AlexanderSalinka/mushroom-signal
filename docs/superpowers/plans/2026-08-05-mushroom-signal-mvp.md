@@ -1187,7 +1187,9 @@ public enum SignalAlgorithm {
             if precipitation >= 3 { return 0.5 }
             return 0.0
         case .low:
-            return precipitation >= 5 ? 1.0 : 0.5
+            // Always full credit: drought-tolerant species must be genuinely
+            // rain-invariant, not just usually so (fixed post-review — see ledger).
+            return 1.0
         }
     }
 
