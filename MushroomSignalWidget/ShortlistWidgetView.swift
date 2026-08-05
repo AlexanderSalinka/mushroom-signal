@@ -14,13 +14,15 @@ struct ShortlistWidgetView: View {
 
             VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
                 ForEach(entry.signals, id: \.species.id) { signal in
+                    let clampedScore = max(0, min(3, signal.score))
+                    let isPoisonous = signal.species.edibility == .poisonous
                     HStack {
-                        Text(signal.species.commonNameSk)
+                        Text((isPoisonous ? "⚠️ " : "") + signal.species.commonNameSk)
                             .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(DesignSystem.Colors.cloud)
+                            .foregroundStyle(isPoisonous ? DesignSystem.Colors.danger : DesignSystem.Colors.cloud)
                             .lineLimit(1)
                         Spacer()
-                        Text(String(repeating: "●", count: signal.score) + String(repeating: "○", count: 3 - signal.score))
+                        Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 3 - clampedScore))
                             .font(.system(size: 9))
                             .foregroundStyle(DesignSystem.Colors.mossAccent)
                     }
@@ -34,9 +36,16 @@ struct ShortlistWidgetView: View {
 
             Spacer(minLength: 0)
 
-            Text(entry.date, style: .time)
-                .font(.system(size: 8))
-                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
+            if entry.signals.contains(where: { $0.species.edibility == .poisonous }) {
+                Text("⚠️ obsahuje jedovaté")
+                    .font(.system(size: 8, weight: .semibold))
+                    .foregroundStyle(DesignSystem.Colors.danger)
+                    .lineLimit(1)
+            } else {
+                Text(entry.date, style: .time)
+                    .font(.system(size: 8))
+                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
+            }
         }
         .padding(DesignSystem.spacingMedium)
         .containerBackground(for: .widget) {
