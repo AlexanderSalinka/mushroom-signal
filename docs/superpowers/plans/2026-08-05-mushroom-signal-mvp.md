@@ -1494,7 +1494,9 @@ public struct RegionStore {
 
     public func selectedRegion() -> Region {
         let id = defaults.string(forKey: RegionStoreConstants.selectedRegionKey) ?? RegionStoreConstants.defaultRegionId
-        return RegionDatabase.find(id: id) ?? RegionDatabase.all[0]
+        // Falls back through the declared default before the [0] safety net, so a
+        // stale/unrecognized stored id resolves to Žilinský, not Bratislavský.
+        return RegionDatabase.find(id: id) ?? RegionDatabase.find(id: RegionStoreConstants.defaultRegionId) ?? RegionDatabase.all[0]
     }
 
     public func setSelectedRegion(_ region: Region) {
