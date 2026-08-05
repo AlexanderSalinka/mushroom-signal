@@ -9,8 +9,12 @@
 /* Begin PBXBuildFile section */
 		03E7041F6EA3BB051106A46E /* MushroomSignalWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7121D9BEBDD981DC5A5A7F87 /* MushroomSignalWidgetBundle.swift */; };
 		236FFC17F60E79744D2296E3 /* ShortlistWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C374D590D0DB48C3B165D63 /* ShortlistWidgetView.swift */; };
+		32B76617FFC241BA6715EA65 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D0E1BA2D29697E1EE3ACA0 /* AppState.swift */; };
+		534EE6B719E4EFF861B5CA40 /* MushroomSignalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052C8A78E1FA1937EA12ED61 /* MushroomSignalApp.swift */; };
 		A3FF3637C4ACD5D994391305 /* MushroomSignalCore in Frameworks */ = {isa = PBXBuildFile; productRef = 92DC9F3E451BED501F4B36B6 /* MushroomSignalCore */; };
 		B3E45FAFCA78015CBE59470B /* MushroomSignalWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81841490E6D542F22EC19628 /* MushroomSignalWidget.swift */; };
+		C1289E25CCE0D11F12F3C2F6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F342E2888340E1136922BC /* ContentView.swift */; };
+		C4B38ACF47990776E35A665B /* RegionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D921A8D3EAFD9FF2245F208B /* RegionPickerView.swift */; };
 		CFD0788B994906AEDE71CA3F /* MushroomSignalCore in Frameworks */ = {isa = PBXBuildFile; productRef = 518AEB9EBCD9C69B76B8B277 /* MushroomSignalCore */; };
 		F010365685C1926B6E14FE1B /* MushroomSignalWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -40,7 +44,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		052C8A78E1FA1937EA12ED61 /* MushroomSignalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MushroomSignalApp.swift; sourceTree = "<group>"; };
 		1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MushroomSignalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		43F342E2888340E1136922BC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6FC4F3842084136EC09E4A4E /* MushroomSignalCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = MushroomSignalCore; path = MushroomSignalCore; sourceTree = SOURCE_ROOT; };
 		7121D9BEBDD981DC5A5A7F87 /* MushroomSignalWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MushroomSignalWidgetBundle.swift; sourceTree = "<group>"; };
 		774052D1E9A10E6221F64D1D /* MushroomSignalWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MushroomSignalWidget.entitlements; sourceTree = "<group>"; };
@@ -49,6 +55,8 @@
 		9799B53210927467F62E21E0 /* MushroomSignal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MushroomSignal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A00092787872DF0EF407DD3A /* MushroomSignal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MushroomSignal.entitlements; sourceTree = "<group>"; };
 		A231A7819903E4B8552E4F2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D2D0E1BA2D29697E1EE3ACA0 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		D921A8D3EAFD9FF2245F208B /* RegionPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionPickerView.swift; sourceTree = "<group>"; };
 		F760EE22AEDBFFBA81A41414 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -72,6 +80,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		181FD1C255476D8C1BAF3947 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D921A8D3EAFD9FF2245F208B /* RegionPickerView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		296C08566C5B9270F6384589 /* MushroomSignalWidget */ = {
 			isa = PBXGroup;
 			children = (
@@ -114,8 +130,12 @@
 		D21255788EE3A036EB8424A6 /* MushroomSignal */ = {
 			isa = PBXGroup;
 			children = (
+				D2D0E1BA2D29697E1EE3ACA0 /* AppState.swift */,
+				43F342E2888340E1136922BC /* ContentView.swift */,
 				F760EE22AEDBFFBA81A41414 /* Info.plist */,
 				A00092787872DF0EF407DD3A /* MushroomSignal.entitlements */,
+				052C8A78E1FA1937EA12ED61 /* MushroomSignalApp.swift */,
+				181FD1C255476D8C1BAF3947 /* Views */,
 			);
 			path = MushroomSignal;
 			sourceTree = "<group>";
@@ -218,6 +238,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32B76617FFC241BA6715EA65 /* AppState.swift in Sources */,
+				C1289E25CCE0D11F12F3C2F6 /* ContentView.swift in Sources */,
+				534EE6B719E4EFF861B5CA40 /* MushroomSignalApp.swift in Sources */,
+				C4B38ACF47990776E35A665B /* RegionPickerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

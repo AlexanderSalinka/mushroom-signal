@@ -1,0 +1,34 @@
+import SwiftUI
+import MushroomSignalCore
+
+struct ContentView: View {
+    @StateObject private var appState = AppState()
+    @State private var selectedTab: Tab = .shortlist
+
+    enum Tab {
+        case shortlist
+        case map
+    }
+
+    var body: some View {
+        NavigationStack {
+            TabView(selection: $selectedTab) {
+                ShortlistView(appState: appState)
+                    .tabItem { Label("Zoznam", systemImage: "list.bullet") }
+                    .tag(Tab.shortlist)
+
+                RegionMapView(appState: appState)
+                    .tabItem { Label("Mapa", systemImage: "map") }
+                    .tag(Tab.map)
+            }
+            .navigationTitle("Mushroom Signal")
+            .toolbar {
+                ToolbarItem(placement: .automatic) {
+                    RegionPickerView(appState: appState)
+                }
+            }
+        }
+        .task { await appState.refresh() }
+        .frame(minWidth: 420, minHeight: 480)
+    }
+}
