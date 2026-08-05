@@ -2,7 +2,9 @@ import Foundation
 
 public enum ShortlistRanker {
     public static func topSpecies(from signals: [SpeciesSignal], limit: Int) -> [SpeciesSignal] {
-        signals
+        guard limit > 0 else { return [] }
+
+        return signals
             .sorted { lhs, rhs in
                 if lhs.score != rhs.score { return lhs.score > rhs.score }
                 if lhs.species.edibility != rhs.species.edibility {

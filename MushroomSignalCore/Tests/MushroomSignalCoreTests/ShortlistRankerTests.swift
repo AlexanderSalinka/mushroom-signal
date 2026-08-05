@@ -51,4 +51,25 @@ final class ShortlistRankerTests: XCTestCase {
 
         XCTAssertEqual(top.first?.species.id, "edible")
     }
+
+    func testTiesBreakByNameWhenScoreAndEdibilityEqual() {
+        let signals = [
+            SpeciesSignal(species: makeSpecies(id: "z", name: "Zebra", edibility: .edible), score: 5, reason: nil),
+            SpeciesSignal(species: makeSpecies(id: "a", name: "Apple", edibility: .edible), score: 5, reason: nil)
+        ]
+
+        let top = ShortlistRanker.topSpecies(from: signals, limit: 2)
+
+        XCTAssertEqual(top.first?.species.id, "a")
+    }
+
+    func testReturnsEmptyArrayForZeroLimit() {
+        let signals = [
+            SpeciesSignal(species: makeSpecies(id: "a", name: "A", edibility: .edible), score: 10, reason: nil)
+        ]
+
+        let top = ShortlistRanker.topSpecies(from: signals, limit: 0)
+
+        XCTAssertEqual(top, [])
+    }
 }
