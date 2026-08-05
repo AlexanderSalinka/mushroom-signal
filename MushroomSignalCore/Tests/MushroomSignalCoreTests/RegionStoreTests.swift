@@ -32,4 +32,18 @@ final class RegionStoreTests: XCTestCase {
         // Should fall back to declared default (zilinsky), not to bratislavsky (all[0])
         XCTAssertEqual(store.selectedRegion().id, "zilinsky")
     }
+
+    func testResolvedAppGroupIdPrefixesTeamIdentifierWhenPresent() {
+        XCTAssertEqual(
+            RegionStoreConstants.resolvedAppGroupId(teamIdentifier: "T78DK947F3"),
+            "T78DK947F3.group.com.alexandersalinka.MushroomSignal"
+        )
+    }
+
+    func testResolvedAppGroupIdFallsBackToBareSuffixWhenTeamIdentifierUnavailable() {
+        XCTAssertEqual(
+            RegionStoreConstants.resolvedAppGroupId(teamIdentifier: nil),
+            "group.com.alexandersalinka.MushroomSignal"
+        )
+    }
 }

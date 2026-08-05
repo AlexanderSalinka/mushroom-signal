@@ -28,7 +28,7 @@ targets:
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.application-groups:
-          - group.com.alexandersalinka.MushroomSignal
+          - $(TeamIdentifierPrefix)group.com.alexandersalinka.MushroomSignal
         com.apple.security.network.client: true
     info:
       path: MushroomSignal/Info.plist
@@ -54,7 +54,7 @@ targets:
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.application-groups:
-          - group.com.alexandersalinka.MushroomSignal
+          - $(TeamIdentifierPrefix)group.com.alexandersalinka.MushroomSignal
         com.apple.security.network.client: true
     info:
       path: MushroomSignalWidget/Info.plist

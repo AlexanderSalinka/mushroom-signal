@@ -1,9 +1,29 @@
 import Foundation
+import Security
+
+public enum TeamIdentifier {
+    public static func current() -> String? {
+        guard let task = SecTaskCreateFromSelf(nil) else { return nil }
+        return SecTaskCopyValueForEntitlement(task, "com.apple.developer.team-identifier" as CFString, nil) as? String
+    }
+}
 
 public enum RegionStoreConstants {
-    public static let appGroupId = "group.com.alexandersalinka.MushroomSignal"
+    static let appGroupSuffix = "group.com.alexandersalinka.MushroomSignal"
     public static let selectedRegionKey = "selectedRegionId"
     public static let defaultRegionId = "zilinsky"
+
+    /// Composes the team-ID-prefixed App Group identifier macOS requires.
+    /// Exposed with an injectable parameter so the composition logic is unit-testable
+    /// without needing an actual signed/sandboxed process (SecTask resolves to nil there).
+    public static func resolvedAppGroupId(teamIdentifier: String? = TeamIdentifier.current()) -> String {
+        if let teamIdentifier {
+            return "\(teamIdentifier).\(appGroupSuffix)"
+        }
+        return appGroupSuffix
+    }
+
+    public static var appGroupId: String { resolvedAppGroupId() }
 }
 
 public struct RegionStore {

@@ -6,7 +6,7 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.alexandersalinka.MushroomSignal</string>
+		<string>$(TeamIdentifierPrefix)group.com.alexandersalinka.MushroomSignal</string>
 	</array>
 	<key>com.apple.security.network.client</key>
 	<true/>
