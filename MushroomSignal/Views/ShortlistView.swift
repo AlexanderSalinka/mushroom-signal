@@ -9,7 +9,7 @@ struct ShortlistView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.spacingMedium) {
                 if let error = appState.errorMessage {
-                    Text(error).foregroundStyle(.red)
+                    Text(error).foregroundStyle(DesignSystem.Colors.danger)
                 }
 
                 ForEach(appState.signals, id: \.species.id) { signal in
@@ -25,13 +25,14 @@ struct ShortlistView: View {
     }
 
     private func signalRow(_ signal: SpeciesSignal) -> some View {
-        VStack(alignment: .leading, spacing: DesignSystem.spacingSmall / 2) {
+        let clampedScore = max(0, min(3, signal.score))
+        return VStack(alignment: .leading, spacing: DesignSystem.spacingSmall / 2) {
             HStack {
                 Text(signal.species.commonNameSk)
                     .font(.headline)
                     .foregroundStyle(DesignSystem.Colors.cloud)
                 Spacer()
-                Text(String(repeating: "●", count: signal.score) + String(repeating: "○", count: 3 - signal.score))
+                Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 3 - clampedScore))
                     .foregroundStyle(DesignSystem.Colors.mossAccent)
             }
             Text(signal.species.latinName)
@@ -46,7 +47,7 @@ struct ShortlistView: View {
             if signal.species.edibility == .poisonous {
                 Text("⚠️ Jedovatá")
                     .font(.caption2.bold())
-                    .foregroundStyle(.red)
+                    .foregroundStyle(DesignSystem.Colors.danger)
             }
         }
         .padding(DesignSystem.spacingMedium)

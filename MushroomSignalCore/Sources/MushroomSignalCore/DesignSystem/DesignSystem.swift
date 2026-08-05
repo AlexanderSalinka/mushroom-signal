@@ -18,6 +18,7 @@ public enum DesignSystem {
         public static let water = Color(red: 0.30, green: 0.48, blue: 0.52)
         public static let cloud = Color(red: 0.94, green: 0.92, blue: 0.87)
         public static let mossAccent = Color(red: 0.42, green: 0.56, blue: 0.30)
+        public static let danger = Color(red: 0.72, green: 0.24, blue: 0.20)
 
         public static let cardBackground = LinearGradient(
             colors: [forestMid, forestDeep],
