@@ -76,4 +76,41 @@ final class SignalAlgorithmTests: XCTestCase {
         XCTAssertEqual(signal.score, 3)
         XCTAssertNil(signal.reason)
     }
+
+    func testLowRainfallSensitivitySpeciesScoreIsInvariantToRainfallWithPartialTempMatch() {
+        // Regression test: rainfallFit's .low case previously returned a 0.5/1.0 split
+        // driven by precipitation, which meant a "drought-tolerant" species' score could
+        // still swing by a full point based on rain when combined with a partial temp
+        // match. The original testLowRainfallSensitivitySpeciesIsNotPenalizedByDrySpell
+        // test used a perfect temp match (tempScore=1.0), where the resulting totals of
+        // 2.5 and 3.0 both round to 3 — masking the bug. This test forces a partial temp
+        // match (tempScore=0.5) so the two totals would differ (2.0 vs 2.5, rounding to
+        // 2 vs 3) if rainfall still affected the .low case.
+        let lowSensitivitySpecies = Species(
+            id: "pleurotus-ostreatus",
+            commonNameSk: "Hliva ustricovitá",
+            latinName: "Pleurotus ostreatus",
+            edibility: .edible,
+            lookAlikes: [],
+            fruitingMonths: [9, 10, 11],
+            idealTempMinC: 2,
+            idealTempMaxC: 15,
+            rainfallSensitivity: .low,
+            habitat: "odumreté stromy",
+            regionalAffinity: ["zilinsky"]
+        )
+        // 17°C is 2°C above idealTempMaxC (15) — within the 3°C tolerance band, so
+        // partial temp credit (tempScore = 0.5).
+        let dryWeather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 17, totalPrecipitationLast10DaysMm: 0, fetchedAt: Date())
+        let wetWeather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 17, totalPrecipitationLast10DaysMm: 25, fetchedAt: Date())
+
+        let drySignal = SignalAlgorithm.computeSignal(species: lowSensitivitySpecies, weather: dryWeather, month: 10)
+        let wetSignal = SignalAlgorithm.computeSignal(species: lowSensitivitySpecies, weather: wetWeather, month: 10)
+
+        XCTAssertEqual(drySignal.score, wetSignal.score, "low-sensitivity species score must not depend on rainfall")
+        XCTAssertEqual(drySignal.score, 3)
+        XCTAssertEqual(wetSignal.score, 3)
+        XCTAssertEqual(drySignal.reason, "teplota mimo ideálneho rozsahu")
+        XCTAssertEqual(wetSignal.reason, "teplota mimo ideálneho rozsahu")
+    }
 }
