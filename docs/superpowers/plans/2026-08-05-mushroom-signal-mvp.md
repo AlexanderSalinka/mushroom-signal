@@ -1401,6 +1401,9 @@ public enum DesignSystem {
         public static let water = Color(red: 0.30, green: 0.48, blue: 0.52)
         public static let cloud = Color(red: 0.94, green: 0.92, blue: 0.87)
         public static let mossAccent = Color(red: 0.42, green: 0.56, blue: 0.30)
+        // Added post-review (Task 13): views needed a warning/error color that
+        // isn't raw system red, for the poisonous-species badge and error text.
+        public static let danger = Color(red: 0.72, green: 0.24, blue: 0.20)
 
         public static let cardBackground = LinearGradient(
             colors: [forestMid, forestDeep],
@@ -2033,7 +2036,7 @@ struct ShortlistView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.spacingMedium) {
                 if let error = appState.errorMessage {
-                    Text(error).foregroundStyle(.red)
+                    Text(error).foregroundStyle(DesignSystem.Colors.danger)
                 }
 
                 ForEach(appState.signals, id: \.species.id) { signal in
@@ -2049,13 +2052,14 @@ struct ShortlistView: View {
     }
 
     private func signalRow(_ signal: SpeciesSignal) -> some View {
-        VStack(alignment: .leading, spacing: DesignSystem.spacingSmall / 2) {
+        let clampedScore = max(0, min(3, signal.score))
+        return VStack(alignment: .leading, spacing: DesignSystem.spacingSmall / 2) {
             HStack {
                 Text(signal.species.commonNameSk)
                     .font(.headline)
                     .foregroundStyle(DesignSystem.Colors.cloud)
                 Spacer()
-                Text(String(repeating: "●", count: signal.score) + String(repeating: "○", count: 3 - signal.score))
+                Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 3 - clampedScore))
                     .foregroundStyle(DesignSystem.Colors.mossAccent)
             }
             Text(signal.species.latinName)
@@ -2070,7 +2074,7 @@ struct ShortlistView: View {
             if signal.species.edibility == .poisonous {
                 Text("⚠️ Jedovatá")
                     .font(.caption2.bold())
-                    .foregroundStyle(.red)
+                    .foregroundStyle(DesignSystem.Colors.danger)
             }
         }
         .padding(DesignSystem.spacingMedium)
