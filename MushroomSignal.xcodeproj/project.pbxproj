@@ -1,0 +1,469 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A3FF3637C4ACD5D994391305 /* MushroomSignalCore in Frameworks */ = {isa = PBXBuildFile; productRef = 92DC9F3E451BED501F4B36B6 /* MushroomSignalCore */; };
+		CFD0788B994906AEDE71CA3F /* MushroomSignalCore in Frameworks */ = {isa = PBXBuildFile; productRef = 518AEB9EBCD9C69B76B8B277 /* MushroomSignalCore */; };
+		F010365685C1926B6E14FE1B /* MushroomSignalWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F54681973FCF11B73BA1F962 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D2BB48731A8FBB37EBE24A78 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BBB4BBB332504EEEDB121029;
+			remoteInfo = MushroomSignalWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A0FFD038C63CB972AEEEC5D6 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F010365685C1926B6E14FE1B /* MushroomSignalWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MushroomSignalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FC4F3842084136EC09E4A4E /* MushroomSignalCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = MushroomSignalCore; path = MushroomSignalCore; sourceTree = SOURCE_ROOT; };
+		774052D1E9A10E6221F64D1D /* MushroomSignalWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MushroomSignalWidget.entitlements; sourceTree = "<group>"; };
+		9799B53210927467F62E21E0 /* MushroomSignal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MushroomSignal.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A00092787872DF0EF407DD3A /* MushroomSignal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MushroomSignal.entitlements; sourceTree = "<group>"; };
+		A231A7819903E4B8552E4F2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F760EE22AEDBFFBA81A41414 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4F4666138E29B47E861FD142 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFD0788B994906AEDE71CA3F /* MushroomSignalCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		51E20F93F0C61AB34AD765C7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3FF3637C4ACD5D994391305 /* MushroomSignalCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		296C08566C5B9270F6384589 /* MushroomSignalWidget */ = {
+			isa = PBXGroup;
+			children = (
+				A231A7819903E4B8552E4F2F /* Info.plist */,
+				774052D1E9A10E6221F64D1D /* MushroomSignalWidget.entitlements */,
+			);
+			path = MushroomSignalWidget;
+			sourceTree = "<group>";
+		};
+		32CD59D4050E67DA9F79220B /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				6FC4F3842084136EC09E4A4E /* MushroomSignalCore */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		51B7EE5007472B06193D623D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9799B53210927467F62E21E0 /* MushroomSignal.app */,
+				1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B2FF360E605F924404F14A5C = {
+			isa = PBXGroup;
+			children = (
+				D21255788EE3A036EB8424A6 /* MushroomSignal */,
+				296C08566C5B9270F6384589 /* MushroomSignalWidget */,
+				32CD59D4050E67DA9F79220B /* Packages */,
+				51B7EE5007472B06193D623D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D21255788EE3A036EB8424A6 /* MushroomSignal */ = {
+			isa = PBXGroup;
+			children = (
+				F760EE22AEDBFFBA81A41414 /* Info.plist */,
+				A00092787872DF0EF407DD3A /* MushroomSignal.entitlements */,
+			);
+			path = MushroomSignal;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0935386A098E3FD849B54BB7 /* MushroomSignal */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0B12A4700C5DA6705BCC81B6 /* Build configuration list for PBXNativeTarget "MushroomSignal" */;
+			buildPhases = (
+				93729412E2565DFCE32D216A /* Sources */,
+				4F4666138E29B47E861FD142 /* Frameworks */,
+				A0FFD038C63CB972AEEEC5D6 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				11E819E79E960044E0D13375 /* PBXTargetDependency */,
+			);
+			name = MushroomSignal;
+			packageProductDependencies = (
+				518AEB9EBCD9C69B76B8B277 /* MushroomSignalCore */,
+			);
+			productName = MushroomSignal;
+			productReference = 9799B53210927467F62E21E0 /* MushroomSignal.app */;
+			productType = "com.apple.product-type.application";
+		};
+		BBB4BBB332504EEEDB121029 /* MushroomSignalWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E278E23BC686016B17909526 /* Build configuration list for PBXNativeTarget "MushroomSignalWidgetExtension" */;
+			buildPhases = (
+				82B76F782CD7242D5B48EDB9 /* Sources */,
+				51E20F93F0C61AB34AD765C7 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MushroomSignalWidgetExtension;
+			packageProductDependencies = (
+				92DC9F3E451BED501F4B36B6 /* MushroomSignalCore */,
+			);
+			productName = MushroomSignalWidgetExtension;
+			productReference = 1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D2BB48731A8FBB37EBE24A78 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					0935386A098E3FD849B54BB7 = {
+						ProvisioningStyle = Automatic;
+					};
+					BBB4BBB332504EEEDB121029 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 6DAAE456FC07E100B89E9E83 /* Build configuration list for PBXProject "MushroomSignal" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = B2FF360E605F924404F14A5C;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				61847B2BD52560B11BD06C5B /* XCLocalSwiftPackageReference "MushroomSignalCore" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 51B7EE5007472B06193D623D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0935386A098E3FD849B54BB7 /* MushroomSignal */,
+				BBB4BBB332504EEEDB121029 /* MushroomSignalWidgetExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		82B76F782CD7242D5B48EDB9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93729412E2565DFCE32D216A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		11E819E79E960044E0D13375 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BBB4BBB332504EEEDB121029 /* MushroomSignalWidgetExtension */;
+			targetProxy = F54681973FCF11B73BA1F962 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		300C6D0AB14AFFA03D43AABC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		48722705184DDF3ED865773A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MushroomSignal/MushroomSignal.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = MushroomSignal/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alexandersalinka.MushroomSignal;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		620E38A35103265BA953EBD2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MushroomSignal/MushroomSignal.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = MushroomSignal/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alexandersalinka.MushroomSignal;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		B3209E2760C62126E786DD2B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MushroomSignalWidget/MushroomSignalWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = MushroomSignalWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alexandersalinka.MushroomSignal.Widget;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		D94D7C9FB605DC7F74CBC2B1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F7AF066E42325C55B2825406 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MushroomSignalWidget/MushroomSignalWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = MushroomSignalWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alexandersalinka.MushroomSignal.Widget;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0B12A4700C5DA6705BCC81B6 /* Build configuration list for PBXNativeTarget "MushroomSignal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				620E38A35103265BA953EBD2 /* Debug */,
+				48722705184DDF3ED865773A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		6DAAE456FC07E100B89E9E83 /* Build configuration list for PBXProject "MushroomSignal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D94D7C9FB605DC7F74CBC2B1 /* Debug */,
+				300C6D0AB14AFFA03D43AABC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E278E23BC686016B17909526 /* Build configuration list for PBXNativeTarget "MushroomSignalWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B3209E2760C62126E786DD2B /* Debug */,
+				F7AF066E42325C55B2825406 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		61847B2BD52560B11BD06C5B /* XCLocalSwiftPackageReference "MushroomSignalCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = MushroomSignalCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		518AEB9EBCD9C69B76B8B277 /* MushroomSignalCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MushroomSignalCore;
+		};
+		92DC9F3E451BED501F4B36B6 /* MushroomSignalCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MushroomSignalCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = D2BB48731A8FBB37EBE24A78 /* Project object */;
+}
