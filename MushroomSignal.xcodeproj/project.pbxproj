@@ -17,6 +17,7 @@
 		C4B38ACF47990776E35A665B /* RegionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D921A8D3EAFD9FF2245F208B /* RegionPickerView.swift */; };
 		CFD0788B994906AEDE71CA3F /* MushroomSignalCore in Frameworks */ = {isa = PBXBuildFile; productRef = 518AEB9EBCD9C69B76B8B277 /* MushroomSignalCore */; };
 		F010365685C1926B6E14FE1B /* MushroomSignalWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F1BD6093C300D79918F11F17 /* ShortlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F3D521EE5DF973B8230E9 /* ShortlistView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		A231A7819903E4B8552E4F2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		D2D0E1BA2D29697E1EE3ACA0 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		D921A8D3EAFD9FF2245F208B /* RegionPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionPickerView.swift; sourceTree = "<group>"; };
+		E80F3D521EE5DF973B8230E9 /* ShortlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortlistView.swift; sourceTree = "<group>"; };
 		F760EE22AEDBFFBA81A41414 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -84,6 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				D921A8D3EAFD9FF2245F208B /* RegionPickerView.swift */,
+				E80F3D521EE5DF973B8230E9 /* ShortlistView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -242,6 +245,7 @@
 				C1289E25CCE0D11F12F3C2F6 /* ContentView.swift in Sources */,
 				534EE6B719E4EFF861B5CA40 /* MushroomSignalApp.swift in Sources */,
 				C4B38ACF47990776E35A665B /* RegionPickerView.swift in Sources */,
+				F1BD6093C300D79918F11F17 /* ShortlistView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
