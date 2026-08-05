@@ -20,4 +20,16 @@ final class RegionStoreTests: XCTestCase {
 
         XCTAssertEqual(store.selectedRegion().id, "kosicky")
     }
+
+    func testFallsBackToDefaultWhenStoredIdIsUnrecognized() {
+        let suiteName = "test.suite.\(UUID().uuidString)"
+        let store = RegionStore(appGroupId: suiteName)!
+        defer { UserDefaults(suiteName: suiteName)?.removePersistentDomain(forName: suiteName) }
+
+        // Simulate corrupted/stale data by directly writing an unknown id
+        UserDefaults(suiteName: suiteName)?.set("unknown-region-id", forKey: RegionStoreConstants.selectedRegionKey)
+
+        // Should fall back to declared default (zilinsky), not to bratislavsky (all[0])
+        XCTAssertEqual(store.selectedRegion().id, "zilinsky")
+    }
 }

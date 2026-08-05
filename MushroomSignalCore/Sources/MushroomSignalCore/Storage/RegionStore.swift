@@ -16,7 +16,7 @@ public struct RegionStore {
 
     public func selectedRegion() -> Region {
         let id = defaults.string(forKey: RegionStoreConstants.selectedRegionKey) ?? RegionStoreConstants.defaultRegionId
-        return RegionDatabase.find(id: id) ?? RegionDatabase.all[0]
+        return RegionDatabase.find(id: id) ?? RegionDatabase.find(id: RegionStoreConstants.defaultRegionId) ?? RegionDatabase.all[0]
     }
 
     public func setSelectedRegion(_ region: Region) {
