@@ -1480,11 +1480,40 @@ Expected: FAIL to compile — `RegionStore` does not exist.
 ```swift
 // MushroomSignalCore/Sources/MushroomSignalCore/Storage/RegionStore.swift
 import Foundation
+import Security
+
+// Corrected post-whole-branch-review: macOS requires App Group identifiers to
+// carry the signing team's ID prefix in both entitlements and the runtime
+// suiteName string (iOS does not have this requirement, which is why it's
+// easy to miss). The team ID isn't known until the app is actually signed,
+// so it's resolved dynamically rather than hardcoded.
+// Public (not internal) because it's referenced from a public default-argument
+// value below — Swift requires a default argument's types to be at least as
+// visible as the API that carries them.
+public enum TeamIdentifier {
+    public static func current() -> String? {
+        guard let task = SecTaskCreateFromSelf(nil) else { return nil }
+        return SecTaskCopyValueForEntitlement(task, "com.apple.developer.team-identifier" as CFString, nil) as? String
+    }
+}
 
 public enum RegionStoreConstants {
-    public static let appGroupId = "group.com.alexandersalinka.MushroomSignal"
+    static let appGroupSuffix = "group.com.alexandersalinka.MushroomSignal"
     public static let selectedRegionKey = "selectedRegionId"
     public static let defaultRegionId = "zilinsky"
+
+    /// Composes the team-ID-prefixed App Group identifier macOS requires.
+    /// Exposed with an injectable parameter so the composition logic is
+    /// unit-testable without needing a signed/sandboxed process (SecTask
+    /// resolves to nil there, exercising the fallback branch).
+    public static func resolvedAppGroupId(teamIdentifier: String? = TeamIdentifier.current()) -> String {
+        if let teamIdentifier {
+            return "\(teamIdentifier).\(appGroupSuffix)"
+        }
+        return appGroupSuffix
+    }
+
+    public static var appGroupId: String { resolvedAppGroupId() }
 }
 
 public struct RegionStore {
@@ -1600,7 +1629,7 @@ targets:
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.application-groups:
-          - group.com.alexandersalinka.MushroomSignal
+          - $(TeamIdentifierPrefix)group.com.alexandersalinka.MushroomSignal
         com.apple.security.network.client: true
     info:
       path: MushroomSignal/Info.plist
@@ -1626,7 +1655,7 @@ targets:
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.application-groups:
-          - group.com.alexandersalinka.MushroomSignal
+          - $(TeamIdentifierPrefix)group.com.alexandersalinka.MushroomSignal
         com.apple.security.network.client: true
     info:
       path: MushroomSignalWidget/Info.plist
@@ -1799,15 +1828,20 @@ struct ShortlistWidgetView: View {
                 .font(.caption2)
                 .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.7))
 
+            // Poisonous-species labeling + score clamping added post-whole-branch-review:
+            // the widget is the primary glanceable surface, so it needs the same safety
+            // treatment as the companion app's ShortlistView, not just the app's own screen.
             VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
                 ForEach(entry.signals, id: \.species.id) { signal in
+                    let clampedScore = max(0, min(3, signal.score))
+                    let isPoisonous = signal.species.edibility == .poisonous
                     HStack {
-                        Text(signal.species.commonNameSk)
+                        Text((isPoisonous ? "⚠️ " : "") + signal.species.commonNameSk)
                             .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(DesignSystem.Colors.cloud)
+                            .foregroundStyle(isPoisonous ? DesignSystem.Colors.danger : DesignSystem.Colors.cloud)
                             .lineLimit(1)
                         Spacer()
-                        Text(String(repeating: "●", count: signal.score) + String(repeating: "○", count: 3 - signal.score))
+                        Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 3 - clampedScore))
                             .font(.system(size: 9))
                             .foregroundStyle(DesignSystem.Colors.mossAccent)
                     }
@@ -1821,9 +1855,16 @@ struct ShortlistWidgetView: View {
 
             Spacer(minLength: 0)
 
-            Text(entry.date, style: .time)
-                .font(.system(size: 8))
-                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
+            if entry.signals.contains(where: { $0.species.edibility == .poisonous }) {
+                Text("⚠️ obsahuje jedovaté")
+                    .font(.system(size: 8, weight: .semibold))
+                    .foregroundStyle(DesignSystem.Colors.danger)
+                    .lineLimit(1)
+            } else {
+                Text(entry.date, style: .time)
+                    .font(.system(size: 8))
+                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
+            }
         }
         .padding(DesignSystem.spacingMedium)
         .containerBackground(for: .widget) {
