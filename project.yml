@@ -36,6 +36,19 @@ targets:
         CFBundleDisplayName: Mushroom Signal
         LSMinimumSystemVersion: "14.0"
 
+  MushroomSignalTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: MushroomSignalTests
+    dependencies:
+      - target: MushroomSignal
+      - package: MushroomSignalCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.alexandersalinka.MushroomSignalTests
+        CODE_SIGN_STYLE: Automatic
+
   MushroomSignalWidgetExtension:
     type: app-extension
     platform: macOS
@@ -62,3 +75,17 @@ targets:
         CFBundleDisplayName: Mushroom Signal Widget
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
+
+schemes:
+  MushroomSignal:
+    build:
+      targets:
+        MushroomSignal: all
+        MushroomSignalTests: [test]
+    test:
+      targets:
+        - MushroomSignalTests
+    run:
+      config: Debug
+    archive:
+      config: Release

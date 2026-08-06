@@ -16,12 +16,22 @@
 		B3E45FAFCA78015CBE59470B /* MushroomSignalWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81841490E6D542F22EC19628 /* MushroomSignalWidget.swift */; };
 		C1289E25CCE0D11F12F3C2F6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F342E2888340E1136922BC /* ContentView.swift */; };
 		C4B38ACF47990776E35A665B /* RegionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D921A8D3EAFD9FF2245F208B /* RegionPickerView.swift */; };
+		C7E40FBE9440D3375902F3D9 /* AppStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1FB316DE56516A4B21295F /* AppStateTests.swift */; };
 		CFD0788B994906AEDE71CA3F /* MushroomSignalCore in Frameworks */ = {isa = PBXBuildFile; productRef = 518AEB9EBCD9C69B76B8B277 /* MushroomSignalCore */; };
+		E72EC42B78F7DEA7BD50FA91 /* StubWeatherClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CED92FB89921C454532799B /* StubWeatherClient.swift */; };
 		F010365685C1926B6E14FE1B /* MushroomSignalWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F1BD6093C300D79918F11F17 /* ShortlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F3D521EE5DF973B8230E9 /* ShortlistView.swift */; };
+		FA4AB7A973E9513B20444774 /* MushroomSignalCore in Frameworks */ = {isa = PBXBuildFile; productRef = F0834182CDF6435077BFE5AA /* MushroomSignalCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A117EF630EBA110584CABD46 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D2BB48731A8FBB37EBE24A78 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0935386A098E3FD849B54BB7;
+			remoteInfo = MushroomSignal;
+		};
 		F54681973FCF11B73BA1F962 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D2BB48731A8FBB37EBE24A78 /* Project object */;
@@ -47,8 +57,11 @@
 
 /* Begin PBXFileReference section */
 		052C8A78E1FA1937EA12ED61 /* MushroomSignalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MushroomSignalApp.swift; sourceTree = "<group>"; };
+		0A1FB316DE56516A4B21295F /* AppStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
 		1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MushroomSignalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		43F342E2888340E1136922BC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		5CED92FB89921C454532799B /* StubWeatherClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubWeatherClient.swift; sourceTree = "<group>"; };
+		5E4A501888FDE6C76A8CC972 /* MushroomSignalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MushroomSignalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FC4F3842084136EC09E4A4E /* MushroomSignalCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = MushroomSignalCore; path = MushroomSignalCore; sourceTree = SOURCE_ROOT; };
 		7121D9BEBDD981DC5A5A7F87 /* MushroomSignalWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MushroomSignalWidgetBundle.swift; sourceTree = "<group>"; };
 		774052D1E9A10E6221F64D1D /* MushroomSignalWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MushroomSignalWidget.entitlements; sourceTree = "<group>"; };
@@ -78,6 +91,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3FF3637C4ACD5D994391305 /* MushroomSignalCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		89383E90A4EC712654114A9D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA4AB7A973E9513B20444774 /* MushroomSignalCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -114,10 +135,20 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
+		45DE8E05782BF30236106D39 /* MushroomSignalTests */ = {
+			isa = PBXGroup;
+			children = (
+				0A1FB316DE56516A4B21295F /* AppStateTests.swift */,
+				5CED92FB89921C454532799B /* StubWeatherClient.swift */,
+			);
+			path = MushroomSignalTests;
+			sourceTree = "<group>";
+		};
 		51B7EE5007472B06193D623D /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				9799B53210927467F62E21E0 /* MushroomSignal.app */,
+				5E4A501888FDE6C76A8CC972 /* MushroomSignalTests.xctest */,
 				1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */,
 			);
 			name = Products;
@@ -127,6 +158,7 @@
 			isa = PBXGroup;
 			children = (
 				D21255788EE3A036EB8424A6 /* MushroomSignal */,
+				45DE8E05782BF30236106D39 /* MushroomSignalTests */,
 				296C08566C5B9270F6384589 /* MushroomSignalWidget */,
 				32CD59D4050E67DA9F79220B /* Packages */,
 				51B7EE5007472B06193D623D /* Products */,
@@ -170,6 +202,26 @@
 			productReference = 9799B53210927467F62E21E0 /* MushroomSignal.app */;
 			productType = "com.apple.product-type.application";
 		};
+		7BE90E053F3D5ADD56BC0BD4 /* MushroomSignalTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5A6A833D9D35DCC18A8283DC /* Build configuration list for PBXNativeTarget "MushroomSignalTests" */;
+			buildPhases = (
+				3E2EE721B481354192A4093E /* Sources */,
+				89383E90A4EC712654114A9D /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				64F93FD73233BDC0C4D6ACE5 /* PBXTargetDependency */,
+			);
+			name = MushroomSignalTests;
+			packageProductDependencies = (
+				F0834182CDF6435077BFE5AA /* MushroomSignalCore */,
+			);
+			productName = MushroomSignalTests;
+			productReference = 5E4A501888FDE6C76A8CC972 /* MushroomSignalTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		BBB4BBB332504EEEDB121029 /* MushroomSignalWidgetExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E278E23BC686016B17909526 /* Build configuration list for PBXNativeTarget "MushroomSignalWidgetExtension" */;
@@ -201,6 +253,9 @@
 					0935386A098E3FD849B54BB7 = {
 						ProvisioningStyle = Automatic;
 					};
+					7BE90E053F3D5ADD56BC0BD4 = {
+						ProvisioningStyle = Automatic;
+					};
 					BBB4BBB332504EEEDB121029 = {
 						ProvisioningStyle = Automatic;
 					};
@@ -224,12 +279,22 @@
 			projectRoot = "";
 			targets = (
 				0935386A098E3FD849B54BB7 /* MushroomSignal */,
+				7BE90E053F3D5ADD56BC0BD4 /* MushroomSignalTests */,
 				BBB4BBB332504EEEDB121029 /* MushroomSignalWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3E2EE721B481354192A4093E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C7E40FBE9440D3375902F3D9 /* AppStateTests.swift in Sources */,
+				E72EC42B78F7DEA7BD50FA91 /* StubWeatherClient.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		82B76F782CD7242D5B48EDB9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -260,6 +325,11 @@
 			isa = PBXTargetDependency;
 			target = BBB4BBB332504EEEDB121029 /* MushroomSignalWidgetExtension */;
 			targetProxy = F54681973FCF11B73BA1F962 /* PBXContainerItemProxy */;
+		};
+		64F93FD73233BDC0C4D6ACE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0935386A098E3FD849B54BB7 /* MushroomSignal */;
+			targetProxy = A117EF630EBA110584CABD46 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -358,6 +428,23 @@
 			};
 			name = Debug;
 		};
+		7B75B228E75624D52850FEA4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.alexandersalinka.MushroomSignalTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MushroomSignal.app/Contents/MacOS/MushroomSignal";
+			};
+			name = Release;
+		};
 		B3209E2760C62126E786DD2B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -374,6 +461,23 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alexandersalinka.MushroomSignal.Widget;
 				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		C97D746C76BDCF09D70E03BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.alexandersalinka.MushroomSignalTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MushroomSignal.app/Contents/MacOS/MushroomSignal";
 			};
 			name = Debug;
 		};
@@ -471,6 +575,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		5A6A833D9D35DCC18A8283DC /* Build configuration list for PBXNativeTarget "MushroomSignalTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C97D746C76BDCF09D70E03BC /* Debug */,
+				7B75B228E75624D52850FEA4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		6DAAE456FC07E100B89E9E83 /* Build configuration list for PBXProject "MushroomSignal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -504,6 +617,10 @@
 			productName = MushroomSignalCore;
 		};
 		92DC9F3E451BED501F4B36B6 /* MushroomSignalCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MushroomSignalCore;
+		};
+		F0834182CDF6435077BFE5AA /* MushroomSignalCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MushroomSignalCore;
 		};
