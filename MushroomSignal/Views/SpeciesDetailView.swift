@@ -1,0 +1,80 @@
+// MushroomSignal/Views/SpeciesDetailView.swift
+import SwiftUI
+import MushroomSignalCore
+
+struct SpeciesDetailView: View {
+    let species: Species
+    let photos: [SpeciesPhoto]
+    @Environment(\.dismiss) private var dismiss
+    @State private var showingCredits = false
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: DesignSystem.spacingMedium) {
+                    if !photos.isEmpty {
+                        ScrollView(.horizontal) {
+                            HStack(spacing: DesignSystem.spacingSmall) {
+                                ForEach(photos) { photo in
+                                    AsyncImage(url: photo.imageURL) { phase in
+                                        if case .success(let image) = phase {
+                                            image.resizable().aspectRatio(contentMode: .fill)
+                                        } else {
+                                            DesignSystem.Colors.bark.opacity(0.4)
+                                        }
+                                    }
+                                    .frame(width: 220, height: 160)
+                                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 3))
+                                }
+                            }
+                        }
+                    }
+
+                    Text(species.commonNameSk)
+                        .font(.title2.bold())
+                        .foregroundStyle(DesignSystem.Colors.cloud)
+                    Text(species.latinName)
+                        .font(.subheadline).italic()
+                        .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+
+                    if let warning = DesignSystem.warningLabelSk(for: species.edibility) {
+                        Text(warning)
+                            .font(.subheadline.bold())
+                            .foregroundStyle(DesignSystem.warningColor(for: species.edibility))
+                    }
+
+                    detailRow(title: "Biotop", value: species.habitat)
+                    if !species.lookAlikes.isEmpty {
+                        detailRow(title: "Zámena s", value: species.lookAlikes.joined(separator: ", "))
+                    }
+
+                    if !photos.isEmpty {
+                        Button("Zdroje fotografií") { showingCredits = true }
+                            .font(.caption)
+                    }
+                }
+                .padding(DesignSystem.spacingLarge)
+            }
+            .background(DesignSystem.Colors.forestDeep)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Zavrieť") { dismiss() }
+                }
+            }
+            .sheet(isPresented: $showingCredits) {
+                PhotoCreditsView(photos: photos)
+            }
+        }
+    }
+
+    private func detailRow(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
+            Text(title)
+                .font(.caption.bold())
+                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+            Text(value)
+                .font(.body)
+                .foregroundStyle(DesignSystem.Colors.cloud)
+        }
+    }
+}
