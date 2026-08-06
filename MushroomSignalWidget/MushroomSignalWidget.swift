@@ -21,22 +21,23 @@ struct ShortlistProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<ShortlistEntry>) -> Void) {
+        let limit = context.family == .systemLarge ? 6 : 3
         Task {
-            let entry = await buildEntry()
+            let entry = await buildEntry(limit: limit)
             let nextRefresh = Calendar.current.date(byAdding: .hour, value: 12, to: Date()) ?? Date().addingTimeInterval(12 * 3600)
             completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
         }
     }
 
-    private func buildEntry() async -> ShortlistEntry {
+    private func buildEntry(limit: Int) async -> ShortlistEntry {
         guard let store = RegionStore() else {
             widgetLogger.error("RegionStore unavailable — App Group entitlement missing or misconfigured; using default region")
-            return await fetchEntry(region: RegionDatabase.all[0])
+            return await fetchEntry(region: RegionDatabase.all[0], limit: limit)
         }
-        return await fetchEntry(region: store.selectedRegion())
+        return await fetchEntry(region: store.selectedRegion(), limit: limit)
     }
 
-    private func fetchEntry(region: Region) async -> ShortlistEntry {
+    private func fetchEntry(region: Region, limit: Int) async -> ShortlistEntry {
         do {
             let weather = try await OpenMeteoClient().fetchSnapshot(for: region)
             let allSpecies = try SpeciesDatabase.loadAll()
@@ -44,7 +45,7 @@ struct ShortlistProvider: TimelineProvider {
             let signals = allSpecies
                 .filter { $0.regionalAffinity.contains(region.id) }
                 .map { SignalAlgorithm.computeSignal(species: $0, weather: weather, month: month) }
-            let shortlist = ShortlistRanker.topSpecies(from: signals, limit: 3)
+            let shortlist = ShortlistRanker.topSpecies(from: signals, limit: limit)
             return ShortlistEntry(date: Date(), region: region, signals: shortlist)
         } catch {
             widgetLogger.error("Timeline refresh failed for region \(region.id, privacy: .public): \(String(describing: error), privacy: .public)")
