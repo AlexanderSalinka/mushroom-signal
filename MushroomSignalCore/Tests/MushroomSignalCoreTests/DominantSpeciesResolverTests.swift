@@ -27,10 +27,17 @@ final class DominantSpeciesResolverTests: XCTestCase {
         XCTAssertNil(result)
     }
 
-    func testTiesBreakByEdibilityThenName() {
+    func testTiesBreakByEdibilityWhenScoreMatches() {
         let poisonousA = species(id: "a", name: "Zeta", edibility: .poisonous, minC: 10, maxC: 20)
         let edibleB = species(id: "b", name: "Alpha", edibility: .edible, minC: 10, maxC: 20)
         let result = DominantSpeciesResolver.resolve(activeSpecies: [poisonousA, edibleB], weather: warmWetWeather, month: 7)
-        XCTAssertEqual(result?.id, "b", "edible should win the tie over poisonous regardless of name order")
+        XCTAssertEqual(result?.id, "b", "when scores match, edible beats poisonous")
+    }
+
+    func testTiesBreakByNameWhenEdibilityMatches() {
+        let zeta = species(id: "a", name: "Zeta", edibility: .edible, minC: 10, maxC: 20)
+        let alpha = species(id: "b", name: "Alpha", edibility: .edible, minC: 10, maxC: 20)
+        let result = DominantSpeciesResolver.resolve(activeSpecies: [zeta, alpha], weather: warmWetWeather, month: 7)
+        XCTAssertEqual(result?.id, "b", "when score and edibility match, alphabetical name order (Alpha < Zeta) wins")
     }
 }
