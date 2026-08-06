@@ -44,10 +44,10 @@ struct ShortlistView: View {
                     .font(.caption2)
                     .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
             }
-            if signal.species.edibility == .poisonous {
-                Text("⚠️ Jedovatá")
+            if let warning = DesignSystem.warningLabelSk(for: signal.species.edibility) {
+                Text(warning)
                     .font(.caption2.bold())
-                    .foregroundStyle(DesignSystem.Colors.danger)
+                    .foregroundStyle(DesignSystem.warningColor(for: signal.species.edibility))
             }
         }
         .padding(DesignSystem.spacingMedium)

@@ -15,11 +15,12 @@ struct ShortlistWidgetView: View {
             VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
                 ForEach(entry.signals, id: \.species.id) { signal in
                     let clampedScore = max(0, min(3, signal.score))
-                    let isPoisonous = signal.species.edibility == .poisonous
+                    let hasWarning = signal.species.edibility != .edible
+                    let warningColor = DesignSystem.warningColor(for: signal.species.edibility)
                     HStack {
-                        Text((isPoisonous ? "⚠️ " : "") + signal.species.commonNameSk)
+                        Text((hasWarning ? "⚠️ " : "") + signal.species.commonNameSk)
                             .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(isPoisonous ? DesignSystem.Colors.danger : DesignSystem.Colors.cloud)
+                            .foregroundStyle(hasWarning ? warningColor : DesignSystem.Colors.cloud)
                             .lineLimit(1)
                         Spacer()
                         Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 3 - clampedScore))
