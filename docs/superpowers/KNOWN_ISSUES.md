@@ -28,12 +28,19 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   all now log via `os.Logger` on their failure paths, distinguishing network/decode failures
   from an unavailable App Group.
 
-## Open Issues
+## Fixed (2026-08-06 widget-resize-and-region-sync pass)
 
-- **Widget doesn't refresh when region changes in-app** — up to 12h lag before the widget
-  reflects a region switch made in the companion app. Fix: call
-  `WidgetCenter.shared.reloadAllTimelines()` in `AppState.selectRegion(_:)`.
-  (Still planned as part of the v3 spec's notification work, since both touch the same call site.)
+- **Widget doesn't refresh when region changes in-app** — fixed via a `WidgetReloading`
+  protocol (`WidgetReloading.swift`) injected into `AppState`; `selectRegion(_:)` now calls
+  `WidgetCenter.shared.reloadAllTimelines()` immediately after persisting the region change,
+  instead of waiting for the next scheduled 12h timeline refresh.
+- **Widget stuck at a single fixed size, unreadably small** — fixed: `MushroomSignalWidget`
+  now supports `.systemSmall`, `.systemMedium`, `.systemLarge`, with `ShortlistWidgetView`
+  branching per family and sizing text via new `DesignSystem` typography tokens
+  (`captionSize`/`bodySize`/`titleSize`/`heroSize`). Large shows a hero row for the #1 species
+  plus 3 more (4 total); small/medium stay at 3.
+
+## Open Issues
 - **Three duplicated copies of the scoring pipeline** — the widget's `TimelineProvider`,
   `AppState.refresh()`, and `RegionMapView`'s per-region loop each independently do
   filter-by-region → `computeSignal` → rank. They agree today but nothing keeps them in
