@@ -20,8 +20,21 @@ final class MapScreenState: ObservableObject {
     init(weatherClient: WeatherClient = OpenMeteoClient()) {
         self.weatherClient = weatherClient
         self.gridPoints = SlovakiaGrid.generate()
-        self.allSpecies = (try? SpeciesDatabase.loadAll()) ?? []
-        let photos = (try? SpeciesPhotoDatabase.loadAll()) ?? []
+
+        do {
+            self.allSpecies = try SpeciesDatabase.loadAll()
+        } catch {
+            self.allSpecies = []
+            logger.error("Failed to load species dataset: \(String(describing: error), privacy: .public)")
+        }
+
+        let photos: [SpeciesPhoto]
+        do {
+            photos = try SpeciesPhotoDatabase.loadAll()
+        } catch {
+            photos = []
+            logger.error("Failed to load species photo dataset: \(String(describing: error), privacy: .public)")
+        }
         self.photosBySpeciesID = Dictionary(grouping: photos, by: \.speciesId)
     }
 
