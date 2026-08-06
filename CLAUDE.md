@@ -7,11 +7,12 @@ macOS widget + companion app: mushroom-foraging forecasts for Slovakia.
 - App + widget live in `MushroomSignal.xcodeproj`, generated from `project.yml` via XcodeGen — both the yml AND the generated `.xcodeproj` are tracked in git; edit `project.yml`, then re-run `xcodegen generate`, never hand-edit the `.xcodeproj`
 - XcodeGen does NOT auto-detect new/changed `.swift` files — after adding a file, re-run `xcodegen generate` or the build silently links a stub missing the new code
 - Unsigned/headless builds: add `CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO` to `xcodebuild` to skip the signing preflight check
+- **Always pass `-derivedDataPath DerivedData`** (repo-relative, already gitignored) to every `xcodebuild` invocation. Without it, each `xcodegen generate` that changes the project's internal identity gets its own hash-named folder under `~/Library/Developer/Xcode/DerivedData/`, and old ones don't get cleaned up automatically — confirmed this produced two separate `MushroomSignal.app` registrations that both showed in Spotlight/Launchpad. A pinned path keeps exactly one build output, one Launch Services registration, ever.
 - Never run `xcodebuild -runFirstLaunch` — hangs on a GUI auth prompt for irrelevant iOS device-debugging components
 - If `xcodebuild` fails on a missing `CoreSimulator.framework`, run `xcrun simctl list` once (headless-safe, triggers the needed component install)
 - Check signing identity status with `security find-identity -v -p codesigning`
 - Signing identity display name and the actual resolved Team ID can differ (confirmed: identity showed "874AQNKWTM", entitlements resolved to "UMPK75W8X6") — verify with the *built* entitlements (`codesign -d --entitlements :- <path>`), don't assume the identity string is the Team ID
-- Headless-launch a signed build directly: `~/Library/Developer/Xcode/DerivedData/MushroomSignal-<hash>/Build/Products/Debug/MushroomSignal.app`
+- Headless-launch a signed build directly: `DerivedData/Build/Products/Debug/MushroomSignal.app` (repo-relative, now that builds use the pinned `-derivedDataPath` above)
 - No git remote is configured — this repo is 100% local; don't assume `git push`/PR workflows work without setting one up first
 
 ## Testing Patterns
