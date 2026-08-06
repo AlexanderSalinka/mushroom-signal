@@ -26,6 +26,15 @@ struct ContentView: View {
                 ToolbarItem(placement: .automatic) {
                     RegionPickerView(appState: appState)
                 }
+                ToolbarItem(placement: .automatic) {
+                    Button {
+                        Task { await appState.refresh() }
+                    } label: {
+                        Label("Obnoviť", systemImage: "arrow.clockwise")
+                    }
+                    .disabled(appState.isLoading)
+                    .help("Obnoviť údaje o počasí")
+                }
             }
         }
         .task { await appState.refresh() }
