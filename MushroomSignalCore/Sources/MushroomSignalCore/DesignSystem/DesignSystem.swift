@@ -23,6 +23,10 @@ public enum DesignSystem {
     public static let thumbnailHeight: Double = 70
     public static let borderWidth: Double = 2
     public static let iconButtonPadding: Double = 4
+    public static let mapDominantHeightFraction: Double = 0.5
+    /// Floor for InteractiveMapView's height so its legend/loading overlay stays legible even if the
+    /// window is resized right down to ContentView's declared minHeight.
+    public static let mapMinimumHeight: Double = 220
 
     public enum Colors {
         public static let forestDeep = Color(red: 0.11, green: 0.16, blue: 0.11)

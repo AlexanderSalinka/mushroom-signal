@@ -8,7 +8,9 @@ struct MapScreenView: View {
         ScrollView {
             VStack(spacing: DesignSystem.spacingLarge) {
                 InteractiveMapView(mapState: mapState)
-                    .frame(height: 320)
+                    .containerRelativeFrame(.vertical) { height, _ in
+                        max(height * DesignSystem.mapDominantHeightFraction, DesignSystem.mapMinimumHeight)
+                    }
                     .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 2))
 
                 SpeciesLibraryView(mapState: mapState)
