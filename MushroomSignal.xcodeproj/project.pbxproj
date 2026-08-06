@@ -257,12 +257,14 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					0935386A098E3FD849B54BB7 = {
+						DevelopmentTeam = UMPK75W8X6;
 						ProvisioningStyle = Automatic;
 					};
 					7BE90E053F3D5ADD56BC0BD4 = {
 						ProvisioningStyle = Automatic;
 					};
 					BBB4BBB332504EEEDB121029 = {
+						DevelopmentTeam = UMPK75W8X6;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -406,6 +408,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UMPK75W8X6;
 				INFOPLIST_FILE = MushroomSignal/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -425,6 +428,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UMPK75W8X6;
 				INFOPLIST_FILE = MushroomSignal/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -460,6 +464,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UMPK75W8X6;
 				INFOPLIST_FILE = MushroomSignalWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -559,6 +564,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UMPK75W8X6;
 				INFOPLIST_FILE = MushroomSignalWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
