@@ -1,6 +1,9 @@
 import WidgetKit
 import SwiftUI
 import MushroomSignalCore
+import os
+
+private let widgetLogger = Logger(subsystem: "com.alexandersalinka.MushroomSignal.Widget", category: "TimelineProvider")
 
 struct ShortlistEntry: TimelineEntry {
     let date: Date
@@ -26,8 +29,14 @@ struct ShortlistProvider: TimelineProvider {
     }
 
     private func buildEntry() async -> ShortlistEntry {
-        let region = RegionStore()?.selectedRegion() ?? RegionDatabase.all[0]
+        guard let store = RegionStore() else {
+            widgetLogger.error("RegionStore unavailable — App Group entitlement missing or misconfigured; using default region")
+            return await fetchEntry(region: RegionDatabase.all[0])
+        }
+        return await fetchEntry(region: store.selectedRegion())
+    }
 
+    private func fetchEntry(region: Region) async -> ShortlistEntry {
         do {
             let weather = try await OpenMeteoClient().fetchSnapshot(for: region)
             let allSpecies = try SpeciesDatabase.loadAll()
@@ -38,6 +47,7 @@ struct ShortlistProvider: TimelineProvider {
             let shortlist = ShortlistRanker.topSpecies(from: signals, limit: 3)
             return ShortlistEntry(date: Date(), region: region, signals: shortlist)
         } catch {
+            widgetLogger.error("Timeline refresh failed for region \(region.id, privacy: .public): \(String(describing: error), privacy: .public)")
             return ShortlistEntry(date: Date(), region: region, signals: [])
         }
     }
