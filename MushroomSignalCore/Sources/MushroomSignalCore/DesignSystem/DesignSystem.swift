@@ -8,6 +8,10 @@ public enum DesignSystem {
     public static let spacingMedium: Double = spacingSmall * goldenRatio
     public static let spacingLarge: Double = spacingMedium * goldenRatio
     public static let spacingExtraLarge: Double = spacingLarge * goldenRatio
+    /// A tighter-than-`spacingSmall` gap for compact stacked text (e.g. a name directly above its subtitle).
+    /// Below the smallest deliberate step in the golden-ratio scale, so it's defined as a fraction of
+    /// `spacingSmall` rather than extending the scale downward.
+    public static let spacingTight: Double = spacingSmall / 4
 
     private static let typographyUnit: Double = 8
     public static let captionSize: Double = typographyUnit

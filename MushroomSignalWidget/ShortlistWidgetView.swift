@@ -43,7 +43,7 @@ struct ShortlistWidgetView: View {
             regionHeader
             VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
                 ForEach(entry.signals, id: \.species.id) { signal in
-                    row(for: signal, nameFont: .system(size: DesignSystem.bodySize, weight: .semibold), showLatin: false)
+                    row(for: signal, nameFont: .system(size: DesignSystem.bodySize, weight: .semibold), showLatin: false, inlineLatin: true)
                 }
                 emptyStateIfNeeded
             }
@@ -99,21 +99,36 @@ struct ShortlistWidgetView: View {
         }
     }
 
-    private func row(for signal: SpeciesSignal, nameFont: Font, showLatin: Bool) -> some View {
+    /// - Parameter inlineLatin: When true (medium layout only), the latin name is appended inline after
+    ///   the common name on the same line, using medium's extra width instead of a second line of height.
+    ///   Mutually exclusive with `showLatin` (large's two-line form) in practice, but not enforced structurally.
+    private func row(for signal: SpeciesSignal, nameFont: Font, showLatin: Bool, inlineLatin: Bool = false) -> some View {
         let clampedScore = max(0, min(3, signal.score))
         let hasWarning = signal.species.edibility != .edible
         let warningColor = DesignSystem.warningColor(for: signal.species.edibility)
+        let nameText = Text((hasWarning ? "⚠️ " : "") + signal.species.commonNameSk)
+            .font(nameFont)
+            .foregroundStyle(hasWarning ? warningColor : DesignSystem.Colors.cloud)
+        let latinText = Text(" · " + signal.species.latinName)
+            .font(.system(size: DesignSystem.captionSize).italic())
+            .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
         return HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text((hasWarning ? "⚠️ " : "") + signal.species.commonNameSk)
-                    .font(nameFont)
-                    .foregroundStyle(hasWarning ? warningColor : DesignSystem.Colors.cloud)
-                    .lineLimit(1)
-                if showLatin {
-                    Text(signal.species.latinName)
-                        .font(.system(size: DesignSystem.captionSize).italic())
-                        .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+            VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
+                if inlineLatin {
+                    (nameText + latinText)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                } else {
+                    nameText
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                    if showLatin {
+                        Text(signal.species.latinName)
+                            .font(.system(size: DesignSystem.captionSize).italic())
+                            .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                    }
                 }
             }
             Spacer()
@@ -132,6 +147,7 @@ struct ShortlistWidgetView: View {
                 .font(.system(size: DesignSystem.heroSize, weight: .bold))
                 .foregroundStyle(hasWarning ? warningColor : DesignSystem.Colors.cloud)
                 .lineLimit(1)
+                .minimumScaleFactor(0.8)
             Text(signal.species.latinName)
                 .font(.system(size: DesignSystem.bodySize).italic())
                 .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
