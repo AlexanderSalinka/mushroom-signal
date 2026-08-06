@@ -5,9 +5,13 @@ actor StubWeatherClient: WeatherClient {
 
     private var snapshots: [WeatherSnapshot?]
     private var callIndex = 0
+    private let gridSnapshots: [String: WeatherSnapshot]
+    private let gridShouldThrow: Bool
 
-    init(snapshots: [WeatherSnapshot?]) {
+    init(snapshots: [WeatherSnapshot?], gridSnapshots: [String: WeatherSnapshot] = [:], gridShouldThrow: Bool = false) {
         self.snapshots = snapshots
+        self.gridSnapshots = gridSnapshots
+        self.gridShouldThrow = gridShouldThrow
     }
 
     func fetchSnapshot(for region: Region) async throws -> WeatherSnapshot {
@@ -15,6 +19,11 @@ actor StubWeatherClient: WeatherClient {
         callIndex += 1
         guard let snapshot = snapshots[index] else { throw StubError() }
         return snapshot
+    }
+
+    func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] {
+        if gridShouldThrow { throw StubError() }
+        return gridSnapshots
     }
 }
 
@@ -29,5 +38,9 @@ actor DelayedWeatherClient: WeatherClient {
             throw StubError()
         }
         return WeatherSnapshot(regionId: region.id, averageTempLast10DaysC: 15, totalPrecipitationLast10DaysMm: 20, fetchedAt: .now)
+    }
+
+    func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] {
+        [:]
     }
 }
