@@ -21,7 +21,7 @@ struct ShortlistProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<ShortlistEntry>) -> Void) {
-        let limit = context.family == .systemLarge ? 6 : 3
+        let limit = context.family == .systemLarge ? 4 : 3
         Task {
             let entry = await buildEntry(limit: limit)
             let nextRefresh = Calendar.current.date(byAdding: .hour, value: 12, to: Date()) ?? Date().addingTimeInterval(12 * 3600)

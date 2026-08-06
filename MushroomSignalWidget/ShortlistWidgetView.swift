@@ -41,9 +41,9 @@ struct ShortlistWidgetView: View {
     private var mediumBody: some View {
         VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
             regionHeader
-            VStack(alignment: .leading, spacing: DesignSystem.spacingMedium) {
+            VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
                 ForEach(entry.signals, id: \.species.id) { signal in
-                    row(for: signal, nameFont: .system(size: DesignSystem.titleSize, weight: .semibold), showLatin: true)
+                    row(for: signal, nameFont: .system(size: DesignSystem.bodySize, weight: .semibold), showLatin: false)
                 }
                 emptyStateIfNeeded
             }
