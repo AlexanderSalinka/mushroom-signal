@@ -30,6 +30,16 @@ public enum DesignSystem {
         public static let mossAccent = Color(red: 0.42, green: 0.56, blue: 0.30)
         public static let danger = Color(red: 0.72, green: 0.24, blue: 0.20)
         public static let caution = Color(red: 0.85, green: 0.60, blue: 0.13)
+        public static let speciesPalette: [Color] = [
+            Color(red: 0.90, green: 0.49, blue: 0.13), // amber
+            Color(red: 0.36, green: 0.61, blue: 0.84), // sky blue
+            Color(red: 0.80, green: 0.36, blue: 0.62), // magenta
+            Color(red: 0.95, green: 0.82, blue: 0.25), // gold
+            Color(red: 0.42, green: 0.75, blue: 0.70), // teal
+            Color(red: 0.65, green: 0.44, blue: 0.86), // violet
+            Color(red: 0.85, green: 0.35, blue: 0.32), // coral red
+            Color(red: 0.55, green: 0.70, blue: 0.30)  // lime
+        ]
 
         public static let cardBackground = LinearGradient(
             colors: [forestMid, forestDeep],
