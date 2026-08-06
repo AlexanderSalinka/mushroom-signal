@@ -27,4 +27,17 @@ final class DesignSystemTests: XCTestCase {
         XCTAssertEqual(DesignSystem.warningColor(for: .poisonous), DesignSystem.Colors.danger)
         XCTAssertNotEqual(DesignSystem.warningColor(for: .caution), DesignSystem.warningColor(for: .poisonous))
     }
+
+    func testTypographyScaleIsIncreasing() {
+        XCTAssertLessThan(DesignSystem.captionSize, DesignSystem.bodySize)
+        XCTAssertLessThan(DesignSystem.bodySize, DesignSystem.titleSize)
+        XCTAssertLessThan(DesignSystem.titleSize, DesignSystem.heroSize)
+    }
+
+    func testTypographyRatiosApproximateGoldenRatio() {
+        let ratio1 = DesignSystem.bodySize / DesignSystem.captionSize
+        let ratio2 = DesignSystem.titleSize / DesignSystem.bodySize
+        XCTAssertEqual(ratio1, DesignSystem.goldenRatio, accuracy: 0.001)
+        XCTAssertEqual(ratio2, DesignSystem.goldenRatio, accuracy: 0.001)
+    }
 }

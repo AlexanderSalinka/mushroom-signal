@@ -9,6 +9,12 @@ public enum DesignSystem {
     public static let spacingLarge: Double = spacingMedium * goldenRatio
     public static let spacingExtraLarge: Double = spacingLarge * goldenRatio
 
+    private static let typographyUnit: Double = 8
+    public static let captionSize: Double = typographyUnit
+    public static let bodySize: Double = captionSize * goldenRatio
+    public static let titleSize: Double = bodySize * goldenRatio
+    public static let heroSize: Double = titleSize * goldenRatio
+
     public static let cardCornerRadius: Double = 24
 
     public enum Colors {
