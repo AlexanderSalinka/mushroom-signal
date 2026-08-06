@@ -1,10 +1,13 @@
 import SwiftUI
 import MushroomSignalCore
+import os
 
 struct RegionMapView: View {
     @ObservedObject var appState: AppState
     @State private var regionScores: [String: Int] = [:]
     @State private var isLoading = false
+
+    private static let logger = Logger(subsystem: "com.alexandersalinka.MushroomSignal", category: "RegionMapView")
 
     // Approximate relative layout of Slovakia's 8 kraje (schematic, not geographically precise).
     private let layout: [[String?]] = [
@@ -90,12 +93,16 @@ struct RegionMapView: View {
         defer { isLoading = false }
         let client = OpenMeteoClient()
         let month = Calendar.current.component(.month, from: Date())
-        guard let allSpecies = try? SpeciesDatabase.loadAll() else { return }
+        guard let allSpecies = try? SpeciesDatabase.loadAll() else {
+            Self.logger.error("Failed to load species dataset — region map will show no data for any kraj")
+            return
+        }
 
         await withTaskGroup(of: (String, Int).self) { group in
             for region in RegionDatabase.all {
                 group.addTask {
                     guard let weather = try? await client.fetchSnapshot(for: region) else {
+                        Self.logger.error("Weather fetch failed for region \(region.id, privacy: .public)")
                         return (region.id, 0)
                     }
                     let signals = allSpecies

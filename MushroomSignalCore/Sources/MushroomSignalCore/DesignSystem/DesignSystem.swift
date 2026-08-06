@@ -32,7 +32,7 @@ public enum DesignSystem {
     public static func warningLabelSk(for edibility: Edibility) -> String? {
         switch edibility {
         case .edible: return nil
-        case .caution: return "⚠️ Možná zámena"
+        case .caution: return "⚠️ Opatrne"
         case .poisonous: return "⚠️ Jedovatá"
         }
     }

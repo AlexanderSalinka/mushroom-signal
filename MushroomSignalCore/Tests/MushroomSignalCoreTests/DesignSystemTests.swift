@@ -17,7 +17,7 @@ final class DesignSystemTests: XCTestCase {
 
     func testWarningLabelSkIsNilOnlyForEdible() {
         XCTAssertNil(DesignSystem.warningLabelSk(for: .edible))
-        XCTAssertEqual(DesignSystem.warningLabelSk(for: .caution), "⚠️ Možná zámena")
+        XCTAssertEqual(DesignSystem.warningLabelSk(for: .caution), "⚠️ Opatrne")
         XCTAssertEqual(DesignSystem.warningLabelSk(for: .poisonous), "⚠️ Jedovatá")
     }
 
