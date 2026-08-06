@@ -31,4 +31,15 @@ final class AppStateTests: XCTestCase {
         XCTAssertNil(appState.errorMessage, "the second (later-started, faster) refresh succeeded and must not be overwritten when the slower first call fails after it")
         XCTAssertFalse(appState.signals.isEmpty)
     }
+
+    func testSelectRegionReloadsWidgetTimelines() async {
+        let reloader = SpyWidgetReloader()
+        let appState = AppState(store: nil, weatherClient: StubWeatherClient(snapshots: [nil]), widgetReloader: reloader)
+
+        appState.selectRegion(RegionDatabase.all[1])
+        try? await Task.sleep(for: .milliseconds(50))
+
+        let count = await reloader.reloadCount
+        XCTAssertEqual(count, 1, "selecting a new region must trigger an immediate widget timeline reload, not wait for the next scheduled 12h refresh")
+    }
 }

@@ -11,19 +11,28 @@ final class AppState: ObservableObject {
 
     private let store: RegionStore?
     private let weatherClient: WeatherClient
+    private let widgetReloader: WidgetReloading
     private var currentRefreshID: UUID?
     private let logger = Logger(subsystem: "com.alexandersalinka.MushroomSignal", category: "AppState")
 
-    init(store: RegionStore? = RegionStore(), weatherClient: WeatherClient = OpenMeteoClient()) {
+    init(
+        store: RegionStore? = RegionStore(),
+        weatherClient: WeatherClient = OpenMeteoClient(),
+        widgetReloader: WidgetReloading = SystemWidgetCenter()
+    ) {
         self.store = store
         self.weatherClient = weatherClient
+        self.widgetReloader = widgetReloader
         self.selectedRegion = store?.selectedRegion() ?? RegionDatabase.all[0]
     }
 
     func selectRegion(_ region: Region) {
         selectedRegion = region
         store?.setSelectedRegion(region)
-        Task { await refresh() }
+        Task {
+            await widgetReloader.reloadAllTimelines()
+            await refresh()
+        }
     }
 
     func refresh() async {
