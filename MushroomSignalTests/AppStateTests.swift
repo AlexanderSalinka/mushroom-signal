@@ -33,11 +33,12 @@ final class AppStateTests: XCTestCase {
     }
 
     func testSelectRegionReloadsWidgetTimelines() async {
-        let reloader = SpyWidgetReloader()
+        let reloadedExpectation = XCTestExpectation(description: "widget timelines reloaded")
+        let reloader = SpyWidgetReloader(expectation: reloadedExpectation)
         let appState = AppState(store: nil, weatherClient: StubWeatherClient(snapshots: [nil]), widgetReloader: reloader)
 
         appState.selectRegion(RegionDatabase.all[1])
-        try? await Task.sleep(for: .milliseconds(50))
+        await fulfillment(of: [reloadedExpectation], timeout: 2)
 
         let count = await reloader.reloadCount
         XCTAssertEqual(count, 1, "selecting a new region must trigger an immediate widget timeline reload, not wait for the next scheduled 12h refresh")

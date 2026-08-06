@@ -37,7 +37,9 @@ final class DesignSystemTests: XCTestCase {
     func testTypographyRatiosApproximateGoldenRatio() {
         let ratio1 = DesignSystem.bodySize / DesignSystem.captionSize
         let ratio2 = DesignSystem.titleSize / DesignSystem.bodySize
+        let ratio3 = DesignSystem.heroSize / DesignSystem.titleSize
         XCTAssertEqual(ratio1, DesignSystem.goldenRatio, accuracy: 0.001)
         XCTAssertEqual(ratio2, DesignSystem.goldenRatio, accuracy: 0.001)
+        XCTAssertEqual(ratio3, DesignSystem.goldenRatio, accuracy: 0.001)
     }
 }
