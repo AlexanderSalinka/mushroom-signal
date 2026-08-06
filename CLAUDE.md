@@ -21,7 +21,7 @@ macOS widget + companion app: mushroom-foraging forecasts for Slovakia.
 - `UserDefaults`-backed code: use a unique UUID-suffixed suite name per test + `removePersistentDomain` cleanup in `defer` (see `RegionStoreTests.swift`) — prevents cross-test pollution
 
 ## Project Conventions
-- Widget supports `.systemSmall` only — deliberate v1 scope limit, not a bug (v2 spec already covers small/medium/large)
+- Widget supports `.systemSmall`, `.systemMedium`, `.systemLarge` (shipped from v2 spec §5) — `ShortlistWidgetView` branches on `@Environment(\.widgetFamily)`; large shows a 6-item shortlist with a hero row for #1, small/medium stay at 3 items (see `ShortlistProvider.getTimeline` in `MushroomSignalWidget.swift`)
 - When a task review's fix round changes committed code from what a plan doc originally specified, mirror the fix back into the plan `.md` via a `docs: correct plan to reflect...` commit — plan docs are meant to stay accurate, not frozen at first-draft
 - Workflow for new features: brainstorm → design spec in `docs/superpowers/specs/` → implementation plan in `docs/superpowers/plans/` → build via subagent-driven-development (fresh implementer per task, independent reviewer that re-verifies build/test claims rather than trusting reports)
 - **Known open issues from the v1 final review, not yet fixed** — see `docs/superpowers/KNOWN_ISSUES.md`

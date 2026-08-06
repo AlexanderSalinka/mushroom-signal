@@ -63,6 +63,6 @@ struct MushroomSignalWidget: Widget {
         }
         .configurationDisplayName("Mushroom Signal")
         .description("Aktuálne huby vo vašom kraji")
-        .supportedFamilies([.systemSmall])
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
