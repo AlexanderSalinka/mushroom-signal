@@ -40,20 +40,37 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   (`captionSize`/`bodySize`/`titleSize`/`heroSize`). Large shows a hero row for the #1 species
   plus 3 more (4 total); small/medium stay at 3.
 
+## Fixed (2026-08-06 v2 interactive map & species library pass)
+
+- **Regional map renders network failure as "low chance"** — resolved as a side effect of
+  the v2 map redesign: `RegionMapView` (the old schematic 8-kraj grid, which had this bug)
+  is deleted entirely. Its replacement, `InteractiveMapView` + `DominantSpeciesResolver`,
+  treats a missing weather snapshot the same as "no active species" — both render neutral/
+  dimmed, never a false "low chance" color.
+
 ## Open Issues
+- **Region selection may not be persisting via the shared App Group** — investigated
+  2026-08-06 while testing the widget still showing "Žilinský kraj" (the hardcoded default
+  in `RegionStoreConstants.defaultRegionId`, `RegionStore.swift:14`). Confirmed: the real
+  App Group container (`~/Library/Group Containers/UMPK75W8X6.group.com.alexandersalinka.MushroomSignal/Library/Preferences/`)
+  was completely empty — no sandboxed process had ever successfully written a preference
+  there. Not yet root-caused: unclear whether (a) the region was simply never changed via
+  `RegionPickerView` in the app, or (b) `RegionStore.setSelectedRegion` / `AppState.selectRegion`
+  silently fails to persist (note `store?.setSelectedRegion(region)` in `AppState.swift` is a
+  silent no-op if `RegionStore.init` ever returns nil — no logging on that path). Next step:
+  manually pick a different kraj in the app, quit, relaunch, and check whether the *app itself*
+  (not just the widget) remembers the choice — that distinguishes an app-vs-widget sync bug
+  from persistence never having been exercised at all. Also found and cleaned up (not the root
+  cause, but real): a malformed `~/Library/Group Containers/--TeamIdentifierPrefix-group...`
+  directory from some earlier build where `$(TeamIdentifierPrefix)` wasn't resolved — removed,
+  contained no data, just a stray empty container shell.
 - **Three duplicated copies of the scoring pipeline** — the widget's `TimelineProvider`,
-  `AppState.refresh()`, and `RegionMapView`'s per-region loop each independently do
-  filter-by-region → `computeSignal` → rank. They agree today but nothing keeps them in
-  sync; a future change to the filter/ranking rule has to be made in three places.
-  Extracting one shared function in `MushroomSignalCore` (e.g.
+  `AppState.refresh()`, and now `MapScreenState.dominantSpecies(at:)` each independently do
+  filter-by-region/species → `computeSignal` → rank (or resolve-dominant). They agree today
+  but nothing keeps them in sync; a future change to the filter/ranking rule has to be made
+  in three places. Extracting one shared function in `MushroomSignalCore` (e.g.
   `SignalPipeline.rankedSignals(...)`) would fix this and also give the
   `.caution`/`.poisonous` filtering policy one place to live.
-- **Regional map renders network failure as "low chance"** — a failed per-region weather
-  fetch falls back to score 0, which looks identical to genuinely bad conditions and is
-  labeled "Nízka šanca" in the legend. The fetch failure is now logged (see "Fixed" above),
-  but the *rendering* is unchanged — should show unknown cells distinctly instead
-  (hatched/grey/"—"). Directly relevant to the v2 map redesign — worth designing correctly
-  there rather than patching the old schematic map.
 - **No weather caching** — the design spec required caching the last good `WeatherSnapshot`
   so the widget doesn't need live network access at render time; this got dropped between
   spec and plan and was never implemented. A transient network blip pins the widget to
@@ -65,6 +82,8 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   personally rather than delegating it to research.
 - **No AppIcon asset catalog** — needed before this is a "real" installable app; currently
   produces a build warning.
-- **Design-system bypasses** — a few raw `.white`/literal spacing values in `RegionMapView`
-  and `ShortlistWidgetView`, inherited verbatim from their original plan briefs. Cosmetic,
-  low priority, but should route through `DesignSystem` when those files are next touched.
+- **Design-system bypasses** — a few raw `.white`/literal spacing values in
+  `ShortlistWidgetView`, plus a `.frame(width: 220, height: 160)` literal in the new
+  `SpeciesDetailView` (inherited verbatim from its plan brief), and a hardcoded 8 in
+  `InteractiveMapView`'s legend dot. Cosmetic, low priority, but should route through
+  `DesignSystem` when those files are next touched.
