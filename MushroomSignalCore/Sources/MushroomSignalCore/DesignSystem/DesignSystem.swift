@@ -20,6 +20,9 @@ public enum DesignSystem {
     public static let heroSize: Double = titleSize * goldenRatio
 
     public static let cardCornerRadius: Double = 24
+    public static let thumbnailHeight: Double = 70
+    public static let borderWidth: Double = 2
+    public static let iconButtonPadding: Double = 4
 
     public enum Colors {
         public static let forestDeep = Color(red: 0.11, green: 0.16, blue: 0.11)

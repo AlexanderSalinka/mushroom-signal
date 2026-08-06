@@ -49,7 +49,7 @@ struct SpeciesLibraryView: View {
                         .background(Circle().fill(DesignSystem.Colors.forestDeep.opacity(0.7)))
                 }
                 .buttonStyle(.plain)
-                .padding(4)
+                .padding(DesignSystem.iconButtonPadding)
             }
 
             Text(species.commonNameSk)
@@ -63,7 +63,7 @@ struct SpeciesLibraryView: View {
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 3))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 3)
-                .stroke(active ? DesignSystem.Colors.mossAccent : .clear, lineWidth: 2)
+                .stroke(active ? DesignSystem.Colors.mossAccent : .clear, lineWidth: DesignSystem.borderWidth)
         )
         .onTapGesture { mapState.toggleSpecies(species.id) }
     }
@@ -79,10 +79,10 @@ struct SpeciesLibraryView: View {
                     placeholder
                 }
             }
-            .frame(height: 70)
+            .frame(height: DesignSystem.thumbnailHeight)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 4))
         } else {
-            placeholder.frame(height: 70)
+            placeholder.frame(height: DesignSystem.thumbnailHeight)
         }
     }
 
