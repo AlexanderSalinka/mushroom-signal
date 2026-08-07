@@ -1,3 +1,7 @@
+> **Superseded 2026-08-07** by `2026-08-07-mushroom-signal-roadmap-design.md`, which reprioritizes this
+> work below a scoring-algorithm/data-intelligence pass and consolidates it with v4 into one roadmap.
+> The design below is still accurate and is referenced from the new doc — it just isn't next.
+
 # Mushroom Signal v3 — Find Log, Notifications, Trends
 
 ## Relationship to v1/v2

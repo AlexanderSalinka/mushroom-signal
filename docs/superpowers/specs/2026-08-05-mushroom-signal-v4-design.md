@@ -1,3 +1,7 @@
+> **Superseded 2026-08-07** by `2026-08-07-mushroom-signal-roadmap-design.md`, which reprioritizes this
+> work below a scoring-algorithm/data-intelligence pass and consolidates it with v3 into one roadmap.
+> The design below is still accurate and is referenced from the new doc — it just isn't next.
+
 # Mushroom Signal v4 — GPS Find-Pinning & Photo Identification
 
 ## Relationship to v1/v2/v3
