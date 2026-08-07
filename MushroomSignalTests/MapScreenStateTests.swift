@@ -5,7 +5,7 @@ import MushroomSignalCore
 @MainActor
 final class MapScreenStateTests: XCTestCase {
     func testLoadGridPopulatesSnapshotsOnSuccess() async {
-        let snapshot = WeatherSnapshot(regionId: "grid-00", averageTempLast10DaysC: 15, totalPrecipitationLast10DaysMm: 10, fetchedAt: .now)
+        let snapshot = WeatherSnapshot(regionId: "grid-00", averageTempLast10DaysC: 15, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 10, fetchedAt: .now)
         let client = StubWeatherClient(snapshots: [nil], gridSnapshots: ["grid-00": snapshot])
         let state = MapScreenState(weatherClient: client)
 
@@ -42,7 +42,7 @@ final class MapScreenStateTests: XCTestCase {
     func testDominantSpeciesReturnsNilWithNoActiveSpecies() async {
         // Load a real snapshot first so the assertion below exercises the "no active species"
         // path specifically, not the separate "no snapshot for this point" early-return.
-        let snapshot = WeatherSnapshot(regionId: "grid-00", averageTempLast10DaysC: 15, totalPrecipitationLast10DaysMm: 10, fetchedAt: .now)
+        let snapshot = WeatherSnapshot(regionId: "grid-00", averageTempLast10DaysC: 15, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 10, fetchedAt: .now)
         let state = MapScreenState(weatherClient: StubWeatherClient(snapshots: [nil], gridSnapshots: ["grid-00": snapshot]))
         await state.loadGrid()
 

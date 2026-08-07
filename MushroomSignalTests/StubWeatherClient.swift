@@ -25,6 +25,10 @@ actor StubWeatherClient: WeatherClient {
         if gridShouldThrow { throw StubError() }
         return gridSnapshots
     }
+
+    func fetchDailyBreakdown(for region: Region, pastDays: Int) async throws -> [DailyWeather] {
+        []
+    }
 }
 
 actor DelayedWeatherClient: WeatherClient {
@@ -37,10 +41,14 @@ actor DelayedWeatherClient: WeatherClient {
             try? await Task.sleep(for: .milliseconds(200))
             throw StubError()
         }
-        return WeatherSnapshot(regionId: region.id, averageTempLast10DaysC: 15, totalPrecipitationLast10DaysMm: 20, fetchedAt: .now)
+        return WeatherSnapshot(regionId: region.id, averageTempLast10DaysC: 15, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 20, fetchedAt: .now)
     }
 
     func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] {
         [:]
+    }
+
+    func fetchDailyBreakdown(for region: Region, pastDays: Int) async throws -> [DailyWeather] {
+        []
     }
 }

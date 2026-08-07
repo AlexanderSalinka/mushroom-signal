@@ -6,7 +6,7 @@ import MushroomSignalCore
 final class AppStateTests: XCTestCase {
     func testRefreshFallsBackToCachedWeatherOnFailureAfterASuccessfulLoad() async {
         let region = RegionDatabase.all[0]
-        let snapshot = WeatherSnapshot(regionId: region.id, averageTempLast10DaysC: 15, totalPrecipitationLast10DaysMm: 20, fetchedAt: .now)
+        let snapshot = WeatherSnapshot(regionId: region.id, averageTempLast10DaysC: 15, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 20, fetchedAt: .now)
         let client = StubWeatherClient(snapshots: [snapshot, nil])
         let suiteName = "test.suite.\(UUID().uuidString)"
         let cache = WeatherSnapshotCache(appGroupId: suiteName)!

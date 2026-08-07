@@ -17,7 +17,7 @@ final class SignalAlgorithmTests: XCTestCase {
     )
 
     func testPeakSeasonWithGoodTempAndRainScoresThree() {
-        let weather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 17, totalPrecipitationLast10DaysMm: 25, fetchedAt: Date())
+        let weather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 17, averageHumidityLast10DaysPercent: 70, totalPrecipitationLast10DaysMm: 25, fetchedAt: Date())
 
         let signal = SignalAlgorithm.computeSignal(species: sampleSpecies, weather: weather, month: 8)
 
@@ -26,7 +26,7 @@ final class SignalAlgorithmTests: XCTestCase {
     }
 
     func testOffSeasonScoresZeroRegardlessOfWeather() {
-        let weather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 17, totalPrecipitationLast10DaysMm: 25, fetchedAt: Date())
+        let weather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 17, averageHumidityLast10DaysPercent: 70, totalPrecipitationLast10DaysMm: 25, fetchedAt: Date())
 
         // January: not in fruitingMonths, not adjacent to them either.
         let signal = SignalAlgorithm.computeSignal(species: sampleSpecies, weather: weather, month: 1)
@@ -36,7 +36,7 @@ final class SignalAlgorithmTests: XCTestCase {
     }
 
     func testDrySpellPenalizesHighRainfallSensitivitySpecies() {
-        let weather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 17, totalPrecipitationLast10DaysMm: 1, fetchedAt: Date())
+        let weather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 17, averageHumidityLast10DaysPercent: 70, totalPrecipitationLast10DaysMm: 1, fetchedAt: Date())
 
         let signal = SignalAlgorithm.computeSignal(species: sampleSpecies, weather: weather, month: 8)
 
@@ -46,7 +46,7 @@ final class SignalAlgorithmTests: XCTestCase {
 
     func testShoulderMonthCapsScoreEvenWithGoodWeather() {
         // 24°C is 2°C above idealTempMaxC (22) — within the 3°C tolerance band, so partial temp credit.
-        let weather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 24, totalPrecipitationLast10DaysMm: 25, fetchedAt: Date())
+        let weather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 24, averageHumidityLast10DaysPercent: 70, totalPrecipitationLast10DaysMm: 25, fetchedAt: Date())
 
         // Month 11 is adjacent to fruitingMonths' last month (10) but not itself in season.
         let signal = SignalAlgorithm.computeSignal(species: sampleSpecies, weather: weather, month: 11)
@@ -69,7 +69,7 @@ final class SignalAlgorithmTests: XCTestCase {
             habitat: "odumreté stromy",
             regionalAffinity: ["zilinsky"]
         )
-        let weather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 10, totalPrecipitationLast10DaysMm: 0, fetchedAt: Date())
+        let weather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 10, averageHumidityLast10DaysPercent: 70, totalPrecipitationLast10DaysMm: 0, fetchedAt: Date())
 
         let signal = SignalAlgorithm.computeSignal(species: lowSensitivitySpecies, weather: weather, month: 10)
 
@@ -101,8 +101,8 @@ final class SignalAlgorithmTests: XCTestCase {
         )
         // 17°C is 2°C above idealTempMaxC (15) — within the 3°C tolerance band, so
         // partial temp credit (tempScore = 0.5).
-        let dryWeather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 17, totalPrecipitationLast10DaysMm: 0, fetchedAt: Date())
-        let wetWeather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 17, totalPrecipitationLast10DaysMm: 25, fetchedAt: Date())
+        let dryWeather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 17, averageHumidityLast10DaysPercent: 70, totalPrecipitationLast10DaysMm: 0, fetchedAt: Date())
+        let wetWeather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 17, averageHumidityLast10DaysPercent: 70, totalPrecipitationLast10DaysMm: 25, fetchedAt: Date())
 
         let drySignal = SignalAlgorithm.computeSignal(species: lowSensitivitySpecies, weather: dryWeather, month: 10)
         let wetSignal = SignalAlgorithm.computeSignal(species: lowSensitivitySpecies, weather: wetWeather, month: 10)

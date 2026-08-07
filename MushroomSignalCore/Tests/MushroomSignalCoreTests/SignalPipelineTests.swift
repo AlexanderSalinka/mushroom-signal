@@ -2,7 +2,7 @@ import XCTest
 @testable import MushroomSignalCore
 
 final class SignalPipelineTests: XCTestCase {
-    private let warmWetWeather = WeatherSnapshot(regionId: "grid-00", averageTempLast10DaysC: 16, totalPrecipitationLast10DaysMm: 25, fetchedAt: .now)
+    private let warmWetWeather = WeatherSnapshot(regionId: "grid-00", averageTempLast10DaysC: 16, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 25, fetchedAt: .now)
     private let region = Region(id: "trenciansky", nameSk: "Trenčiansky kraj", latitude: 48.9, longitude: 18.0)
 
     private func species(id: String, name: String, edibility: Edibility = .edible, affinity: Set<String> = ["trenciansky"], months: Set<Int> = [6, 7, 8, 9]) -> Species {

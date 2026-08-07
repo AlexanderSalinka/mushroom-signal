@@ -15,7 +15,7 @@ final class WeatherSnapshotCacheTests: XCTestCase {
         let cache = WeatherSnapshotCache(appGroupId: suiteName)!
         defer { UserDefaults(suiteName: suiteName)?.removePersistentDomain(forName: suiteName) }
 
-        let snapshot = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 14.5, totalPrecipitationLast10DaysMm: 22, fetchedAt: .now)
+        let snapshot = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 14.5, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 22, fetchedAt: .now)
         cache.store(snapshot)
 
         XCTAssertEqual(cache.snapshot(for: "zilinsky"), snapshot)
@@ -26,8 +26,8 @@ final class WeatherSnapshotCacheTests: XCTestCase {
         let cache = WeatherSnapshotCache(appGroupId: suiteName)!
         defer { UserDefaults(suiteName: suiteName)?.removePersistentDomain(forName: suiteName) }
 
-        let a = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 14.5, totalPrecipitationLast10DaysMm: 22, fetchedAt: .now)
-        let b = WeatherSnapshot(regionId: "kosicky", averageTempLast10DaysC: 18, totalPrecipitationLast10DaysMm: 5, fetchedAt: .now)
+        let a = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 14.5, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 22, fetchedAt: .now)
+        let b = WeatherSnapshot(regionId: "kosicky", averageTempLast10DaysC: 18, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 5, fetchedAt: .now)
         cache.store(a)
         cache.store(b)
 
@@ -40,8 +40,8 @@ final class WeatherSnapshotCacheTests: XCTestCase {
         let cache = WeatherSnapshotCache(appGroupId: suiteName)!
         defer { UserDefaults(suiteName: suiteName)?.removePersistentDomain(forName: suiteName) }
 
-        let older = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 10, totalPrecipitationLast10DaysMm: 1, fetchedAt: Date(timeIntervalSince1970: 0))
-        let newer = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 20, totalPrecipitationLast10DaysMm: 2, fetchedAt: Date(timeIntervalSince1970: 1000))
+        let older = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 10, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 1, fetchedAt: Date(timeIntervalSince1970: 0))
+        let newer = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 20, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 2, fetchedAt: Date(timeIntervalSince1970: 1000))
         cache.store(older)
         cache.store(newer)
 
