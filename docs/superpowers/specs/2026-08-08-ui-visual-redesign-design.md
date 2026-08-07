@@ -144,6 +144,14 @@ resistant across sources without needing an external hashing dependency.
 
 ## 5. Map — Per-Kraj Shaped Overlay (replaces the grid-of-circles)
 
+> **Superseded 2026-08-08** by `2026-08-08-map-region-scoping-design.md`, written after
+> testing a throwaway preview of this section's "all 8 kraje filled" concept directly in the
+> running app. The polygon shape data below (`RegionBoundaries.swift`, Task 10) is unchanged
+> and fully reused — what changes is the fill logic: only the currently-selected region
+> fills with the dominant-species color; the other 7 stay border-only, always. The new doc
+> also folds in a tab restructuring (a separate "Knižnica druhov" tab) this section didn't
+> anticipate. Kept below for history.
+
 ### Context: this is also the color-mixing fix
 
 Diagnosed tonight, not guessed: the current map computes a dominant species independently
