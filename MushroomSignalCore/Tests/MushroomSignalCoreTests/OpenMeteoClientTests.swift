@@ -202,4 +202,20 @@ final class OpenMeteoClientTests: XCTestCase {
 
         XCTAssertEqual(result.count, 1, "a day with any null field should be skipped, not crash or default to 0")
     }
+
+    func testFetchDailyBreakdownHandlesMismatchedArrayLengths() async throws {
+        let json = """
+        { "daily": { "time": ["2026-08-01", "2026-08-02"], "temperature_2m_max": [28.0], "temperature_2m_mean": [22.0, 24.0], "precipitation_sum": [0.0, 5.0] } }
+        """.data(using: .utf8)!
+
+        MockURLProtocol.requestHandler = { request in
+            (HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!, json)
+        }
+
+        let client = OpenMeteoClient(session: makeMockedSession())
+        let result = try await client.fetchDailyBreakdown(for: region, pastDays: 2)
+
+        XCTAssertEqual(result.count, 1, "days with out-of-bounds indices should be skipped, not crash")
+        XCTAssertEqual(result[0].maxTempC, 28.0, accuracy: 0.001)
+    }
 }

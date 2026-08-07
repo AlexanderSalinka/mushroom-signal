@@ -114,7 +114,10 @@ public struct OpenMeteoClient: WeatherClient {
 
         var result: [DailyWeather] = []
         for index in decoded.daily.time.indices {
-            guard let date = dateFormatter.date(from: decoded.daily.time[index]),
+            guard index < decoded.daily.temperature2mMax.count,
+                  index < decoded.daily.temperature2mMean.count,
+                  index < decoded.daily.precipitationSum.count,
+                  let date = dateFormatter.date(from: decoded.daily.time[index]),
                   let maxTemp = decoded.daily.temperature2mMax[index],
                   let meanTemp = decoded.daily.temperature2mMean[index],
                   let precipitation = decoded.daily.precipitationSum[index] else { continue }
