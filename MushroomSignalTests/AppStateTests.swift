@@ -61,4 +61,22 @@ final class AppStateTests: XCTestCase {
         let count = await reloader.reloadCount
         XCTAssertEqual(count, 1, "selecting a new region must trigger an immediate widget timeline reload, not wait for the next scheduled 12h refresh")
     }
+
+    func testRefreshAppliesFlushTriggerFromDailyBreakdown() async {
+        struct TriggeringWeatherClient: WeatherClient {
+            func fetchSnapshot(for region: Region) async throws -> WeatherSnapshot {
+                WeatherSnapshot(regionId: region.id, averageTempLast10DaysC: 16, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 1, fetchedAt: .now)
+            }
+            func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] { [:] }
+            func fetchDailyBreakdown(for region: Region, pastDays: Int) async throws -> [DailyWeather] {
+                [DailyWeather(date: Date().addingTimeInterval(-3 * 86400), meanTempC: 22, maxTempC: 27, precipitationMm: 5)]
+            }
+        }
+
+        let appState = AppState(store: nil, weatherCache: nil, weatherClient: TriggeringWeatherClient())
+        await appState.refresh()
+
+        XCTAssertFalse(appState.signals.isEmpty, "precondition: some species should be in season and scoring")
+        XCTAssertTrue(appState.signals.contains { $0.reason == "nedávno teplo a dážď — čoskoro môže prísť nová vlna" }, "a high/medium rainfall-sensitivity species in low-rain conditions should show the trigger reason once a qualifying day is in the daily breakdown")
+    }
 }

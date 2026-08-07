@@ -64,9 +64,11 @@ final class AppState: ObservableObject {
         do {
             let weather = try await weatherClient.fetchSnapshot(for: region)
             weatherCache?.store(weather)
+            let dailyWeather = (try? await weatherClient.fetchDailyBreakdown(for: region, pastDays: 10)) ?? []
+            let flushTriggered = FlushTriggerDetector.triggered(in: dailyWeather, asOf: Date())
             let allSpecies = try SpeciesDatabase.loadAll()
             let month = Calendar.current.component(.month, from: Date())
-            let ranked = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: weather, month: month)
+            let ranked = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: weather, month: month, flushTriggered: flushTriggered)
             guard currentRefreshID == refreshID else { return }
             signals = ranked
             isShowingStaleData = false
@@ -74,7 +76,7 @@ final class AppState: ObservableObject {
             guard currentRefreshID == refreshID else { return }
             if let cached = weatherCache?.snapshot(for: region.id), let allSpecies = try? SpeciesDatabase.loadAll() {
                 let month = Calendar.current.component(.month, from: Date())
-                signals = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: cached, month: month)
+                signals = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: cached, month: month, flushTriggered: false)
                 isShowingStaleData = true
                 errorMessage = "Zobrazujú sa staršie údaje z \(Self.staleTimeFormatter.string(from: cached.fetchedAt))."
             } else {
