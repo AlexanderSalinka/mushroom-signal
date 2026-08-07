@@ -63,6 +63,20 @@ public enum DesignSystem {
             startPoint: .top,
             endPoint: .bottom
         )
+
+        /// One distinct color per kraj (matches `RegionDatabase.all`'s order), for the map's
+        /// always-visible border outlines — lets regions be told apart by outline color alone,
+        /// independent of `speciesPalette` which is a separate concept (species, not regions).
+        public static let regionPalette: [Color] = [
+            Color(red: 0.85, green: 0.45, blue: 0.40), // bratislavsky - terracotta
+            Color(red: 0.90, green: 0.70, blue: 0.30), // trnavsky - amber
+            Color(red: 0.55, green: 0.75, blue: 0.45), // trenciansky - sage
+            Color(red: 0.40, green: 0.65, blue: 0.60), // nitriansky - teal
+            Color(red: 0.45, green: 0.55, blue: 0.80), // zilinsky - periwinkle
+            Color(red: 0.70, green: 0.50, blue: 0.80), // banskobystricky - lavender
+            Color(red: 0.85, green: 0.55, blue: 0.65), // presovsky - rose
+            Color(red: 0.55, green: 0.60, blue: 0.35)  // kosicky - olive
+        ]
     }
 
     /// The Slovak warning label for a species' edibility, or nil when no warning applies.

@@ -12,27 +12,21 @@ struct InteractiveMapView: View {
         )
     )
 
-    /// Circle radius chosen so ~39 grid points visually tile Slovakia without large gaps.
-    private let gridPointRadiusMeters: CLLocationDistance = 18000
-
     var body: some View {
         ZStack(alignment: .topLeading) {
             Map(position: $cameraPosition) {
-                ForEach(mapState.gridPoints) { point in
-                    MapCircle(center: CLLocationCoordinate2D(latitude: point.latitude, longitude: point.longitude), radius: gridPointRadiusMeters)
-                        .foregroundStyle(color(for: point))
-                        .stroke(.clear)
-                }
                 // Always-visible kraj borders, no fill — per
                 // docs/superpowers/specs/2026-08-08-map-region-scoping-design.md §3. The
                 // region-scoped fill (only the selected kraj filled with the dominant
                 // species color) is separate, still-pending work — this is just the
-                // permanent administrative-context layer.
-                ForEach(RegionDatabase.all) { region in
+                // permanent administrative-context layer. Each kraj gets its own distinct
+                // outline color (DesignSystem.Colors.regionPalette) so regions are
+                // identifiable by border color alone, at a glance.
+                ForEach(Array(RegionDatabase.all.enumerated()), id: \.element.id) { index, region in
                     if let boundary = RegionBoundaries.polygon(for: region.id) {
                         MapPolygon(coordinates: boundary.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) })
                             .foregroundStyle(.clear)
-                            .stroke(DesignSystem.Colors.cloud.opacity(0.6), lineWidth: 1.25)
+                            .stroke(DesignSystem.Colors.regionPalette[index % DesignSystem.Colors.regionPalette.count], lineWidth: 1.5)
                     }
                 }
             }
@@ -55,13 +49,6 @@ struct InteractiveMapView: View {
             .padding(DesignSystem.spacingMedium)
         }
         .task { await mapState.loadGrid() }
-    }
-
-    private func color(for point: GridPoint) -> Color {
-        guard let dominant = mapState.dominantSpecies(at: point.id), let assigned = mapState.speciesColors[dominant.id] else {
-            return DesignSystem.Colors.bark.opacity(0.3)
-        }
-        return assigned.opacity(0.75)
     }
 
     @ViewBuilder
