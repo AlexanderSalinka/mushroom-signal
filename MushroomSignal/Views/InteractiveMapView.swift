@@ -23,6 +23,18 @@ struct InteractiveMapView: View {
                         .foregroundStyle(color(for: point))
                         .stroke(.clear)
                 }
+                // Always-visible kraj borders, no fill — per
+                // docs/superpowers/specs/2026-08-08-map-region-scoping-design.md §3. The
+                // region-scoped fill (only the selected kraj filled with the dominant
+                // species color) is separate, still-pending work — this is just the
+                // permanent administrative-context layer.
+                ForEach(RegionDatabase.all) { region in
+                    if let boundary = RegionBoundaries.polygon(for: region.id) {
+                        MapPolygon(coordinates: boundary.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) })
+                            .foregroundStyle(.clear)
+                            .stroke(DesignSystem.Colors.cloud.opacity(0.6), lineWidth: 1.25)
+                    }
+                }
             }
             .mapStyle(.standard(elevation: .flat))
 
