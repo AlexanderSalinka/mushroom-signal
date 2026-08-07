@@ -17,6 +17,6 @@ struct MapScreenView: View {
             }
             .padding(DesignSystem.spacingLarge)
         }
-        .background(DesignSystem.Colors.forestDeep)
+        .mushroomGlassBackground()
     }
 }

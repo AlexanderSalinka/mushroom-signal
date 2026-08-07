@@ -21,7 +21,7 @@ struct ShortlistView: View {
             }
             .padding(DesignSystem.spacingLarge)
         }
-        .background(DesignSystem.Colors.forestDeep)
+        .mushroomGlassBackground()
         .refreshable { await appState.refresh() }
     }
 

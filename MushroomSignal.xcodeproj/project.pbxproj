@@ -31,6 +31,7 @@
 		F010365685C1926B6E14FE1B /* MushroomSignalWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F1BD6093C300D79918F11F17 /* ShortlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F3D521EE5DF973B8230E9 /* ShortlistView.swift */; };
 		FA4AB7A973E9513B20444774 /* MushroomSignalCore in Frameworks */ = {isa = PBXBuildFile; productRef = F0834182CDF6435077BFE5AA /* MushroomSignalCore */; };
+		FB538808A4334D85E46F77DD /* GlassBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		0E508520517A594C06FD0468 /* MapScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapScreenView.swift; sourceTree = "<group>"; };
 		1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MushroomSignalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveMapView.swift; sourceTree = "<group>"; };
+		2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassBackground.swift; sourceTree = "<group>"; };
 		2CDC18618DDF39FAA6E66948 /* SpyWidgetReloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpyWidgetReloader.swift; sourceTree = "<group>"; };
 		3ED179E8F93BB1C9D3122168 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		43F342E2888340E1136922BC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 		181FD1C255476D8C1BAF3947 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */,
 				254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */,
 				0E508520517A594C06FD0468 /* MapScreenView.swift */,
 				C06442830610580CEB0AF161 /* PhotoCreditsView.swift */,
@@ -354,6 +357,7 @@
 			files = (
 				32B76617FFC241BA6715EA65 /* AppState.swift in Sources */,
 				C1289E25CCE0D11F12F3C2F6 /* ContentView.swift in Sources */,
+				FB538808A4334D85E46F77DD /* GlassBackground.swift in Sources */,
 				5A1AFB398EF3A754F7242101 /* InteractiveMapView.swift in Sources */,
 				43A734B64961434BB158661E /* MapScreenState.swift in Sources */,
 				16E3AAA1E68A9D8C55B22B38 /* MapScreenView.swift in Sources */,

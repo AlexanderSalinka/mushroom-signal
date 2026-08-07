@@ -22,6 +22,7 @@ struct ContentView: View {
                     .tag(Tab.map)
             }
             .navigationTitle("Mushroom Signal")
+            .toolbarBackground(.ultraThinMaterial, for: .windowToolbar)
             .toolbar {
                 ToolbarItem(placement: .automatic) {
                     RegionPickerView(appState: appState)
@@ -39,5 +40,6 @@ struct ContentView: View {
         }
         .task { await appState.refresh() }
         .frame(minWidth: 420, minHeight: 480)
+        .background(WindowTransparencyConfigurator())
     }
 }
