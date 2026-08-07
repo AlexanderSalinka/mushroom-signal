@@ -32,6 +32,7 @@ macOS widget + companion app: mushroom-foraging forecasts for Slovakia.
 - When a task review's fix round changes committed code from what a plan doc originally specified, mirror the fix back into the plan `.md` via a `docs: correct plan to reflect...` commit — plan docs are meant to stay accurate, not frozen at first-draft
 - Workflow for new features: brainstorm → design spec in `docs/superpowers/specs/` → implementation plan in `docs/superpowers/plans/` → build via subagent-driven-development (fresh implementer per task, independent reviewer that re-verifies build/test claims rather than trusting reports)
 - **Known open issues from the v1 final review, not yet fixed** — see `docs/superpowers/KNOWN_ISSUES.md`
+- **Alpha-stage permission, granted explicitly by Alexander (2026-08-07 night session):** approximate/mock geographic data (e.g. simplified or hand-drawn kraj boundary shapes for the map, in place of exact GIS-sourced polygons) is acceptable for now — "make it work, then make it beautiful." Applies to visual/geographic precision specifically, not to correctness-critical data (species safety info, scoring math) — those still need to be right, not approximated. Swap in exact boundary data later once the mechanism itself is proven out.
 
 ## Hard Constraints
 - Species dataset (`species.json`) is original content — never scrape nahuby.sk or any other site into it (checked during design: no API, blocks bots, content is copyrighted)

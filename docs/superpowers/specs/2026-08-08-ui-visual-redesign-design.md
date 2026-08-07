@@ -94,8 +94,8 @@ with Alexander: the resize trigger is the standard macOS window resize (dragging
 edge), not a custom gesture or panel.
 
 The library's manual column-count `Stepper` is removed — adaptive reflow replaces its
-purpose. (Flagged during brainstorming as not fully confirmed; if Alexander wants a manual
-override kept alongside the adaptive default, that's a small addition, not a redesign.)
+purpose. (Resolved during implementation planning: removed, not kept alongside the adaptive
+default.)
 
 ## 3. Photo Sourcing (Edible Species Only)
 
@@ -137,6 +137,10 @@ point if that proves sufficient — an implementation-time decision, not frozen 
 **Storage location:** the app's own local storage (e.g. `Application Support` or `Caches`)
 is sufficient — this doesn't need App Group sharing with the widget, since photo display is
 Zoznam/Mapa-only (companion app), not a widget concern.
+
+**Resolved during implementation planning (2026-08-08):** cache key is a short digest of the
+full URL plus the URL's last path component, stored under `Caches/SpeciesPhotos/` — collision-
+resistant across sources without needing an external hashing dependency.
 
 ## 5. Map — Per-Kraj Shaped Overlay (replaces the grid-of-circles)
 
@@ -181,15 +185,14 @@ alpha that explicitly doesn't need precision yet).
 **Upgrade path, later, not now:** Natural Earth (public domain, no attribution required) or
 Slovakia's own official `geoportal.sk` open data, once real precision matters.
 
-### Open question — not resolved, needs a decision before implementation
+### Resolved during implementation planning (2026-08-08)
 
-`GridPoint`, `SlovakiaGrid`, and `WeatherClient.fetchSnapshots(for: [GridPoint])` (the
-batched multi-point fetch) become unused once this lands — nothing else in the app
-currently needs point-based sampling. Two options: remove them now as dead code (matches
-this project's general lean-code preference), or leave them in place unused, since the
-mentioned-but-undesigned future Mapa route-planner idea might conceivably want point-based
-geographic sampling again. Leaning toward removing now and re-adding if/when that future
-feature actually gets designed (YAGNI), but this is Alexander's call, not decided here.
+`GridPoint` and `WeatherClient.fetchSnapshots(for: [GridPoint])` are **not** removed — they
+get reused, fed 8 region-derived points (one per kraj) instead of `SlovakiaGrid`'s ~39-point
+fine grid. No `WeatherClient` protocol change needed. `SlovakiaGrid` itself (the
+grid-generation logic) becomes genuinely dead code once nothing calls it, and is removed
+(YAGNI) rather than kept unused — re-addable later if the undesigned future route-planner
+idea actually needs point-based sampling again.
 
 ## 6. Global Typography Floor — Minimum 20pt
 
@@ -204,6 +207,14 @@ per this project's own Hard Constraint that all styling should route through
 `DesignSystem`, those are already a documented-but-unfixed gap this touches in passing.
 Meeting a real 20pt floor means both revising `DesignSystem`'s own scale (or introducing an
 explicit minimum derived from it) and auditing every view using raw system styles directly.
+
+**Resolved during implementation planning (2026-08-08):** mechanically reapplying the
+existing golden-ratio multiplier (1.618) from a 20pt floor would compound to `20 → 32.36 →
+52.36 → 84.72`, an 84pt hero size — absurd in a widget whose hero row already renders at
+`heroSize` today. The complaint was "too small to read," not "make the largest text much
+larger too." Final values: `captionSize: 20, bodySize: 24, titleSize: 28, heroSize: 36` — a
+gentler graduated progression that clears the floor without that blowup. Approved by
+Alexander.
 
 **Confirmed with Alexander: the whole app, including the widget** — the current text is
 too small to read, full stop, not a preference to weigh against other constraints. This
@@ -240,21 +251,23 @@ number in `DesignSystem`.
   not something a unit test can verify — this project has no snapshot-testing setup, and
   adding one is out of scope for this pass.
 
-## Open Questions for the Implementation Plan
+## Resolved by the Implementation Plan (`docs/superpowers/plans/2026-08-08-ui-visual-redesign.md`)
 
-- Exact hand-approximated polygon coordinates per kraj — this is genuinely research/drawing
-  work to do at implementation time, not something to freeze in this spec.
-- Whether the library grid keeps a manual column-count override alongside the adaptive
-  default (leaning no, not confirmed).
-- `GridPoint`/`SlovakiaGrid`/batched-fetch removal vs. keep-unused (see §5's open question).
-- Exact photo-cache storage location and cache-key scheme (species id vs. URL hash) —
-  implementation-time detail.
-- Order of implementation: the four pieces (cards+grid, photos+cache, map redesign,
-  typography floor) are loosely coupled but not strictly sequential — photos need to exist
-  before cards look "beautiful," but the adaptive grid mechanic, the map redesign, and the
-  typography floor don't depend on each other or on the rest. Worth sequencing explicitly
-  in the implementation plan, not decided here.
-- Exact redesigned layout for the widget's small (and possibly medium) family once every
-  text element must be ≥20pt — confirmed in scope (§6), but the actual new layout shape
-  (which rows survive, what gets cut, whether small and medium collapse toward the same
-  design) is real design work for the implementation plan, not decided here.
+- Typography scale values (§6), `GridPoint`/`SlovakiaGrid` disposition (§5), the manual
+  column-stepper removal (§2), and the photo-cache key scheme (§4) are all resolved above.
+- Order of implementation: typography floor first (later tasks consume its final token
+  values) → photo cache infrastructure → photo sourcing research → shared card + adaptive
+  grid (both tabs) → map polygon redesign + dead-code cleanup. Twelve tasks total.
+- Widget small/medium layout: reduced to a single-species hero treatment for small, 2 rows
+  (down from 3) for medium — "fewer items, not smaller text." Exact coordinates are approved
+  as a real starting layout, not a placeholder, but genuinely expected to need visual tuning
+  once built (same as the map polygons below).
+
+## Still Open — Expected to Need Tuning During/After Implementation
+
+- Exact hand-approximated kraj polygon coordinates: a real first draft exists in the plan
+  (Task 10), drawn from the reference map already reviewed, not left blank — but explicitly
+  a starting point to visually check and adjust once rendered, not a frozen final answer.
+- Whether the widget's redesigned small/medium layout actually fits ≥20pt text within their
+  real on-screen frames is a build-and-look check (plan Task 3, Step 6), not guaranteed by
+  the design on paper alone.
