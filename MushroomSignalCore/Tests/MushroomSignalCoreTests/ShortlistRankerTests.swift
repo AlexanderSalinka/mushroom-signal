@@ -13,6 +13,8 @@ final class ShortlistRankerTests: XCTestCase {
             fruitingMonths: [8],
             idealTempMinC: 10,
             idealTempMaxC: 20,
+            idealHumidityMinPercent: 60,
+            idealHumidityMaxPercent: 90,
             rainfallSensitivity: .medium,
             habitat: "test",
             regionalAffinity: ["zilinsky"]

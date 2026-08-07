@@ -46,4 +46,13 @@ final class SpeciesDataTests: XCTestCase {
         let species = try SpeciesDatabase.loadAll()
         XCTAssertTrue(species.contains { $0.edibility == .poisonous })
     }
+
+    func testHumidityRangeIsValidForAllSpecies() throws {
+        let species = try SpeciesDatabase.loadAll()
+        for s in species {
+            XCTAssertLessThanOrEqual(s.idealHumidityMinPercent, s.idealHumidityMaxPercent, "\(s.id) has an inverted humidity range")
+            XCTAssertTrue((0...100).contains(s.idealHumidityMinPercent), "\(s.id) has an out-of-range humidity minimum")
+            XCTAssertTrue((0...100).contains(s.idealHumidityMaxPercent), "\(s.id) has an out-of-range humidity maximum")
+        }
+    }
 }

@@ -168,6 +168,8 @@ private func previewSignal(name: String, latin: String, edibility: Edibility, sc
             fruitingMonths: [8, 9, 10],
             idealTempMinC: 8,
             idealTempMaxC: 18,
+            idealHumidityMinPercent: 60,
+            idealHumidityMaxPercent: 90,
             rainfallSensitivity: .medium,
             habitat: "listnatý les",
             regionalAffinity: [RegionDatabase.all[4].id]

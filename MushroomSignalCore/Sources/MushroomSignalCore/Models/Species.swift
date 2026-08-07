@@ -21,6 +21,8 @@ public struct Species: Codable, Identifiable, Equatable, Sendable {
     public let fruitingMonths: Set<Int>
     public let idealTempMinC: Double
     public let idealTempMaxC: Double
+    public let idealHumidityMinPercent: Double
+    public let idealHumidityMaxPercent: Double
     public let rainfallSensitivity: RainfallSensitivity
     public let habitat: String
     public let regionalAffinity: Set<String>
@@ -34,6 +36,8 @@ public struct Species: Codable, Identifiable, Equatable, Sendable {
         fruitingMonths: Set<Int>,
         idealTempMinC: Double,
         idealTempMaxC: Double,
+        idealHumidityMinPercent: Double,
+        idealHumidityMaxPercent: Double,
         rainfallSensitivity: RainfallSensitivity,
         habitat: String,
         regionalAffinity: Set<String>
@@ -46,6 +50,8 @@ public struct Species: Codable, Identifiable, Equatable, Sendable {
         self.fruitingMonths = fruitingMonths
         self.idealTempMinC = idealTempMinC
         self.idealTempMaxC = idealTempMaxC
+        self.idealHumidityMinPercent = idealHumidityMinPercent
+        self.idealHumidityMaxPercent = idealHumidityMaxPercent
         self.rainfallSensitivity = rainfallSensitivity
         self.habitat = habitat
         self.regionalAffinity = regionalAffinity

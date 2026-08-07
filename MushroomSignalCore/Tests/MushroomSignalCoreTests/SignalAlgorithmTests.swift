@@ -11,6 +11,8 @@ final class SignalAlgorithmTests: XCTestCase {
         fruitingMonths: [6, 7, 8, 9, 10],
         idealTempMinC: 12,
         idealTempMaxC: 22,
+        idealHumidityMinPercent: 60,
+        idealHumidityMaxPercent: 90,
         rainfallSensitivity: .high,
         habitat: "smrekové lesy",
         regionalAffinity: ["zilinsky"]
@@ -65,6 +67,8 @@ final class SignalAlgorithmTests: XCTestCase {
             fruitingMonths: [9, 10, 11],
             idealTempMinC: 2,
             idealTempMaxC: 15,
+            idealHumidityMinPercent: 60,
+            idealHumidityMaxPercent: 90,
             rainfallSensitivity: .low,
             habitat: "odumreté stromy",
             regionalAffinity: ["zilinsky"]
@@ -95,6 +99,8 @@ final class SignalAlgorithmTests: XCTestCase {
             fruitingMonths: [9, 10, 11],
             idealTempMinC: 2,
             idealTempMaxC: 15,
+            idealHumidityMinPercent: 60,
+            idealHumidityMaxPercent: 90,
             rainfallSensitivity: .low,
             habitat: "odumreté stromy",
             regionalAffinity: ["zilinsky"]

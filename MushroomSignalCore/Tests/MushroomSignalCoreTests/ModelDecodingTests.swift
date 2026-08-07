@@ -13,6 +13,8 @@ final class ModelDecodingTests: XCTestCase {
           "fruitingMonths": [6,7,8,9,10],
           "idealTempMinC": 12,
           "idealTempMaxC": 22,
+          "idealHumidityMinPercent": 60,
+          "idealHumidityMaxPercent": 90,
           "rainfallSensitivity": "high",
           "habitat": "smrekové a borovicové lesy",
           "regionalAffinity": ["zilinsky", "presovsky"]

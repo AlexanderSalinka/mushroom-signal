@@ -6,7 +6,7 @@ final class SignalPipelineTests: XCTestCase {
     private let region = Region(id: "trenciansky", nameSk: "Trenčiansky kraj", latitude: 48.9, longitude: 18.0)
 
     private func species(id: String, name: String, edibility: Edibility = .edible, affinity: Set<String> = ["trenciansky"], months: Set<Int> = [6, 7, 8, 9]) -> Species {
-        Species(id: id, commonNameSk: name, latinName: id, edibility: edibility, fruitingMonths: months, idealTempMinC: 10, idealTempMaxC: 20, rainfallSensitivity: .low, habitat: "test", regionalAffinity: affinity)
+        Species(id: id, commonNameSk: name, latinName: id, edibility: edibility, fruitingMonths: months, idealTempMinC: 10, idealTempMaxC: 20, idealHumidityMinPercent: 60, idealHumidityMaxPercent: 90, rainfallSensitivity: .low, habitat: "test", regionalAffinity: affinity)
     }
 
     func testRegionOverloadFiltersByRegionalAffinity() {
