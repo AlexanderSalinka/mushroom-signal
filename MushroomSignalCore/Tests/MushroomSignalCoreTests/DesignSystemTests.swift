@@ -34,12 +34,13 @@ final class DesignSystemTests: XCTestCase {
         XCTAssertLessThan(DesignSystem.titleSize, DesignSystem.heroSize)
     }
 
-    func testTypographyRatiosApproximateGoldenRatio() {
-        let ratio1 = DesignSystem.bodySize / DesignSystem.captionSize
-        let ratio2 = DesignSystem.titleSize / DesignSystem.bodySize
-        let ratio3 = DesignSystem.heroSize / DesignSystem.titleSize
-        XCTAssertEqual(ratio1, DesignSystem.goldenRatio, accuracy: 0.001)
-        XCTAssertEqual(ratio2, DesignSystem.goldenRatio, accuracy: 0.001)
-        XCTAssertEqual(ratio3, DesignSystem.goldenRatio, accuracy: 0.001)
+    func testTypographyScaleMeetsThe20ptFloor() {
+        // 2026-08-08: the typography scale deliberately abandoned the golden-ratio
+        // relationship (mechanically reapplying it from a 20pt floor would push heroSize to
+        // ~85pt) in favor of a gentler progression that still clears the floor everywhere.
+        XCTAssertGreaterThanOrEqual(DesignSystem.captionSize, 20)
+        XCTAssertGreaterThanOrEqual(DesignSystem.bodySize, 20)
+        XCTAssertGreaterThanOrEqual(DesignSystem.titleSize, 20)
+        XCTAssertGreaterThanOrEqual(DesignSystem.heroSize, 20)
     }
 }

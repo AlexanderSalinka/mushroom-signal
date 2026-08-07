@@ -13,11 +13,15 @@ public enum DesignSystem {
     /// `spacingSmall` rather than extending the scale downward.
     public static let spacingTight: Double = spacingSmall / 4
 
-    private static let typographyUnit: Double = 8
-    public static let captionSize: Double = typographyUnit
-    public static let bodySize: Double = captionSize * goldenRatio
-    public static let titleSize: Double = bodySize * goldenRatio
-    public static let heroSize: Double = titleSize * goldenRatio
+    // Floor raised to 20pt app-wide (including the widget) 2026-08-08 — "too small to
+    // read" was the exact complaint. Mechanically reapplying goldenRatio's full multiplicative
+    // compounding from a 20pt floor would push heroSize to ~85pt (20 * 1.618^3), which is
+    // absurd for a widget's hero row. This scale is a gentler graduated progression that
+    // clears the floor without that blowup — deliberately not golden-ratio-derived.
+    public static let captionSize: Double = 20
+    public static let bodySize: Double = 24
+    public static let titleSize: Double = 28
+    public static let heroSize: Double = 36
 
     public static let cardCornerRadius: Double = 24
     public static let thumbnailHeight: Double = 70
