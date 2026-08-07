@@ -30,24 +30,24 @@ struct ShortlistView: View {
         return VStack(alignment: .leading, spacing: DesignSystem.spacingSmall / 2) {
             HStack {
                 Text(signal.species.commonNameSk)
-                    .font(.headline)
+                    .font(.system(size: DesignSystem.titleSize, weight: .semibold))
                     .foregroundStyle(DesignSystem.Colors.cloud)
                 Spacer()
                 Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 4 - clampedScore))
                     .foregroundStyle(DesignSystem.Colors.mossAccent)
             }
             Text(signal.species.latinName)
-                .font(.caption)
+                .font(.system(size: DesignSystem.captionSize))
                 .italic()
                 .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
             if let reason = signal.reason {
                 Text(reason)
-                    .font(.caption2)
+                    .font(.system(size: DesignSystem.captionSize))
                     .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
             }
             if let warning = DesignSystem.warningLabelSk(for: signal.species.edibility) {
                 Text(warning)
-                    .font(.caption2.bold())
+                    .font(.system(size: DesignSystem.captionSize, weight: .bold))
                     .foregroundStyle(DesignSystem.warningColor(for: signal.species.edibility))
             }
         }
@@ -58,7 +58,7 @@ struct ShortlistView: View {
 
     private var disclaimer: some View {
         Text("Tento zoznam je len orientačný odhad na základe počasia a sezóny. Pred zberom a konzumáciou húb si nález vždy overte s odborníkom alebo v spoľahlivom atlase húb.")
-            .font(.caption2)
+            .font(.system(size: DesignSystem.captionSize))
             .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
             .padding(.top, DesignSystem.spacingMedium)
     }

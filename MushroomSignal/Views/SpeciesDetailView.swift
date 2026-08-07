@@ -31,15 +31,16 @@ struct SpeciesDetailView: View {
                     }
 
                     Text(species.commonNameSk)
-                        .font(.title2.bold())
+                        .font(.system(size: DesignSystem.heroSize, weight: .bold))
                         .foregroundStyle(DesignSystem.Colors.cloud)
                     Text(species.latinName)
-                        .font(.subheadline).italic()
+                        .font(.system(size: DesignSystem.bodySize))
+                        .italic()
                         .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
 
                     if let warning = DesignSystem.warningLabelSk(for: species.edibility) {
                         Text(warning)
-                            .font(.subheadline.bold())
+                            .font(.system(size: DesignSystem.bodySize, weight: .bold))
                             .foregroundStyle(DesignSystem.warningColor(for: species.edibility))
                     }
 
@@ -50,7 +51,7 @@ struct SpeciesDetailView: View {
 
                     if !photos.isEmpty {
                         Button("Zdroje fotografií") { showingCredits = true }
-                            .font(.caption)
+                            .font(.system(size: DesignSystem.captionSize))
                     }
                 }
                 .padding(DesignSystem.spacingLarge)
@@ -70,10 +71,10 @@ struct SpeciesDetailView: View {
     private func detailRow(title: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
             Text(title)
-                .font(.caption.bold())
+                .font(.system(size: DesignSystem.captionSize, weight: .bold))
                 .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
             Text(value)
-                .font(.body)
+                .font(.system(size: DesignSystem.bodySize))
                 .foregroundStyle(DesignSystem.Colors.cloud)
         }
     }

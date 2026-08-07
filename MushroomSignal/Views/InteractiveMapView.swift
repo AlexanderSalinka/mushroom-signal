@@ -32,7 +32,7 @@ struct InteractiveMapView: View {
                 }
                 if let error = mapState.errorMessage {
                     Text(error)
-                        .font(.caption)
+                        .font(.system(size: DesignSystem.captionSize))
                         .foregroundStyle(DesignSystem.Colors.danger)
                         .padding(DesignSystem.spacingSmall)
                         .background(DesignSystem.Colors.forestDeep.opacity(0.85))
@@ -61,7 +61,7 @@ struct InteractiveMapView: View {
                         HStack(spacing: DesignSystem.spacingTight * 2) {
                             Circle().fill(color).frame(width: DesignSystem.legendDotSize, height: DesignSystem.legendDotSize)
                             Text(species.commonNameSk)
-                                .font(.caption2)
+                                .font(.system(size: DesignSystem.captionSize))
                                 .foregroundStyle(DesignSystem.Colors.cloud)
                         }
                     }

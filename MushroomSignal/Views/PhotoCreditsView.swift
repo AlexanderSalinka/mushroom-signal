@@ -10,11 +10,11 @@ struct PhotoCreditsView: View {
         NavigationStack {
             List(photos) { photo in
                 VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
-                    Text(photo.photographer).font(.subheadline.bold())
-                    Text(photo.license).font(.caption).foregroundStyle(.secondary)
+                    Text(photo.photographer).font(.system(size: DesignSystem.bodySize, weight: .bold))
+                    Text(photo.license).font(.system(size: DesignSystem.captionSize)).foregroundStyle(.secondary)
                     Link(destination: photo.sourceURL) {
                         Text(photo.sourceURL.absoluteString)
-                            .font(.caption2)
+                            .font(.system(size: DesignSystem.captionSize))
                             .lineLimit(1)
                     }
                 }

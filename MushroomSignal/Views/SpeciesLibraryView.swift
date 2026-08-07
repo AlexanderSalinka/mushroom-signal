@@ -15,7 +15,7 @@ struct SpeciesLibraryView: View {
         VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
             HStack {
                 Text("Knižnica druhov")
-                    .font(.headline)
+                    .font(.system(size: DesignSystem.titleSize, weight: .semibold))
                     .foregroundStyle(DesignSystem.Colors.cloud)
                 Spacer()
                 Stepper("Stĺpce: \(columnCount)", value: $columnCount, in: 2...4)
@@ -53,7 +53,7 @@ struct SpeciesLibraryView: View {
             }
 
             Text(species.commonNameSk)
-                .font(.caption)
+                .font(.system(size: DesignSystem.captionSize))
                 .foregroundStyle(DesignSystem.Colors.cloud)
                 .lineLimit(2)
                 .multilineTextAlignment(.center)
