@@ -42,7 +42,13 @@ struct ShortlistProvider: TimelineProvider {
             let client = OpenMeteoClient()
             let weather = try await client.fetchSnapshot(for: region)
             WeatherSnapshotCache()?.store(weather)
-            let dailyWeather = (try? await client.fetchDailyBreakdown(for: region, pastDays: 10)) ?? []
+            let dailyWeather: [DailyWeather]
+            do {
+                dailyWeather = try await client.fetchDailyBreakdown(for: region, pastDays: 10)
+            } catch {
+                dailyWeather = []
+                widgetLogger.error("Daily breakdown fetch failed for region \(region.id, privacy: .public): \(String(describing: error), privacy: .public)")
+            }
             let flushTriggered = FlushTriggerDetector.triggered(in: dailyWeather, asOf: Date())
             let allSpecies = try SpeciesDatabase.loadAll()
             let month = Calendar.current.component(.month, from: Date())

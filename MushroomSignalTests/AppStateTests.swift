@@ -63,17 +63,25 @@ final class AppStateTests: XCTestCase {
     }
 
     func testRefreshAppliesFlushTriggerFromDailyBreakdown() async {
+        // Pinned to August so this test doesn't depend on the real current month: in
+        // January/February the only in-season real species is pleurotus-ostreatus, which is
+        // .low rainfall sensitivity and can structurally never show the trigger reason.
+        let fixedDate = Calendar.current.date(from: DateComponents(year: 2026, month: 8, day: 15))!
+
         struct TriggeringWeatherClient: WeatherClient {
+            let referenceDate: Date
             func fetchSnapshot(for region: Region) async throws -> WeatherSnapshot {
                 WeatherSnapshot(regionId: region.id, averageTempLast10DaysC: 16, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 1, fetchedAt: .now)
             }
             func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] { [:] }
             func fetchDailyBreakdown(for region: Region, pastDays: Int) async throws -> [DailyWeather] {
-                [DailyWeather(date: Date().addingTimeInterval(-3 * 86400), meanTempC: 22, maxTempC: 27, precipitationMm: 5)]
+                // 3 days before the injected "now" so it always lands inside the detector's
+                // 2-7 day lag window, regardless of when the test actually runs.
+                [DailyWeather(date: referenceDate.addingTimeInterval(-3 * 86400), meanTempC: 22, maxTempC: 27, precipitationMm: 5)]
             }
         }
 
-        let appState = AppState(store: nil, weatherCache: nil, weatherClient: TriggeringWeatherClient())
+        let appState = AppState(store: nil, weatherCache: nil, weatherClient: TriggeringWeatherClient(referenceDate: fixedDate), now: { fixedDate })
         await appState.refresh()
 
         XCTAssertFalse(appState.signals.isEmpty, "precondition: some species should be in season and scoring")

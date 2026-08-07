@@ -9,7 +9,7 @@ final class FlushTriggerDetectorTests: XCTestCase {
     }
 
     func testTriggersOnQualifyingDayTwoDaysAgo() {
-        let days = [daysAgo(2, maxTempC: 26.0, precipitationMm: 1.0)]
+        let days = [daysAgo(2, maxTempC: 26.0, precipitationMm: 5.0)]
         XCTAssertTrue(FlushTriggerDetector.triggered(in: days, asOf: today))
     }
 
@@ -41,7 +41,7 @@ final class FlushTriggerDetectorTests: XCTestCase {
     func testTriggersIfAnyDayInWindowQualifiesEvenIfOthersDont() {
         let days = [
             daysAgo(2, maxTempC: 10.0, precipitationMm: 0.0),
-            daysAgo(5, maxTempC: 27.0, precipitationMm: 2.0),
+            daysAgo(5, maxTempC: 27.0, precipitationMm: 5.0),
             daysAgo(6, maxTempC: 10.0, precipitationMm: 0.0)
         ]
         XCTAssertTrue(FlushTriggerDetector.triggered(in: days, asOf: today))

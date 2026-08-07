@@ -76,7 +76,7 @@ public enum SignalAlgorithm {
     }
 
     static func reasonText(species: Species, tempScore: Double, humidityScore: Double, rainScore: Double, flushTriggered: Bool) -> String? {
-        if flushTriggered && species.rainfallSensitivity != .low {
+        if flushTriggered && species.rainfallSensitivity != .low && tempScore > 0.0 && humidityScore > 0.0 {
             return "nedávno teplo a dážď — čoskoro môže prísť nová vlna"
         }
         if rainScore < 1.0 && species.rainfallSensitivity != .low {

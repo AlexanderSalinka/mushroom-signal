@@ -181,7 +181,12 @@ final class SignalAlgorithmTests: XCTestCase {
         // 3.0 (score 3) — still within the 0-4 clamp's range, so this genuinely distinguishes
         // capped from uncapped behavior instead of being hidden by it.
         XCTAssertEqual(signal.score, 2)
-        XCTAssertEqual(signal.reason, "nedávno teplo a dážď — čoskoro môže prísť nová vlna")
+        // tempScore and humidityScore are both 0.0 (fully out of range), so the flush-trigger
+        // guard (tempScore > 0.0 && humidityScore > 0.0) suppresses the trigger message even
+        // though flushTriggered is true — the real problem (bad temp/humidity) surfaces instead.
+        // rainScore is capped at 1.0 (not < 1.0), so the rain-shortage check is skipped, and
+        // tempScore < 1.0 fires first among the remaining checks.
+        XCTAssertEqual(signal.reason, "teplota mimo ideálneho rozsahu")
     }
 
     func testMediumRainfallSensitivityScoresPartialCreditAndRespondsToFlushTrigger() {

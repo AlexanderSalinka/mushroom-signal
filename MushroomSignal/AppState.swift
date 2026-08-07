@@ -14,6 +14,7 @@ final class AppState: ObservableObject {
     private let weatherCache: WeatherSnapshotCache?
     private let weatherClient: WeatherClient
     private let widgetReloader: WidgetReloading
+    private let now: () -> Date
     private var currentRefreshID: UUID?
     private let logger = Logger(subsystem: "com.alexandersalinka.MushroomSignal", category: "AppState")
 
@@ -28,12 +29,14 @@ final class AppState: ObservableObject {
         store: RegionStore? = RegionStore(),
         weatherCache: WeatherSnapshotCache? = WeatherSnapshotCache(),
         weatherClient: WeatherClient = OpenMeteoClient(),
-        widgetReloader: WidgetReloading = SystemWidgetCenter()
+        widgetReloader: WidgetReloading = SystemWidgetCenter(),
+        now: @escaping () -> Date = Date.init
     ) {
         self.store = store
         self.weatherCache = weatherCache
         self.weatherClient = weatherClient
         self.widgetReloader = widgetReloader
+        self.now = now
         self.selectedRegion = store?.selectedRegion() ?? RegionDatabase.all[0]
         if store == nil {
             logger.error("RegionStore init failed — region selection will not persist across launches or sync to the widget")
@@ -64,10 +67,16 @@ final class AppState: ObservableObject {
         do {
             let weather = try await weatherClient.fetchSnapshot(for: region)
             weatherCache?.store(weather)
-            let dailyWeather = (try? await weatherClient.fetchDailyBreakdown(for: region, pastDays: 10)) ?? []
-            let flushTriggered = FlushTriggerDetector.triggered(in: dailyWeather, asOf: Date())
+            let dailyWeather: [DailyWeather]
+            do {
+                dailyWeather = try await weatherClient.fetchDailyBreakdown(for: region, pastDays: 10)
+            } catch {
+                dailyWeather = []
+                logger.error("Daily breakdown fetch failed for region \(region.id, privacy: .public): \(String(describing: error), privacy: .public)")
+            }
+            let flushTriggered = FlushTriggerDetector.triggered(in: dailyWeather, asOf: now())
             let allSpecies = try SpeciesDatabase.loadAll()
-            let month = Calendar.current.component(.month, from: Date())
+            let month = Calendar.current.component(.month, from: now())
             let ranked = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: weather, month: month, flushTriggered: flushTriggered)
             guard currentRefreshID == refreshID else { return }
             signals = ranked
@@ -75,7 +84,7 @@ final class AppState: ObservableObject {
         } catch {
             guard currentRefreshID == refreshID else { return }
             if let cached = weatherCache?.snapshot(for: region.id), let allSpecies = try? SpeciesDatabase.loadAll() {
-                let month = Calendar.current.component(.month, from: Date())
+                let month = Calendar.current.component(.month, from: now())
                 signals = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: cached, month: month, flushTriggered: false)
                 isShowingStaleData = true
                 errorMessage = "Zobrazujú sa staršie údaje z \(Self.staleTimeFormatter.string(from: cached.fetchedAt))."

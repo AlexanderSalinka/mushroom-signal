@@ -13,7 +13,7 @@ public enum FlushTriggerDetector {
             let dayStart = utcCalendar.startOfDay(for: day.date)
             guard let daysAgo = utcCalendar.dateComponents([.day], from: dayStart, to: todayStart).day else { return false }
             guard (2...7).contains(daysAgo) else { return false }
-            return day.maxTempC >= 26.0 && day.precipitationMm > 0.0
+            return day.maxTempC >= 26.0 && day.precipitationMm >= 5.0
         }
     }
 }
