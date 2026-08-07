@@ -5,8 +5,8 @@ final class SignalPipelineTests: XCTestCase {
     private let warmWetWeather = WeatherSnapshot(regionId: "grid-00", averageTempLast10DaysC: 16, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 25, fetchedAt: .now)
     private let region = Region(id: "trenciansky", nameSk: "Trenčiansky kraj", latitude: 48.9, longitude: 18.0)
 
-    private func species(id: String, name: String, edibility: Edibility = .edible, affinity: Set<String> = ["trenciansky"], months: Set<Int> = [6, 7, 8, 9]) -> Species {
-        Species(id: id, commonNameSk: name, latinName: id, edibility: edibility, fruitingMonths: months, idealTempMinC: 10, idealTempMaxC: 20, idealHumidityMinPercent: 60, idealHumidityMaxPercent: 90, rainfallSensitivity: .low, habitat: "test", regionalAffinity: affinity)
+    private func species(id: String, name: String, edibility: Edibility = .edible, affinity: Set<String> = ["trenciansky"], months: Set<Int> = [6, 7, 8, 9], rainfallSensitivity: RainfallSensitivity = .low) -> Species {
+        Species(id: id, commonNameSk: name, latinName: id, edibility: edibility, fruitingMonths: months, idealTempMinC: 10, idealTempMaxC: 20, idealHumidityMinPercent: 60, idealHumidityMaxPercent: 90, rainfallSensitivity: rainfallSensitivity, habitat: "test", regionalAffinity: affinity)
     }
 
     func testRegionOverloadFiltersByRegionalAffinity() {
@@ -38,7 +38,7 @@ final class SignalPipelineTests: XCTestCase {
 
     func testFlushTriggeredIsPassedThroughToComputeSignal() {
         // high-sensitivity species, low rain (baseline 0.0), so the trigger bump is visible in the ranked order.
-        let lowRainCandidate = species(id: "a", name: "Alpha", edibility: .edible)
+        let lowRainCandidate = species(id: "a", name: "Alpha", edibility: .edible, rainfallSensitivity: .high)
         let weather = WeatherSnapshot(regionId: "grid-00", averageTempLast10DaysC: 16, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 1, fetchedAt: .now)
 
         let withoutTrigger = SignalPipeline.rankedSignals(candidates: [lowRainCandidate], weather: weather, month: 7, flushTriggered: false)
