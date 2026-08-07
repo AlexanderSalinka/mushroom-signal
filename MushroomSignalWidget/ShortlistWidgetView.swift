@@ -103,7 +103,7 @@ struct ShortlistWidgetView: View {
     ///   the common name on the same line, using medium's extra width instead of a second line of height.
     ///   Mutually exclusive with `showLatin` (large's two-line form) in practice, but not enforced structurally.
     private func row(for signal: SpeciesSignal, nameFont: Font, showLatin: Bool, inlineLatin: Bool = false) -> some View {
-        let clampedScore = max(0, min(3, signal.score))
+        let clampedScore = max(0, min(4, signal.score))
         let hasWarning = signal.species.edibility != .edible
         let warningColor = DesignSystem.warningColor(for: signal.species.edibility)
         let nameText = Text((hasWarning ? "⚠️ " : "") + signal.species.commonNameSk)
@@ -132,14 +132,14 @@ struct ShortlistWidgetView: View {
                 }
             }
             Spacer()
-            Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 3 - clampedScore))
+            Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 4 - clampedScore))
                 .font(.system(size: DesignSystem.captionSize))
                 .foregroundStyle(DesignSystem.Colors.mossAccent)
         }
     }
 
     private func heroRow(for signal: SpeciesSignal) -> some View {
-        let clampedScore = max(0, min(3, signal.score))
+        let clampedScore = max(0, min(4, signal.score))
         let hasWarning = signal.species.edibility != .edible
         let warningColor = DesignSystem.warningColor(for: signal.species.edibility)
         return VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
@@ -151,7 +151,7 @@ struct ShortlistWidgetView: View {
             Text(signal.species.latinName)
                 .font(.system(size: DesignSystem.bodySize).italic())
                 .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-            Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 3 - clampedScore))
+            Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 4 - clampedScore))
                 .font(.system(size: DesignSystem.titleSize))
                 .foregroundStyle(DesignSystem.Colors.mossAccent)
         }

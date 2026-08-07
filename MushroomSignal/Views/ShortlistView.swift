@@ -26,14 +26,14 @@ struct ShortlistView: View {
     }
 
     private func signalRow(_ signal: SpeciesSignal) -> some View {
-        let clampedScore = max(0, min(3, signal.score))
+        let clampedScore = max(0, min(4, signal.score))
         return VStack(alignment: .leading, spacing: DesignSystem.spacingSmall / 2) {
             HStack {
                 Text(signal.species.commonNameSk)
                     .font(.headline)
                     .foregroundStyle(DesignSystem.Colors.cloud)
                 Spacer()
-                Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 3 - clampedScore))
+                Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 4 - clampedScore))
                     .foregroundStyle(DesignSystem.Colors.mossAccent)
             }
             Text(signal.species.latinName)
