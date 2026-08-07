@@ -77,12 +77,16 @@ awkwardly below the map in a scroll view.
 
 ### 3. Map visual model
 
-- All 8 `RegionBoundaries` polygons render as outline-only borders, always, regardless of
-  selection or active species — permanent context, not conditional.
-- The single selected kraj's polygon additionally fills with the dominant active-species
-  color when: (a) at least one species is toggled active, and (b) `DominantSpeciesResolver`
-  resolves a non-nil dominant species for that region's current weather. Otherwise: border
-  only, same as the other 7.
+- **Revised 2026-08-08, after a throwaway visual check of the borders themselves:**
+  `RegionBoundaries` polygon *borders* (the stroke/outline) render invisibly — `.stroke(.clear)`
+  or equivalent, never drawn. The hand-approximated shapes are precise enough to define each
+  kraj's *area* for fill purposes, but not smooth/accurate enough to look good as a visible
+  outline on their own — and since the design already fills the selected region with color,
+  a visible border adds nothing. Only the fill communicates the region.
+- The single selected kraj's polygon fills with the dominant active-species color when: (a)
+  at least one species is toggled active, and (b) `DominantSpeciesResolver` resolves a
+  non-nil dominant species for that region's current weather. Otherwise: no fill, nothing
+  rendered for that kraj (not even an outline — see above).
 - Camera position is fixed, showing all of Slovakia at all times — selection changes which
   kraj is filled, never what's in view. (Explicitly decided against auto-zoom, to keep the
   map feeling like one consistent, low-key national view rather than jumping around.)
