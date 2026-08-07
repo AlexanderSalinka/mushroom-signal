@@ -11,9 +11,10 @@ public enum SignalPipeline {
         candidates: [Species],
         weather: WeatherSnapshot,
         month: Int,
+        flushTriggered: Bool,
         limit: Int? = nil
     ) -> [SpeciesSignal] {
-        let signals = candidates.map { SignalAlgorithm.computeSignal(species: $0, weather: weather, month: month) }
+        let signals = candidates.map { SignalAlgorithm.computeSignal(species: $0, weather: weather, month: month, flushTriggered: flushTriggered) }
         return ShortlistRanker.topSpecies(from: signals, limit: limit ?? signals.count)
     }
 
@@ -24,12 +25,14 @@ public enum SignalPipeline {
         region: Region,
         weather: WeatherSnapshot,
         month: Int,
+        flushTriggered: Bool,
         limit: Int? = nil
     ) -> [SpeciesSignal] {
         rankedSignals(
             candidates: species.filter { $0.regionalAffinity.contains(region.id) },
             weather: weather,
             month: month,
+            flushTriggered: flushTriggered,
             limit: limit
         )
     }
