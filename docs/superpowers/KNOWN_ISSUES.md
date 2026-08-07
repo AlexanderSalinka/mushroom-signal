@@ -93,9 +93,73 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   the cached snapshot's `fetchedAt` as the entry's `date` so the widget's own timestamp label
   reflects reality instead of looking falsely fresh.
 
+## Fixed (2026-08-07 scoring intelligence pass)
+
+- **Scoring algorithm redesigned from 3 asymmetric factors to 4 equal-weight dimensions** —
+  calendar, temperature, humidity (new), and rainfall each contribute 25% of the score.
+  `computeSignal` gained a `flushTriggered: Bool` parameter driving a new mechanic: a day
+  2-7 days ago with max temp ≥26°C and ≥5mm rain boosts the rainfall dimension, scaled by
+  species `rainfallSensitivity` (`.high` → full bump, `.medium` → half, `.low` → none). See
+  `SignalAlgorithm.swift`, `FlushTriggerDetector.swift`. Out-of-season species still hard-zero
+  regardless of the other three dimensions or the trigger — the one deliberate exception to
+  equal weighting.
+- **Humidity added as a real scoring input** — `WeatherSnapshot.averageHumidityLast10DaysPercent`
+  (from Open-Meteo's `relative_humidity_2m_mean`) and `Species.idealHumidityMinPercent/MaxPercent`.
+- **New `WeatherClient.fetchDailyBreakdown`** — per-day max/mean temp + precipitation, needed
+  only for flush-trigger detection (the existing snapshot methods stay averaged/aggregated).
+- **Displayed score widened from 0-3 to 0-4** — matches the four scoring dimensions directly;
+  both `ShortlistView` and `ShortlistWidgetView`'s dot rendering updated.
+- **Map intentionally unaffected** — `DominantSpeciesResolver` (used only by the map) always
+  passes `flushTriggered: false`; a batched per-grid-point daily-breakdown fetch needed for
+  map-level trigger awareness is out of scope for this pass.
+- **All 27 species re-researched** — humidity ranges (previously nonexistent), and
+  temperature/season/rainfall-sensitivity reviewed against multiple synthesized mycological
+  sources (not scraped from any single site). A fact-check pass found the research High-
+  confidence with no fabrication, and independently confirmed the pass's largest correction:
+  `pleurotus-ostreatus`'s fruiting season was inverted in the original v1 data (real sources
+  show it's frost-triggered, peaking Nov-Mar, not the old April/September). **Still pending
+  Alexander's personal review** (per this project's established data-review pattern) —
+  specifically flagged: `pleurotus-ostreatus` (exact month boundary), `boletus-aereus`,
+  `leccinum-duriusculum` + `boletus-reticulatus` (both still carry a placeholder-adjacent
+  humidity value, not distinctly re-derived), `agaricus-campestris`, `coprinus-comatus`,
+  `laetiporus-sulphureus` (a cited source conflicts with the committed months),
+  `craterellus-tubaeformis` (December plausibly missing), `xerocomus-badius`, `boletus-edulis`
+  (November omitted).
+- **Whole-branch review found and fixed two calibration issues in the new flush trigger**,
+  both confirmed against live weather data: the trigger originally fired on any trace of rain
+  (`>0mm`) during a hot spell — checked against real Bratislava data, this meant a 39°C
+  heatwave with a single 0.1mm trace 5 days prior would show "a flush may be coming" for
+  `boletus-edulis` mid-drought. Now requires ≥5mm. Separately, the trigger's optimistic reason
+  message previously always won over temperature/humidity warnings, even when both were fully
+  out of range — now only shows when neither is at 0.0.
+- **A pre-existing bug from earlier in the same pass was found and fixed**: a
+  `SignalPipelineTests.swift` test meant to prove the flush trigger reaches `computeSignal`
+  used a test-helper species hardcoded to `.low` rainfall sensitivity, which structurally
+  cannot show a trigger bonus — the test could never have failed for the right reason. Fixed
+  by adding an overridable `rainfallSensitivity` parameter to the helper.
+
 ## Open Issues
 - **Dataset common names need a native-speaker pass** — the v1 final review flagged a few
   possibly-off Slovak common names (e.g. `coprinus-comatus` → "Hnojník obyčajný" vs. the
   more standard "hnojník ochlpený"; `calocybe-gambosa` → "Penízovka hľuznatá" uses what may
   be a Czech-influenced form). Alexander (20 years foraging experience) is doing this review
   personally rather than delegating it to research.
+- **Species dataset (temp/humidity/season/rainfall-sensitivity) needs Alexander's review** —
+  see the 2026-08-07 scoring intelligence pass above for the specific species flagged.
+- **`FlushTriggerDetector` has a narrow UTC/local day-boundary skew** — `fetchDailyBreakdown`
+  requests `timezone=auto` (region-local dates), but day-counting normalizes to UTC. During a
+  ~2 hour local-midnight window (in CEST, roughly 00:00-02:00), the "days ago" count can shift
+  by one. Low real-world impact (the widget refreshes twice daily, so there's a modest chance
+  one refresh lands in the window) but a fully correct fix needs the region's actual timezone
+  threaded through `DailyWeather`/`FlushTriggerDetector`, not just picking a different single
+  calendar — deliberately deferred rather than rushed into the pass that found it.
+- **No test asserts `OpenMeteoClient`'s outgoing query parameters** — `MockURLProtocol` ignores
+  the request URL entirely, so a typo in a parameter name (e.g. `relative_humidity_2m_mean`)
+  would pass all 82 core tests while silently breaking in production.
+- **Humidity is now a hard-required field for all weather fetching** — if Open-Meteo ever
+  renames or drops `relative_humidity_2m_mean`, `fetchSnapshot`/`fetchSnapshots` both throw
+  entirely (shortlist, widget, and map all go dark), not just the humidity dimension.
+  Worth considering an optional-with-neutral-fallback design if this proves fragile in practice.
+- **`AppState`/widget fetch the weather snapshot and daily breakdown sequentially** — they're
+  independent requests; `async let` would roughly halve refresh latency. Performance only, not
+  correctness.
