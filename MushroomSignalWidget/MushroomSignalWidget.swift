@@ -39,17 +39,20 @@ struct ShortlistProvider: TimelineProvider {
 
     private func fetchEntry(region: Region, limit: Int) async -> ShortlistEntry {
         do {
-            let weather = try await OpenMeteoClient().fetchSnapshot(for: region)
+            let client = OpenMeteoClient()
+            let weather = try await client.fetchSnapshot(for: region)
             WeatherSnapshotCache()?.store(weather)
+            let dailyWeather = (try? await client.fetchDailyBreakdown(for: region, pastDays: 10)) ?? []
+            let flushTriggered = FlushTriggerDetector.triggered(in: dailyWeather, asOf: Date())
             let allSpecies = try SpeciesDatabase.loadAll()
             let month = Calendar.current.component(.month, from: Date())
-            let shortlist = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: weather, month: month, limit: limit)
+            let shortlist = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: weather, month: month, flushTriggered: flushTriggered, limit: limit)
             return ShortlistEntry(date: Date(), region: region, signals: shortlist)
         } catch {
             widgetLogger.error("Timeline refresh failed for region \(region.id, privacy: .public): \(String(describing: error), privacy: .public)")
             if let cached = WeatherSnapshotCache()?.snapshot(for: region.id), let allSpecies = try? SpeciesDatabase.loadAll() {
                 let month = Calendar.current.component(.month, from: Date())
-                let shortlist = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: cached, month: month, limit: limit)
+                let shortlist = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: cached, month: month, flushTriggered: false, limit: limit)
                 return ShortlistEntry(date: cached.fetchedAt, region: region, signals: shortlist)
             }
             return ShortlistEntry(date: Date(), region: region, signals: [])
