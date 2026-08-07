@@ -27,6 +27,8 @@ diagnosis. Nothing here contradicts those notes — this is the completed versio
    matching Slovakia's real administrative boundaries closely enough to read correctly —
    approximate for now, precise later. This is also the fix for tonight's diagnosed
    "colors look muddy/mixed" complaint (see §5's Context).
+6. Raise the app's typography floor to a minimum 20pt everywhere (added 2026-08-08) — an
+   app-wide legibility change, not scoped to just the new card/grid UI (see §6).
 
 ## Out of Scope
 
@@ -49,9 +51,15 @@ diagnosis. Nothing here contradicts those notes — this is the completed versio
 One card component, used by both the redesigned Zoznam grid and the existing species
 library grid on Mapa — same visual identity everywhere a species is shown as a card.
 
-**Target size:** ~400×250pt per card — big enough to read as a real thumbnail, not a
-data-dense row. "YouTube thumbnail" reference: the photo dominates the card, with
-information overlaid via a gradient scrim rather than sitting in separate rows below it.
+**Size — a qualitative target, not an enforced dimension (revised 2026-08-08):** ~400×250pt
+is a rough reference point, not a fixed size to lock in. The actual goal is "eye-catching but
+not too big" — big enough to read as a real thumbnail, not a data-dense row, but not so large
+that fewer than a comfortable number of cards fit on screen at once. The adaptive grid (§2)
+already means card size flexes with available width regardless; this just clarifies that
+400×250 shouldn't be treated as a strict minimum/maximum in the implementation, only a
+starting point to judge "does this feel right" against. "YouTube thumbnail" reference: the
+photo dominates the card, with information overlaid via a gradient scrim rather than sitting
+in separate rows below it.
 
 **Content, top to bottom via the scrim:**
 - Photo fills the card (via the new `PhotoCache`, §3) — a neutral placeholder (existing
@@ -179,6 +187,33 @@ mentioned-but-undesigned future Mapa route-planner idea might conceivably want p
 geographic sampling again. Leaning toward removing now and re-adding if/when that future
 feature actually gets designed (YAGNI), but this is Alexander's call, not decided here.
 
+## 6. Global Typography Floor — Minimum 20pt
+
+Added 2026-08-08, app-wide, not scoped to this spec's new UI specifically: every text
+element should render at a minimum 20pt.
+
+**What this touches:** `DesignSystem`'s existing golden-ratio typography scale
+(`captionSize`≈8, `bodySize`≈12.9, `titleSize`≈20.9, `heroSize`≈33.9, from v2) sits well
+below 20pt at its smaller steps, and several views use raw system font styles (`.caption`,
+`.caption2`, `.subheadline`) directly rather than routing through `DesignSystem` at all —
+per this project's own Hard Constraint that all styling should route through
+`DesignSystem`, those are already a documented-but-unfixed gap this touches in passing.
+Meeting a real 20pt floor means both revising `DesignSystem`'s own scale (or introducing an
+explicit minimum derived from it) and auditing every view using raw system styles directly.
+
+**Open question — does this include the widget?** Not decided here. The companion app
+(Zoznam/Mapa) has a spacious resizable window — a 20pt floor is straightforward there. The
+WidgetKit extension is a completely different, much tighter surface: the small family is
+only ~155×155pt total, and its existing layout already leans on `.minimumScaleFactor(0.8)`
+to fit three rows of forecast text at its *current*, smaller sizes. Forcing every widget
+text element to 20pt+ could mean real layout casualties (truncation, dropped content, or a
+from-scratch redesign of the small/medium families), not just a font-size bump — and the
+widget has been explicitly parked since 2026-08-07 ("focus on the app" — see this project's
+memory of that decision). Two honest options: scope the 20pt floor to the companion app
+only for now (consistent with the widget staying parked), or treat this as the moment the
+widget's typography gets revisited too, accepting that as new, separate scope. Needs
+Alexander's call before implementation.
+
 ## Testing
 
 - `SpeciesCardView`: SwiftUI view, verified via build + Xcode previews per this project's
@@ -195,6 +230,11 @@ feature actually gets designed (YAGNI), but this is Alexander's call, not decide
   code as the existing map logic, just keyed by region instead of grid point.
 - Map polygon rendering itself: build + manual visual check, same convention as all prior
   map/widget UI work in this project.
+- Typography floor: `DesignSystem`'s scale values themselves are pure constants, trivially
+  unit-testable (assert every token ≥ 20). Whether every *view* actually uses a compliant
+  token (vs. a raw system style that happens to be smaller) is a build + visual-audit check,
+  not something a unit test can verify — this project has no snapshot-testing setup, and
+  adding one is out of scope for this pass.
 
 ## Open Questions for the Implementation Plan
 
@@ -205,7 +245,11 @@ feature actually gets designed (YAGNI), but this is Alexander's call, not decide
 - `GridPoint`/`SlovakiaGrid`/batched-fetch removal vs. keep-unused (see §5's open question).
 - Exact photo-cache storage location and cache-key scheme (species id vs. URL hash) —
   implementation-time detail.
-- Order of implementation: the three pieces (cards+grid, photos+cache, map redesign) are
-  loosely coupled but not strictly sequential — photos need to exist before cards look
-  "beautiful," but the adaptive grid mechanic and the map redesign don't depend on each
-  other. Worth sequencing explicitly in the implementation plan, not decided here.
+- Order of implementation: the four pieces (cards+grid, photos+cache, map redesign,
+  typography floor) are loosely coupled but not strictly sequential — photos need to exist
+  before cards look "beautiful," but the adaptive grid mechanic, the map redesign, and the
+  typography floor don't depend on each other or on the rest. Worth sequencing explicitly
+  in the implementation plan, not decided here.
+- Whether the 20pt typography floor includes the widget (see §6) — the single biggest open
+  question in this spec, since it changes whether this pass touches widget code at all
+  after "focus on the app" parked it.
