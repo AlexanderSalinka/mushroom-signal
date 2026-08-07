@@ -14,10 +14,10 @@
       9,
       10
     ],
-    "idealTempMinC": 12,
-    "idealTempMaxC": 22,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealTempMinC": 10,
+    "idealTempMaxC": 21,
+    "idealHumidityMinPercent": 70,
+    "idealHumidityMaxPercent": 95,
     "rainfallSensitivity": "high",
     "habitat": "smrekové, borovicové a bukové lesy",
     "regionalAffinity": [
@@ -45,10 +45,10 @@
       8,
       9
     ],
-    "idealTempMinC": 16,
-    "idealTempMaxC": 26,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealTempMinC": 17,
+    "idealTempMaxC": 27,
+    "idealHumidityMinPercent": 55,
+    "idealHumidityMaxPercent": 85,
     "rainfallSensitivity": "medium",
     "habitat": "teplomilné dubové lesy",
     "regionalAffinity": [
@@ -70,9 +70,10 @@
       6,
       7,
       8,
-      9
+      9,
+      10
     ],
-    "idealTempMinC": 15,
+    "idealTempMinC": 14,
     "idealTempMaxC": 25,
     "idealHumidityMinPercent": 60,
     "idealHumidityMaxPercent": 90,
@@ -101,8 +102,8 @@
     ],
     "idealTempMinC": 12,
     "idealTempMaxC": 22,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealHumidityMinPercent": 65,
+    "idealHumidityMaxPercent": 93,
     "rainfallSensitivity": "medium",
     "habitat": "ihličnaté a zmiešané lesy, často pri koreňoch",
     "regionalAffinity": [
@@ -131,8 +132,8 @@
     ],
     "idealTempMinC": 10,
     "idealTempMaxC": 20,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealHumidityMinPercent": 68,
+    "idealHumidityMaxPercent": 95,
     "rainfallSensitivity": "medium",
     "habitat": "brezové lesy a porasty",
     "regionalAffinity": [
@@ -153,13 +154,14 @@
     "edibility": "edible",
     "lookAlikes": [],
     "fruitingMonths": [
+      6,
       7,
       8,
       9,
       10
     ],
-    "idealTempMinC": 12,
-    "idealTempMaxC": 22,
+    "idealTempMinC": 13,
+    "idealTempMaxC": 23,
     "idealHumidityMinPercent": 60,
     "idealHumidityMaxPercent": 90,
     "rainfallSensitivity": "medium",
@@ -188,10 +190,10 @@
       9,
       10
     ],
-    "idealTempMinC": 12,
+    "idealTempMinC": 11,
     "idealTempMaxC": 20,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealHumidityMinPercent": 72,
+    "idealHumidityMaxPercent": 96,
     "rainfallSensitivity": "high",
     "habitat": "listnaté a zmiešané lesy, medzi machom",
     "regionalAffinity": [
@@ -217,10 +219,10 @@
       10,
       11
     ],
-    "idealTempMinC": 8,
-    "idealTempMaxC": 16,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealTempMinC": 3,
+    "idealTempMaxC": 15,
+    "idealHumidityMinPercent": 76,
+    "idealHumidityMaxPercent": 98,
     "rainfallSensitivity": "high",
     "habitat": "mach v ihličnatých lesoch",
     "regionalAffinity": [
@@ -243,10 +245,10 @@
       10,
       11
     ],
-    "idealTempMinC": 10,
+    "idealTempMinC": 8,
     "idealTempMaxC": 18,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealHumidityMinPercent": 74,
+    "idealHumidityMaxPercent": 97,
     "rainfallSensitivity": "high",
     "habitat": "bukové lesy, medzi machom",
     "regionalAffinity": [
@@ -268,10 +270,10 @@
       9,
       10
     ],
-    "idealTempMinC": 12,
+    "idealTempMinC": 11,
     "idealTempMaxC": 22,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealHumidityMinPercent": 62,
+    "idealHumidityMaxPercent": 92,
     "rainfallSensitivity": "medium",
     "habitat": "lúky, okraje lesov, pasienky",
     "regionalAffinity": [
@@ -297,10 +299,10 @@
       10,
       11
     ],
-    "idealTempMinC": 8,
+    "idealTempMinC": 5,
     "idealTempMaxC": 18,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealHumidityMinPercent": 70,
+    "idealHumidityMaxPercent": 95,
     "rainfallSensitivity": "medium",
     "habitat": "borovicové lesy",
     "regionalAffinity": [
@@ -321,17 +323,17 @@
     "edibility": "edible",
     "lookAlikes": [],
     "fruitingMonths": [
+      1,
+      2,
       3,
-      4,
-      9,
       10,
       11,
       12
     ],
-    "idealTempMinC": 2,
-    "idealTempMaxC": 15,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealTempMinC": -3,
+    "idealTempMaxC": 12,
+    "idealHumidityMinPercent": 78,
+    "idealHumidityMaxPercent": 98,
     "rainfallSensitivity": "low",
     "habitat": "odumreté a oslabené listnaté stromy, najmä buk a topoľ",
     "regionalAffinity": [
@@ -358,10 +360,10 @@
       10,
       11
     ],
-    "idealTempMinC": 8,
+    "idealTempMinC": 6,
     "idealTempMaxC": 18,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealHumidityMinPercent": 70,
+    "idealHumidityMaxPercent": 95,
     "rainfallSensitivity": "medium",
     "habitat": "brezové a smrekové lesy",
     "regionalAffinity": [
@@ -388,9 +390,9 @@
       10
     ],
     "idealTempMinC": 12,
-    "idealTempMaxC": 22,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealTempMaxC": 23,
+    "idealHumidityMinPercent": 66,
+    "idealHumidityMaxPercent": 93,
     "rainfallSensitivity": "medium",
     "habitat": "listnaté lesy, najmä dub a buk",
     "regionalAffinity": [
@@ -409,6 +411,7 @@
     "edibility": "edible",
     "lookAlikes": [],
     "fruitingMonths": [
+      5,
       6,
       7,
       8,
@@ -416,9 +419,9 @@
       10
     ],
     "idealTempMinC": 12,
-    "idealTempMaxC": 22,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealTempMaxC": 23,
+    "idealHumidityMinPercent": 62,
+    "idealHumidityMaxPercent": 92,
     "rainfallSensitivity": "medium",
     "habitat": "listnaté a zmiešané lesy",
     "regionalAffinity": [
@@ -447,11 +450,11 @@
       9,
       10
     ],
-    "idealTempMinC": 10,
+    "idealTempMinC": 9,
     "idealTempMaxC": 20,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
-    "rainfallSensitivity": "medium",
+    "idealHumidityMinPercent": 66,
+    "idealHumidityMaxPercent": 94,
+    "rainfallSensitivity": "high",
     "habitat": "lúky, pasienky",
     "regionalAffinity": [
       "bratislavsky",
@@ -479,11 +482,11 @@
       10,
       11
     ],
-    "idealTempMinC": 8,
+    "idealTempMinC": 6,
     "idealTempMaxC": 20,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
-    "rainfallSensitivity": "medium",
+    "idealHumidityMinPercent": 65,
+    "idealHumidityMaxPercent": 95,
+    "rainfallSensitivity": "high",
     "habitat": "lúky, okraje ciest, narušená pôda",
     "regionalAffinity": [
       "bratislavsky",
@@ -509,10 +512,10 @@
       10,
       11
     ],
-    "idealTempMinC": 10,
+    "idealTempMinC": 8,
     "idealTempMaxC": 20,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealHumidityMinPercent": 70,
+    "idealHumidityMaxPercent": 95,
     "rainfallSensitivity": "medium",
     "habitat": "zmiešané a ihličnaté lesy",
     "regionalAffinity": [
@@ -533,15 +536,16 @@
     "edibility": "edible",
     "lookAlikes": [],
     "fruitingMonths": [
+      7,
       8,
       9,
       10,
       11
     ],
-    "idealTempMinC": 12,
-    "idealTempMaxC": 22,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealTempMinC": 10,
+    "idealTempMaxC": 24,
+    "idealHumidityMinPercent": 62,
+    "idealHumidityMaxPercent": 93,
     "rainfallSensitivity": "medium",
     "habitat": "staré duby a gaštany",
     "regionalAffinity": [
@@ -566,7 +570,7 @@
     ],
     "idealTempMinC": 12,
     "idealTempMaxC": 24,
-    "idealHumidityMinPercent": 60,
+    "idealHumidityMinPercent": 58,
     "idealHumidityMaxPercent": 90,
     "rainfallSensitivity": "low",
     "habitat": "staré listnaté stromy, najmä dub a vŕba",
@@ -588,16 +592,17 @@
     "edibility": "edible",
     "lookAlikes": [],
     "fruitingMonths": [
+      6,
       7,
       8,
       9,
       10,
       11
     ],
-    "idealTempMinC": 10,
+    "idealTempMinC": 5,
     "idealTempMaxC": 20,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealHumidityMinPercent": 68,
+    "idealHumidityMaxPercent": 95,
     "rainfallSensitivity": "medium",
     "habitat": "borovicové lesy a výsadby",
     "regionalAffinity": [
@@ -622,10 +627,10 @@
       10,
       11
     ],
-    "idealTempMinC": 5,
-    "idealTempMaxC": 15,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealTempMinC": 2,
+    "idealTempMaxC": 16,
+    "idealHumidityMinPercent": 68,
+    "idealHumidityMaxPercent": 95,
     "rainfallSensitivity": "medium",
     "habitat": "borovicové lesy, piesočnaté pôdy",
     "regionalAffinity": [
@@ -646,14 +651,15 @@
     "edibility": "caution",
     "lookAlikes": [],
     "fruitingMonths": [
+      8,
       9,
       10,
       11
     ],
-    "idealTempMinC": 8,
+    "idealTempMinC": 6,
     "idealTempMaxC": 18,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealHumidityMinPercent": 72,
+    "idealHumidityMaxPercent": 96,
     "rainfallSensitivity": "high",
     "habitat": "pne a korene listnatých aj ihličnatých stromov",
     "regionalAffinity": [
@@ -681,10 +687,10 @@
       10,
       11
     ],
-    "idealTempMinC": 10,
+    "idealTempMinC": 9,
     "idealTempMaxC": 22,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealHumidityMinPercent": 68,
+    "idealHumidityMaxPercent": 95,
     "rainfallSensitivity": "medium",
     "habitat": "ihličnaté a zmiešané lesy",
     "regionalAffinity": [
@@ -711,7 +717,7 @@
     ],
     "idealTempMinC": 8,
     "idealTempMaxC": 18,
-    "idealHumidityMinPercent": 60,
+    "idealHumidityMinPercent": 62,
     "idealHumidityMaxPercent": 90,
     "rainfallSensitivity": "medium",
     "habitat": "lúky, okraje lesov, hlohové kroviny",
@@ -738,10 +744,10 @@
       4,
       5
     ],
-    "idealTempMinC": 8,
+    "idealTempMinC": 7,
     "idealTempMaxC": 16,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealHumidityMinPercent": 64,
+    "idealHumidityMaxPercent": 92,
     "rainfallSensitivity": "medium",
     "habitat": "lužné lesy, staré sady, spálené miesta",
     "regionalAffinity": [
@@ -768,10 +774,10 @@
       4,
       5
     ],
-    "idealTempMinC": 3,
-    "idealTempMaxC": 12,
-    "idealHumidityMinPercent": 60,
-    "idealHumidityMaxPercent": 90,
+    "idealTempMinC": 2,
+    "idealTempMaxC": 13,
+    "idealHumidityMinPercent": 58,
+    "idealHumidityMaxPercent": 88,
     "rainfallSensitivity": "low",
     "habitat": "ihličnaté lesy, piesočnaté pôdy",
     "regionalAffinity": [
