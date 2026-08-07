@@ -45,6 +45,10 @@ diagnosis. Nothing here contradicts those notes — this is the completed versio
   intent yet, a separate future spec whenever Alexander wants to build it.
 - Any change to `SpeciesSignal`, `computeSignal`, or the shortlist's underlying data — this
   is a view-layer and map-data-shape redesign only.
+- The widget's card/grid/photo treatment — §1-4 (shared card, adaptive grid, photos, photo
+  cache) are companion-app only (Zoznam/Mapa). The widget is back in scope for §6's
+  typography floor specifically (confirmed by Alexander — see §6), and only that; it does
+  not get the card-grid redesign, photos, or any other piece of this spec.
 
 ## 1. Shared `SpeciesCardView`
 
@@ -201,18 +205,18 @@ per this project's own Hard Constraint that all styling should route through
 Meeting a real 20pt floor means both revising `DesignSystem`'s own scale (or introducing an
 explicit minimum derived from it) and auditing every view using raw system styles directly.
 
-**Open question — does this include the widget?** Not decided here. The companion app
-(Zoznam/Mapa) has a spacious resizable window — a 20pt floor is straightforward there. The
-WidgetKit extension is a completely different, much tighter surface: the small family is
-only ~155×155pt total, and its existing layout already leans on `.minimumScaleFactor(0.8)`
-to fit three rows of forecast text at its *current*, smaller sizes. Forcing every widget
-text element to 20pt+ could mean real layout casualties (truncation, dropped content, or a
-from-scratch redesign of the small/medium families), not just a font-size bump — and the
-widget has been explicitly parked since 2026-08-07 ("focus on the app" — see this project's
-memory of that decision). Two honest options: scope the 20pt floor to the companion app
-only for now (consistent with the widget staying parked), or treat this as the moment the
-widget's typography gets revisited too, accepting that as new, separate scope. Needs
-Alexander's call before implementation.
+**Confirmed with Alexander: the whole app, including the widget** — the current text is
+too small to read, full stop, not a preference to weigh against other constraints. This
+means the WidgetKit extension's typography is back in scope for this pass, reopening
+something that had been parked since 2026-08-07 ("focus on the app"). Worth being explicit
+about the real cost this carries, not softened: the small widget family is only ~155×155pt
+total, and its current layout already leans on `.minimumScaleFactor(0.8)` to fit three rows
+of forecast text at sizes well under 20pt. A hard 20pt floor there is not a font-size
+tweak — it very likely means the small (and possibly medium) family's layout needs
+rethinking: fewer rows shown, a different information density, or a genuinely different
+layout shape, not the same content just rendered bigger. That redesign work belongs in the
+implementation plan as its own real task, not treated as a trivial side effect of raising a
+number in `DesignSystem`.
 
 ## Testing
 
@@ -250,6 +254,7 @@ Alexander's call before implementation.
   before cards look "beautiful," but the adaptive grid mechanic, the map redesign, and the
   typography floor don't depend on each other or on the rest. Worth sequencing explicitly
   in the implementation plan, not decided here.
-- Whether the 20pt typography floor includes the widget (see §6) — the single biggest open
-  question in this spec, since it changes whether this pass touches widget code at all
-  after "focus on the app" parked it.
+- Exact redesigned layout for the widget's small (and possibly medium) family once every
+  text element must be ≥20pt — confirmed in scope (§6), but the actual new layout shape
+  (which rows survive, what gets cut, whether small and medium collapse toward the same
+  design) is real design work for the implementation plan, not decided here.
