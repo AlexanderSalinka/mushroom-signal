@@ -33,16 +33,18 @@ final class RegionStoreTests: XCTestCase {
         XCTAssertEqual(store.selectedRegion().id, "zilinsky")
     }
 
-    func testResolvedAppGroupIdPrefixesTeamIdentifierWhenPresent() {
+    func testResolvedAppGroupIdUsesApplicationGroupsEntitlementWhenPresent() {
         XCTAssertEqual(
-            RegionStoreConstants.resolvedAppGroupId(teamIdentifier: "T78DK947F3"),
+            RegionStoreConstants.resolvedAppGroupId(
+                applicationGroupsEntitlement: ["T78DK947F3.group.com.alexandersalinka.MushroomSignal"]
+            ),
             "T78DK947F3.group.com.alexandersalinka.MushroomSignal"
         )
     }
 
-    func testResolvedAppGroupIdFallsBackToBareSuffixWhenTeamIdentifierUnavailable() {
+    func testResolvedAppGroupIdFallsBackToBareSuffixWhenEntitlementUnavailable() {
         XCTAssertEqual(
-            RegionStoreConstants.resolvedAppGroupId(teamIdentifier: nil),
+            RegionStoreConstants.resolvedAppGroupId(applicationGroupsEntitlement: nil),
             "group.com.alexandersalinka.MushroomSignal"
         )
     }

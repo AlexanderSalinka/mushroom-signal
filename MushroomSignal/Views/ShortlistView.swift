@@ -9,7 +9,8 @@ struct ShortlistView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.spacingMedium) {
                 if let error = appState.errorMessage {
-                    Text(error).foregroundStyle(DesignSystem.Colors.danger)
+                    Text(error)
+                        .foregroundStyle(appState.isShowingStaleData ? DesignSystem.Colors.caution : DesignSystem.Colors.danger)
                 }
 
                 ForEach(appState.signals, id: \.species.id) { signal in

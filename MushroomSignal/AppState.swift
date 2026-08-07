@@ -8,22 +8,36 @@ final class AppState: ObservableObject {
     @Published var signals: [SpeciesSignal] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var isShowingStaleData = false
 
     private let store: RegionStore?
+    private let weatherCache: WeatherSnapshotCache?
     private let weatherClient: WeatherClient
     private let widgetReloader: WidgetReloading
     private var currentRefreshID: UUID?
     private let logger = Logger(subsystem: "com.alexandersalinka.MushroomSignal", category: "AppState")
 
+    private static let staleTimeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        return formatter
+    }()
+
     init(
         store: RegionStore? = RegionStore(),
+        weatherCache: WeatherSnapshotCache? = WeatherSnapshotCache(),
         weatherClient: WeatherClient = OpenMeteoClient(),
         widgetReloader: WidgetReloading = SystemWidgetCenter()
     ) {
         self.store = store
+        self.weatherCache = weatherCache
         self.weatherClient = weatherClient
         self.widgetReloader = widgetReloader
         self.selectedRegion = store?.selectedRegion() ?? RegionDatabase.all[0]
+        if store == nil {
+            logger.error("RegionStore init failed — region selection will not persist across launches or sync to the widget")
+        }
     }
 
     func selectRegion(_ region: Region) {
@@ -49,17 +63,25 @@ final class AppState: ObservableObject {
         let region = selectedRegion
         do {
             let weather = try await weatherClient.fetchSnapshot(for: region)
+            weatherCache?.store(weather)
             let allSpecies = try SpeciesDatabase.loadAll()
             let month = Calendar.current.component(.month, from: Date())
-            let allSignals = allSpecies
-                .filter { $0.regionalAffinity.contains(region.id) }
-                .map { SignalAlgorithm.computeSignal(species: $0, weather: weather, month: month) }
+            let ranked = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: weather, month: month)
             guard currentRefreshID == refreshID else { return }
-            signals = ShortlistRanker.topSpecies(from: allSignals, limit: allSignals.count)
+            signals = ranked
+            isShowingStaleData = false
         } catch {
             guard currentRefreshID == refreshID else { return }
-            signals = []
-            errorMessage = "Nepodarilo sa načítať údaje o počasí. Skúste to znova."
+            if let cached = weatherCache?.snapshot(for: region.id), let allSpecies = try? SpeciesDatabase.loadAll() {
+                let month = Calendar.current.component(.month, from: Date())
+                signals = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: cached, month: month)
+                isShowingStaleData = true
+                errorMessage = "Zobrazujú sa staršie údaje z \(Self.staleTimeFormatter.string(from: cached.fetchedAt))."
+            } else {
+                signals = []
+                isShowingStaleData = false
+                errorMessage = "Nepodarilo sa načítať údaje o počasí. Skúste to znova."
+            }
             logger.error("Refresh failed for region \(region.id, privacy: .public): \(String(describing: error), privacy: .public)")
         }
     }

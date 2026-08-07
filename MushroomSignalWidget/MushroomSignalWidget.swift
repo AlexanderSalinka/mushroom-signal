@@ -40,15 +40,18 @@ struct ShortlistProvider: TimelineProvider {
     private func fetchEntry(region: Region, limit: Int) async -> ShortlistEntry {
         do {
             let weather = try await OpenMeteoClient().fetchSnapshot(for: region)
+            WeatherSnapshotCache()?.store(weather)
             let allSpecies = try SpeciesDatabase.loadAll()
             let month = Calendar.current.component(.month, from: Date())
-            let signals = allSpecies
-                .filter { $0.regionalAffinity.contains(region.id) }
-                .map { SignalAlgorithm.computeSignal(species: $0, weather: weather, month: month) }
-            let shortlist = ShortlistRanker.topSpecies(from: signals, limit: limit)
+            let shortlist = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: weather, month: month, limit: limit)
             return ShortlistEntry(date: Date(), region: region, signals: shortlist)
         } catch {
             widgetLogger.error("Timeline refresh failed for region \(region.id, privacy: .public): \(String(describing: error), privacy: .public)")
+            if let cached = WeatherSnapshotCache()?.snapshot(for: region.id), let allSpecies = try? SpeciesDatabase.loadAll() {
+                let month = Calendar.current.component(.month, from: Date())
+                let shortlist = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: cached, month: month, limit: limit)
+                return ShortlistEntry(date: cached.fetchedAt, region: region, signals: shortlist)
+            }
             return ShortlistEntry(date: Date(), region: region, signals: [])
         }
     }

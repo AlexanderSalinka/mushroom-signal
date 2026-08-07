@@ -23,7 +23,7 @@ struct SpeciesDetailView: View {
                                             DesignSystem.Colors.bark.opacity(0.4)
                                         }
                                     }
-                                    .frame(width: 220, height: 160)
+                                    .frame(width: DesignSystem.detailPhotoWidth, height: DesignSystem.detailPhotoHeight)
                                     .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 3))
                                 }
                             }

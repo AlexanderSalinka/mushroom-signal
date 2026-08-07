@@ -4,24 +4,42 @@ import MushroomSignalCore
 
 @MainActor
 final class AppStateTests: XCTestCase {
-    func testRefreshClearsStaleSignalsOnFailureAfterASuccessfulLoad() async {
+    func testRefreshFallsBackToCachedWeatherOnFailureAfterASuccessfulLoad() async {
         let region = RegionDatabase.all[0]
         let snapshot = WeatherSnapshot(regionId: region.id, averageTempLast10DaysC: 15, totalPrecipitationLast10DaysMm: 20, fetchedAt: .now)
         let client = StubWeatherClient(snapshots: [snapshot, nil])
-        let appState = AppState(store: nil, weatherClient: client)
+        let suiteName = "test.suite.\(UUID().uuidString)"
+        let cache = WeatherSnapshotCache(appGroupId: suiteName)!
+        defer { UserDefaults(suiteName: suiteName)?.removePersistentDomain(forName: suiteName) }
+        let appState = AppState(store: nil, weatherCache: cache, weatherClient: client)
 
         await appState.refresh()
         XCTAssertFalse(appState.signals.isEmpty, "precondition: first refresh should have loaded signals")
 
         await appState.refresh()
 
-        XCTAssertTrue(appState.signals.isEmpty, "a failed refresh must clear the previous region's stale signals")
+        XCTAssertFalse(appState.signals.isEmpty, "a failed refresh must fall back to the cached snapshot instead of blanking the list")
+        XCTAssertTrue(appState.isShowingStaleData, "the fallback must be flagged as stale so the UI can indicate it, not present it as fresh")
+        XCTAssertNotNil(appState.errorMessage)
+    }
+
+    func testRefreshClearsSignalsOnFailureWhenNoCachedSnapshotExists() async {
+        let client = StubWeatherClient(snapshots: [nil])
+        let suiteName = "test.suite.\(UUID().uuidString)"
+        let cache = WeatherSnapshotCache(appGroupId: suiteName)!
+        defer { UserDefaults(suiteName: suiteName)?.removePersistentDomain(forName: suiteName) }
+        let appState = AppState(store: nil, weatherCache: cache, weatherClient: client)
+
+        await appState.refresh()
+
+        XCTAssertTrue(appState.signals.isEmpty, "with nothing cached yet, a failed refresh has nothing to fall back to")
+        XCTAssertFalse(appState.isShowingStaleData)
         XCTAssertNotNil(appState.errorMessage)
     }
 
     func testOverlappingRefreshesApplyLastStartedWinsOrdering() async {
         let client = DelayedWeatherClient()
-        let appState = AppState(store: nil, weatherClient: client)
+        let appState = AppState(store: nil, weatherCache: nil, weatherClient: client)
 
         async let first: Void = appState.refresh()
         try? await Task.sleep(for: .milliseconds(20))
@@ -35,7 +53,7 @@ final class AppStateTests: XCTestCase {
     func testSelectRegionReloadsWidgetTimelines() async {
         let reloadedExpectation = XCTestExpectation(description: "widget timelines reloaded")
         let reloader = SpyWidgetReloader(expectation: reloadedExpectation)
-        let appState = AppState(store: nil, weatherClient: StubWeatherClient(snapshots: [nil]), widgetReloader: reloader)
+        let appState = AppState(store: nil, weatherCache: nil, weatherClient: StubWeatherClient(snapshots: [nil]), widgetReloader: reloader)
 
         appState.selectRegion(RegionDatabase.all[1])
         await fulfillment(of: [reloadedExpectation], timeout: 2)

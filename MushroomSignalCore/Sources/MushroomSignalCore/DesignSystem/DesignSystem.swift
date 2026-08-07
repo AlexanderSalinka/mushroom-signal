@@ -27,6 +27,12 @@ public enum DesignSystem {
     /// Floor for InteractiveMapView's height so its legend/loading overlay stays legible even if the
     /// window is resized right down to ContentView's declared minHeight.
     public static let mapMinimumHeight: Double = 220
+    /// SpeciesDetailView's horizontal photo gallery cell size (~4:3, sized for a comfortable
+    /// horizontal-scroll thumbnail — distinct from the smaller list-row `thumbnailHeight`).
+    public static let detailPhotoWidth: Double = 220
+    public static let detailPhotoHeight: Double = 160
+    /// InteractiveMapView's legend swatch diameter.
+    public static let legendDotSize: Double = 8
 
     public enum Colors {
         public static let forestDeep = Color(red: 0.11, green: 0.16, blue: 0.11)

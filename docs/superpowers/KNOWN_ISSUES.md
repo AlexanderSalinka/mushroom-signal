@@ -48,42 +48,54 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   treats a missing weather snapshot the same as "no active species" — both render neutral/
   dimmed, never a false "low chance" color.
 
+## Fixed (2026-08-07 app-focus pass)
+
+- **Region selection wasn't persisting via the shared App Group** — root-caused and fixed.
+  `RegionStoreConstants.resolvedAppGroupId` composed the App Group ID by separately reading a
+  `com.apple.developer.team-identifier` entitlement and concatenating it with a hardcoded
+  suffix — but that entitlement was never actually present in the app's signed output (only
+  `com.apple.security.application-groups` was), so the lookup always returned nil and every
+  read/write silently fell back to a bare, non-team-prefixed suite name that the real App
+  Group container never sees. Confirmed via direct filesystem inspection: selections were
+  landing in `~/Library/Preferences/group.com.alexandersalinka.MushroomSignal.plist` (wrong,
+  unprefixed) while the real container
+  (`~/Library/Group Containers/UMPK75W8X6.group.com.alexandersalinka.MushroomSignal/Library/Preferences/`)
+  stayed empty. Fixed by reading the App Group ID directly from the already-correctly-resolved
+  `com.apple.security.application-groups` entitlement instead of reconstructing it — see
+  `RegionStore.swift`. Verified end-to-end against a real signed build (not just unit tests,
+  which never exercised the real entitlement path). Also added logging on the
+  `RegionStore.init` silent-nil-failure path in `AppState.swift`, per the observability gap
+  this issue originally flagged.
+- **Three duplicated copies of the scoring pipeline** — extracted `SignalPipeline` into
+  `MushroomSignalCore` (`Signal/SignalPipeline.swift`). `AppState.refresh()`, the widget's
+  `ShortlistProvider.fetchEntry`, and `DominantSpeciesResolver` (used by
+  `MapScreenState.dominantSpecies(at:)`) all now go through `SignalPipeline.rankedSignals(...)`
+  instead of each reimplementing filter → score → rank independently.
+- **No AppIcon asset catalog** — added `Assets.xcassets/AppIcon.appiconset` with a placeholder
+  icon (programmatically generated, on-brand with `DesignSystem`'s forest/mushroom-cap
+  palette) at all required macOS sizes, wired via `ASSETCATALOG_COMPILER_APPICON_NAME` in
+  `project.yml`. Build warning resolved; `CFBundleIconName`/`AppIcon.icns` confirmed present
+  in the built bundle. Swap the placeholder PNGs for real art whenever it's ready — same
+  `Contents.json`, no other wiring needed.
+- **Design-system bypasses (app-side)** — `SpeciesDetailView`'s `.frame(width: 220, height:
+  160)` and `InteractiveMapView`'s hardcoded legend-dot `8` now route through new
+  `DesignSystem.detailPhotoWidth`/`detailPhotoHeight`/`legendDotSize` tokens. The
+  `ShortlistWidgetView` (widget) bypasses are intentionally left alone — out of scope while
+  the widget is deprioritized.
+- **No weather caching** — implemented. New `WeatherSnapshotCache` in `MushroomSignalCore`
+  persists the last successful `WeatherSnapshot` per region in the same App Group suite as
+  `RegionStore`, so app and widget always share the same last-known-good data regardless of
+  which process fetched it. `AppState.refresh()` now falls back to the cached snapshot on
+  failure instead of blanking the list — `isShowingStaleData` flags this so `ShortlistView`
+  shows the fallback in caution-amber with "Zobrazujú sa staršie údaje z HH:mm" instead of a
+  hard red failure, and only shows the old hard-failure message when nothing is cached yet
+  (first-ever failure). The widget's `ShortlistProvider.fetchEntry` does the same, and passes
+  the cached snapshot's `fetchedAt` as the entry's `date` so the widget's own timestamp label
+  reflects reality instead of looking falsely fresh.
+
 ## Open Issues
-- **Region selection may not be persisting via the shared App Group** — investigated
-  2026-08-06 while testing the widget still showing "Žilinský kraj" (the hardcoded default
-  in `RegionStoreConstants.defaultRegionId`, `RegionStore.swift:14`). Confirmed: the real
-  App Group container (`~/Library/Group Containers/UMPK75W8X6.group.com.alexandersalinka.MushroomSignal/Library/Preferences/`)
-  was completely empty — no sandboxed process had ever successfully written a preference
-  there. Not yet root-caused: unclear whether (a) the region was simply never changed via
-  `RegionPickerView` in the app, or (b) `RegionStore.setSelectedRegion` / `AppState.selectRegion`
-  silently fails to persist (note `store?.setSelectedRegion(region)` in `AppState.swift` is a
-  silent no-op if `RegionStore.init` ever returns nil — no logging on that path). Next step:
-  manually pick a different kraj in the app, quit, relaunch, and check whether the *app itself*
-  (not just the widget) remembers the choice — that distinguishes an app-vs-widget sync bug
-  from persistence never having been exercised at all. Also found and cleaned up (not the root
-  cause, but real): a malformed `~/Library/Group Containers/--TeamIdentifierPrefix-group...`
-  directory from some earlier build where `$(TeamIdentifierPrefix)` wasn't resolved — removed,
-  contained no data, just a stray empty container shell.
-- **Three duplicated copies of the scoring pipeline** — the widget's `TimelineProvider`,
-  `AppState.refresh()`, and now `MapScreenState.dominantSpecies(at:)` each independently do
-  filter-by-region/species → `computeSignal` → rank (or resolve-dominant). They agree today
-  but nothing keeps them in sync; a future change to the filter/ranking rule has to be made
-  in three places. Extracting one shared function in `MushroomSignalCore` (e.g.
-  `SignalPipeline.rankedSignals(...)`) would fix this and also give the
-  `.caution`/`.poisonous` filtering policy one place to live.
-- **No weather caching** — the design spec required caching the last good `WeatherSnapshot`
-  so the widget doesn't need live network access at render time; this got dropped between
-  spec and plan and was never implemented. A transient network blip pins the widget to
-  "Žiadne údaje" for a full 12h refresh cycle.
 - **Dataset common names need a native-speaker pass** — the v1 final review flagged a few
   possibly-off Slovak common names (e.g. `coprinus-comatus` → "Hnojník obyčajný" vs. the
   more standard "hnojník ochlpený"; `calocybe-gambosa` → "Penízovka hľuznatá" uses what may
   be a Czech-influenced form). Alexander (20 years foraging experience) is doing this review
   personally rather than delegating it to research.
-- **No AppIcon asset catalog** — needed before this is a "real" installable app; currently
-  produces a build warning.
-- **Design-system bypasses** — a few raw `.white`/literal spacing values in
-  `ShortlistWidgetView`, plus a `.frame(width: 220, height: 160)` literal in the new
-  `SpeciesDetailView` (inherited verbatim from its plan brief), and a hardcoded 8 in
-  `InteractiveMapView`'s legend dot. Cosmetic, low priority, but should route through
-  `DesignSystem` when those files are next touched.

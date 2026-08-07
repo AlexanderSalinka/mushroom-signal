@@ -59,7 +59,7 @@ struct InteractiveMapView: View {
                 ForEach(mapState.activeSpeciesOrder, id: \.self) { id in
                     if let species = mapState.allSpecies.first(where: { $0.id == id }), let color = mapState.speciesColors[id] {
                         HStack(spacing: DesignSystem.spacingTight * 2) {
-                            Circle().fill(color).frame(width: 8, height: 8)
+                            Circle().fill(color).frame(width: DesignSystem.legendDotSize, height: DesignSystem.legendDotSize)
                             Text(species.commonNameSk)
                                 .font(.caption2)
                                 .foregroundStyle(DesignSystem.Colors.cloud)
