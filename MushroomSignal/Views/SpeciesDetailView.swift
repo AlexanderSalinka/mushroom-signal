@@ -16,12 +16,10 @@ struct SpeciesDetailView: View {
                         ScrollView(.horizontal) {
                             HStack(spacing: DesignSystem.spacingSmall) {
                                 ForEach(photos) { photo in
-                                    AsyncImage(url: photo.imageURL) { phase in
-                                        if case .success(let image) = phase {
-                                            image.resizable().aspectRatio(contentMode: .fill)
-                                        } else {
-                                            DesignSystem.Colors.bark.opacity(0.4)
-                                        }
+                                    CachedAsyncImage(url: photo.imageURL) { image in
+                                        image.resizable().aspectRatio(contentMode: .fill)
+                                    } placeholder: {
+                                        DesignSystem.Colors.bark.opacity(0.4)
                                     }
                                     .frame(width: DesignSystem.detailPhotoWidth, height: DesignSystem.detailPhotoHeight)
                                     .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 3))

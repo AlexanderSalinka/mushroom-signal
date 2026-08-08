@@ -71,13 +71,10 @@ struct SpeciesLibraryView: View {
     @ViewBuilder
     private func photoThumbnail(_ photo: SpeciesPhoto?) -> some View {
         if let photo {
-            AsyncImage(url: photo.imageURL) { phase in
-                switch phase {
-                case .success(let image):
-                    image.resizable().aspectRatio(contentMode: .fill)
-                default:
-                    placeholder
-                }
+            CachedAsyncImage(url: photo.imageURL) { image in
+                image.resizable().aspectRatio(contentMode: .fill)
+            } placeholder: {
+                placeholder
             }
             .frame(height: DesignSystem.thumbnailHeight)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 4))
