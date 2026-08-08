@@ -25,6 +25,10 @@ public enum DesignSystem {
 
     public static let cardCornerRadius: Double = 24
     public static let thumbnailHeight: Double = 70
+    /// Minimum column width for the adaptive species-card grid (Zoznam, Mapa library) — a
+    /// starting point for "eye-catching but not too big," not an enforced exact size. See
+    /// the 2026-08-08 UI redesign spec §1.
+    public static let speciesCardMinWidth: Double = 340
     public static let borderWidth: Double = 2
     public static let iconButtonPadding: Double = 4
     public static let mapDominantHeightFraction: Double = 0.5
