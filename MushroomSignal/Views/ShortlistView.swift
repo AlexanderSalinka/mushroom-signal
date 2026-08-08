@@ -4,6 +4,8 @@ import MushroomSignalCore
 
 struct ShortlistView: View {
     @ObservedObject var appState: AppState
+    @State private var detailSpecies: Species?
+    @State private var photosBySpeciesID: [String: [SpeciesPhoto]] = [:]
 
     var body: some View {
         ScrollView {
@@ -13,8 +15,11 @@ struct ShortlistView: View {
                         .foregroundStyle(appState.isShowingStaleData ? DesignSystem.Colors.caution : DesignSystem.Colors.danger)
                 }
 
-                ForEach(appState.signals, id: \.species.id) { signal in
-                    signalRow(signal)
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: DesignSystem.speciesCardMinWidth), spacing: DesignSystem.spacingSmall)], spacing: DesignSystem.spacingSmall) {
+                    ForEach(appState.signals, id: \.species.id) { signal in
+                        SpeciesCardView(species: signal.species, photo: photosBySpeciesID[signal.species.id]?.first, signal: signal, isActiveOnMap: nil)
+                            .onTapGesture { detailSpecies = signal.species }
+                    }
                 }
 
                 disclaimer
@@ -23,37 +28,12 @@ struct ShortlistView: View {
         }
         .mushroomGlassBackground()
         .refreshable { await appState.refresh() }
-    }
-
-    private func signalRow(_ signal: SpeciesSignal) -> some View {
-        let clampedScore = max(0, min(4, signal.score))
-        return VStack(alignment: .leading, spacing: DesignSystem.spacingSmall / 2) {
-            HStack {
-                Text(signal.species.commonNameSk)
-                    .font(.system(size: DesignSystem.titleSize, weight: .semibold))
-                    .foregroundStyle(DesignSystem.Colors.cloud)
-                Spacer()
-                Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 4 - clampedScore))
-                    .foregroundStyle(DesignSystem.Colors.mossAccent)
-            }
-            Text(signal.species.latinName)
-                .font(.system(size: DesignSystem.captionSize))
-                .italic()
-                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-            if let reason = signal.reason {
-                Text(reason)
-                    .font(.system(size: DesignSystem.captionSize))
-                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
-            }
-            if let warning = DesignSystem.warningLabelSk(for: signal.species.edibility) {
-                Text(warning)
-                    .font(.system(size: DesignSystem.captionSize, weight: .bold))
-                    .foregroundStyle(DesignSystem.warningColor(for: signal.species.edibility))
-            }
+        .task {
+            photosBySpeciesID = (try? SpeciesPhotoDatabase.loadAll()).map { Dictionary(grouping: $0, by: \.speciesId) } ?? [:]
         }
-        .padding(DesignSystem.spacingMedium)
-        .background(DesignSystem.Colors.forestMid.opacity(0.6))
-        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 2))
+        .sheet(item: $detailSpecies) { species in
+            SpeciesDetailView(species: species, photos: photosBySpeciesID[species.id] ?? [])
+        }
     }
 
     private var disclaimer: some View {
