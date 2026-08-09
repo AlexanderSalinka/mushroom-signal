@@ -1,1 +1,162 @@
-[]
+[
+  {
+    "id": "boletus-edulis-1",
+    "speciesId": "boletus-edulis",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Boletus_edulis_IT.jpg/500px-Boletus_edulis_IT.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Boletus_edulis_IT.jpg/500px-Boletus_edulis_IT.jpg"
+  },
+  {
+    "id": "boletus-aereus-1",
+    "speciesId": "boletus-aereus",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Bronze_Roehrling.jpg/500px-Bronze_Roehrling.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Bronze_Roehrling.jpg/500px-Bronze_Roehrling.jpg"
+  },
+  {
+    "id": "boletus-reticulatus-1",
+    "speciesId": "boletus-reticulatus",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Boletus.JPG/500px-Boletus.JPG",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Boletus.JPG/500px-Boletus.JPG"
+  },
+  {
+    "id": "leccinum-scabrum-1",
+    "speciesId": "leccinum-scabrum",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/8/85/Birkenpilz01.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/8/85/Birkenpilz01.jpg"
+  },
+  {
+    "id": "leccinum-duriusculum-1",
+    "speciesId": "leccinum-duriusculum",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Leccinum_duriusculum_254194.jpg/500px-Leccinum_duriusculum_254194.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Leccinum_duriusculum_254194.jpg/500px-Leccinum_duriusculum_254194.jpg"
+  },
+  {
+    "id": "cantharellus-cibarius-1",
+    "speciesId": "cantharellus-cibarius",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Chanterelle_Cantharellus_cibarius.jpg/500px-Chanterelle_Cantharellus_cibarius.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Chanterelle_Cantharellus_cibarius.jpg/500px-Chanterelle_Cantharellus_cibarius.jpg"
+  },
+  {
+    "id": "craterellus-tubaeformis-1",
+    "speciesId": "craterellus-tubaeformis",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Craterellus_tubaeformis_1345904803_69350246bb_o.jpg/500px-Craterellus_tubaeformis_1345904803_69350246bb_o.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Craterellus_tubaeformis_1345904803_69350246bb_o.jpg/500px-Craterellus_tubaeformis_1345904803_69350246bb_o.jpg"
+  },
+  {
+    "id": "craterellus-cornucopioides-1",
+    "speciesId": "craterellus-cornucopioides",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Craterellus_cornucopioides_JPG1.jpg/500px-Craterellus_cornucopioides_JPG1.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Craterellus_cornucopioides_JPG1.jpg/500px-Craterellus_cornucopioides_JPG1.jpg"
+  },
+  {
+    "id": "macrolepiota-procera-1",
+    "speciesId": "macrolepiota-procera",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Parasol-Macrolepiota-procera.jpg/500px-Parasol-Macrolepiota-procera.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Parasol-Macrolepiota-procera.jpg/500px-Parasol-Macrolepiota-procera.jpg"
+  },
+  {
+    "id": "lactarius-deliciosus-1",
+    "speciesId": "lactarius-deliciosus",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Lactarius_deliciosus.jpg/500px-Lactarius_deliciosus.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Lactarius_deliciosus.jpg/500px-Lactarius_deliciosus.jpg"
+  },
+  {
+    "id": "pleurotus-ostreatus-1",
+    "speciesId": "pleurotus-ostreatus",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Pleurotus_ostreatus_JPG7.jpg/500px-Pleurotus_ostreatus_JPG7.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Pleurotus_ostreatus_JPG7.jpg/500px-Pleurotus_ostreatus_JPG7.jpg"
+  },
+  {
+    "id": "russula-vesca-1",
+    "speciesId": "russula-vesca",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Russ.ves.jpg/500px-Russ.ves.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Russ.ves.jpg/500px-Russ.ves.jpg"
+  },
+  {
+    "id": "agaricus-campestris-1",
+    "speciesId": "agaricus-campestris",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Agaricus_campestris.jpg/500px-Agaricus_campestris.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Agaricus_campestris.jpg/500px-Agaricus_campestris.jpg"
+  },
+  {
+    "id": "coprinus-comatus-1",
+    "speciesId": "coprinus-comatus",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Coprinus_comatus%2C_the_shaggy_ink_cap%2C_lawyer%27s_wig%2C_or_shaggy_mane_mushroom.jpg/500px-Coprinus_comatus%2C_the_shaggy_ink_cap%2C_lawyer%27s_wig%2C_or_shaggy_mane_mushroom.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Coprinus_comatus%2C_the_shaggy_ink_cap%2C_lawyer%27s_wig%2C_or_shaggy_mane_mushroom.jpg/500px-Coprinus_comatus%2C_the_shaggy_ink_cap%2C_lawyer%27s_wig%2C_or_shaggy_mane_mushroom.jpg"
+  },
+  {
+    "id": "hydnum-repandum-1",
+    "speciesId": "hydnum-repandum",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Hedgehog_fungi2.jpg/500px-Hedgehog_fungi2.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Hedgehog_fungi2.jpg/500px-Hedgehog_fungi2.jpg"
+  },
+  {
+    "id": "fistulina-hepatica-1",
+    "speciesId": "fistulina-hepatica",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Fistulina_hepatica.JPG/500px-Fistulina_hepatica.JPG",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Fistulina_hepatica.JPG/500px-Fistulina_hepatica.JPG"
+  },
+  {
+    "id": "suillus-luteus-1",
+    "speciesId": "suillus-luteus",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Suillus_luteus_475376.jpg/500px-Suillus_luteus_475376.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Suillus_luteus_475376.jpg/500px-Suillus_luteus_475376.jpg"
+  },
+  {
+    "id": "xerocomus-badius-1",
+    "speciesId": "xerocomus-badius",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Boletus_badius_JPG1.jpg/500px-Boletus_badius_JPG1.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Boletus_badius_JPG1.jpg/500px-Boletus_badius_JPG1.jpg"
+  },
+  {
+    "id": "calocybe-gambosa-1",
+    "speciesId": "calocybe-gambosa",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Calocybe_gambosa_080420wa.jpg/500px-Calocybe_gambosa_080420wa.jpg",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Calocybe_gambosa_080420wa.jpg/500px-Calocybe_gambosa_080420wa.jpg"
+  },
+  {
+    "id": "morchella-esculenta-1",
+    "speciesId": "morchella-esculenta",
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Morchella_esculenta_-_DE_-_TH_-_2013-05-01_-_01.JPG/500px-Morchella_esculenta_-_DE_-_TH_-_2013-05-01_-_01.JPG",
+    "photographer": "UNVERIFIED",
+    "license": "UNVERIFIED",
+    "sourceURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Morchella_esculenta_-_DE_-_TH_-_2013-05-01_-_01.JPG/500px-Morchella_esculenta_-_DE_-_TH_-_2013-05-01_-_01.JPG"
+  }
+]

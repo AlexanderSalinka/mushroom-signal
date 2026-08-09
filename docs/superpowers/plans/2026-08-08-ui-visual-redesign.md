@@ -14,7 +14,7 @@
 - The card component's size is a qualitative target ("eye-catching but not too big"), not an enforced exact dimension — implementation should feel right, not hit a specific pixel value. (Spec §1, revised 2026-08-08.)
 - Photos are sourced only for `edibility == .edible` species. `.caution`/`.poisonous` species get no photo, ever, in this pass. (Spec §3.)
 - No cloud/remote photo storage — local disk cache only, download-once. (Spec §4.)
-- No scraping of unlicensed sites for photos or geo data — Wikimedia Commons (CC-licensed) for photos; hand-approximated original polygon data for kraj shapes, not any external unlicensed dataset. (Spec §3, §5.)
+- No scraping of unlicensed sites for photos or geo data. Photo URLs for this pass are supplied directly by Alexander with license verification deferred as declared tech debt (Task 6, revised 2026-08-09) — not yet confirmed CC-licensed/reusable, must be checked before public release. Kraj shapes use hand-approximated original polygon data, not any external unlicensed dataset. (Spec §3, §5.)
 - The widget gets the typography floor (§6) and nothing else from this plan — no card/grid/photo treatment. (Spec, Out of Scope.)
 - Every commit must leave `swift test --package-path MushroomSignalCore` and the Xcode-level `MushroomSignalTests` target green — no intermediate broken states, same discipline as the 2026-08-07 scoring-intelligence plan.
 
@@ -500,38 +500,38 @@ git commit -m "feat: add CachedAsyncImage and wire it into existing photo call s
 
 ---
 
-## Task 6: Photo Sourcing Research Pass (Edible Species Only)
+## Task 6: Photo Placeholder-URL Pass (Edible Species Only)
+
+**Revised 2026-08-09** — descoped from a Commons research pass to a direct link-ingestion pass. Alexander is supplying exact image URLs himself (token cost of doing the Commons research + license verification per species isn't worth paying right now). See "Deferred: license verification" below for the tech debt this creates.
 
 **Files:**
 - Modify: `MushroomSignalCore/Sources/MushroomSignalCore/Data/species-photos.json`
 
 **Interfaces:**
-- Consumes: `SpeciesPhoto` model (unchanged), `Species.edibility` (existing field).
+- Consumes: `SpeciesPhoto` model (unchanged — all 6 fields stay non-optional, see below), `Species.edibility` (existing field).
 - Produces: nothing new — populates existing, currently-empty data.
-
-This is research and data-writing, not algorithm work — same shape as the 2026-08-07
-species-data enrichment pass. The process is concrete below; the actual photo URLs are the
-deliverable of doing the research, not knowable in advance.
 
 - [ ] **Step 1: List every edible species**
 
 Run: `python3 -c "import json; d=json.load(open('MushroomSignalCore/Sources/MushroomSignalCore/Data/species.json')); print([s['id'] for s in d if s['edibility']=='edible'])"`
 
-Work through this list one species at a time.
+20 species. Work through this list against the URLs Alexander supplies.
 
-- [ ] **Step 2: For each edible species, find a real, appropriately-licensed photo on Wikimedia Commons**
+- [ ] **Step 2: For each edible species, take the URL Alexander supplies — no research, no license check**
 
-Search Commons (or Wikipedia's species article, which typically links its lead image's Commons file page) for the species' Latin name. Confirm the license is genuinely reusable (CC-BY, CC-BY-SA, CC0, or public domain — not a "fair use" or all-rights-reserved image sometimes mirrored onto Commons incorrectly). Record:
-- `imageURL`: the direct file URL (Commons' `/wiki/Special:FilePath/<filename>` redirect form is a stable direct-image link, or a specific-resolution `upload.wikimedia.org/.../thumb/...` URL)
-- `photographer`: the credited author from the file's Commons page
-- `license`: the exact license (e.g. `"CC BY-SA 4.0"`)
-- `sourceURL`: the Commons file page itself (for the existing Photo Credits view's attribution link)
-- `speciesId`: the species' id from `species.json`
-- `id`: a stable unique id, e.g. `"<speciesId>-1"`
+Record:
+- `imageURL`: the direct image URL as given.
+- `sourceURL`: the same URL, unless Alexander gives a separate source/page link for that species.
+- `photographer`: literal placeholder string `"UNVERIFIED"`.
+- `license`: literal placeholder string `"UNVERIFIED"`.
+- `speciesId`: the species' id from `species.json`.
+- `id`: a stable unique id, e.g. `"<speciesId>-1"`.
+
+**Deferred: license verification.** These placeholder `photographer`/`license` values mean the images' actual reusability has not been checked — some could turn out to be non-reusable (all-rights-reserved images sometimes get mirrored onto Commons/other sites incorrectly). This is fine for local personal use; it becomes a real requirement before any public release or distribution of the app. Tracked in `KNOWN_ISSUES.md` (Step 5b below).
 
 - [ ] **Step 3: Append each entry to `species-photos.json`**
 
-The file is currently `[]`. Each entry follows the `SpeciesPhoto` model's exact field names shown in Step 2. Multiple photos per species are allowed (the model and `SpeciesDetailView`'s horizontal gallery already support it) but not required — one solid photo per species is a fine outcome for this pass.
+The file is currently `[]`. Each entry follows the `SpeciesPhoto` model's exact field names shown in Step 2. Multiple photos per species are allowed (the model and `SpeciesDetailView`'s horizontal gallery already support it) but not required — one URL per species is a fine outcome for this pass.
 
 - [ ] **Step 4: Verify the JSON is well-formed and complete**
 
@@ -579,16 +579,20 @@ Add to `MushroomSignalCore/Tests/MushroomSignalCoreTests/SpeciesPhotoDatabaseTes
 Run: `swift test --package-path MushroomSignalCore`
 Expected: PASS — including the 3 new tests, proving every edible species has a photo, no non-edible species does, and every reference resolves.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 7: Add a `KNOWN_ISSUES.md` entry**
+
+Add a line noting `species-photos.json` currently carries placeholder `photographer`/`license` values (`"UNVERIFIED"`) for all entries — image reusability has not been checked and must be verified before any public release or distribution of the app.
+
+- [ ] **Step 8: Commit**
 
 ```bash
-git add MushroomSignalCore/Sources/MushroomSignalCore/Data/species-photos.json MushroomSignalCore/Tests/MushroomSignalCoreTests/SpeciesPhotoDatabaseTests.swift
-git commit -m "data: source real Wikimedia Commons photos for all edible species"
+git add MushroomSignalCore/Sources/MushroomSignalCore/Data/species-photos.json MushroomSignalCore/Tests/MushroomSignalCoreTests/SpeciesPhotoDatabaseTests.swift docs/superpowers/KNOWN_ISSUES.md
+git commit -m "data: populate species-photos.json with placeholder image URLs (unverified license)"
 ```
 
-- [ ] **Step 8: Flag for Alexander's review**
+- [ ] **Step 9: Flag for Alexander's review**
 
-Same as the 2026-08-07 species-data pass: this is content, not code. Note in the handoff that photo selection (is this a good, representative, clearly-identifiable photo of each species?) is pending his review, not automatically final.
+Two things pending his review, not automatically final: (1) content — is each photo a good, representative, clearly-identifiable shot of the species; (2) the deferred license-verification tech debt from Step 2, before any public release.
 
 ---
 

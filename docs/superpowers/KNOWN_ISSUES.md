@@ -163,3 +163,10 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
 - **`AppState`/widget fetch the weather snapshot and daily breakdown sequentially** — they're
   independent requests; `async let` would roughly halve refresh latency. Performance only, not
   correctness.
+- **`species-photos.json`'s `photographer`/`license` fields are all literal `"UNVERIFIED"`
+  placeholders** (Task 6 of the 2026-08-08 UI visual redesign, revised 2026-08-09) — Alexander
+  supplied 20 direct Wikimedia image URLs himself, license/attribution research was explicitly
+  descoped to save tokens. Image reusability has not been checked; some could be non-reusable
+  (all-rights-reserved images occasionally get mirrored onto Commons/Wikipedia incorrectly).
+  Fine for local personal use — **must be verified (real photographer + exact license per
+  photo) before any public release or distribution of the app.**

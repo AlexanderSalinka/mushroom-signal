@@ -21,10 +21,38 @@ final class SpeciesPhotoDatabaseTests: XCTestCase {
         XCTAssertEqual(photo.imageURL, URL(string: "https://upload.wikimedia.org/wikipedia/commons/example.jpg"))
     }
 
-    func testLoadAllReturnsEmptyArrayForCurrentBundledFile() throws {
-        // species-photos.json ships empty pending manual curation — this proves the loader
-        // handles the zero-photos case cleanly rather than throwing.
+    func testLoadAllReturnsPhotosForCurrentBundledFile() throws {
         let photos = try SpeciesPhotoDatabase.loadAll()
-        XCTAssertEqual(photos, [])
+        XCTAssertFalse(photos.isEmpty)
+    }
+
+    func testEveryEdibleSpeciesHasAtLeastOnePhoto() throws {
+        let species = try SpeciesDatabase.loadAll()
+        let photos = try SpeciesPhotoDatabase.loadAll()
+        let speciesIdsWithPhotos = Set(photos.map(\.speciesId))
+        let edibleSpeciesIds = Set(species.filter { $0.edibility == .edible }.map(\.id))
+
+        let missing = edibleSpeciesIds.subtracting(speciesIdsWithPhotos)
+        XCTAssertTrue(missing.isEmpty, "edible species missing a photo: \(missing.sorted())")
+    }
+
+    func testNoCautionOrPoisonousSpeciesHasAPhoto() throws {
+        let species = try SpeciesDatabase.loadAll()
+        let photos = try SpeciesPhotoDatabase.loadAll()
+        let speciesIdsWithPhotos = Set(photos.map(\.speciesId))
+        let nonEdibleSpeciesIds = Set(species.filter { $0.edibility != .edible }.map(\.id))
+
+        let violating = nonEdibleSpeciesIds.intersection(speciesIdsWithPhotos)
+        XCTAssertTrue(violating.isEmpty, "non-edible species should never have a sourced photo: \(violating.sorted())")
+    }
+
+    func testEveryPhotoReferencesARealSpecies() throws {
+        let species = try SpeciesDatabase.loadAll()
+        let speciesIds = Set(species.map(\.id))
+        let photos = try SpeciesPhotoDatabase.loadAll()
+
+        for photo in photos {
+            XCTAssertTrue(speciesIds.contains(photo.speciesId), "\(photo.id) references unknown species \(photo.speciesId)")
+        }
     }
 }
