@@ -29,6 +29,12 @@ public enum DesignSystem {
     /// starting point for "eye-catching but not too big," not an enforced exact size. See
     /// the 2026-08-08 UI redesign spec §1.
     public static let speciesCardMinWidth: Double = 340
+    /// Fixed photo-area height for `SpeciesCardView` — a fixed height (not an aspect-ratio
+    /// modifier on the container) is required here: the card sits in a `LazyVGrid` row with
+    /// no vertical size constraint, and `.aspectRatio(_, contentMode: .fill)` on an
+    /// unconstrained container grows without bound instead of capping to a card-sized photo
+    /// area. ~4:3 against `speciesCardMinWidth`.
+    public static let speciesCardPhotoHeight: Double = 255
     public static let borderWidth: Double = 2
     public static let iconButtonPadding: Double = 4
     public static let mapDominantHeightFraction: Double = 0.5

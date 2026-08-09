@@ -23,7 +23,7 @@ struct SpeciesCardView: View {
                         .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
                 }
             }
-            .aspectRatio(4.0 / 3.0, contentMode: .fill)
+            .frame(height: DesignSystem.speciesCardPhotoHeight)
             .clipped()
 
             LinearGradient(
