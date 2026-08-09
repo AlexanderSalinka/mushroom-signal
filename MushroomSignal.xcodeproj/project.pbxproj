@@ -10,6 +10,7 @@
 		03E7041F6EA3BB051106A46E /* MushroomSignalWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7121D9BEBDD981DC5A5A7F87 /* MushroomSignalWidgetBundle.swift */; };
 		0FAF8DADEDA96F713383337F /* PhotoCreditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06442830610580CEB0AF161 /* PhotoCreditsView.swift */; };
 		16E3AAA1E68A9D8C55B22B38 /* MapScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E508520517A594C06FD0468 /* MapScreenView.swift */; };
+		19426F3C206A152A238DE8FC /* MapResizeHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406769D67F45636883C7A794 /* MapResizeHandle.swift */; };
 		236FFC17F60E79744D2296E3 /* ShortlistWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C374D590D0DB48C3B165D63 /* ShortlistWidgetView.swift */; };
 		2A74A8E81EEBF5310F3F9DF9 /* SpeciesDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41CD56B6EA7546BE828E356 /* SpeciesDetailView.swift */; };
 		2C2C190D6F520DB4BEDEBDB4 /* CachedAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F80C4161C989E348E7F683 /* CachedAsyncImage.swift */; };
@@ -77,6 +78,7 @@
 		2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassBackground.swift; sourceTree = "<group>"; };
 		2CDC18618DDF39FAA6E66948 /* SpyWidgetReloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpyWidgetReloader.swift; sourceTree = "<group>"; };
 		3ED179E8F93BB1C9D3122168 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		406769D67F45636883C7A794 /* MapResizeHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapResizeHandle.swift; sourceTree = "<group>"; };
 		43F342E2888340E1136922BC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		54F80C4161C989E348E7F683 /* CachedAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedAsyncImage.swift; sourceTree = "<group>"; };
 		5CED92FB89921C454532799B /* StubWeatherClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubWeatherClient.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 				54F80C4161C989E348E7F683 /* CachedAsyncImage.swift */,
 				2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */,
 				254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */,
+				406769D67F45636883C7A794 /* MapResizeHandle.swift */,
 				0E508520517A594C06FD0468 /* MapScreenView.swift */,
 				C06442830610580CEB0AF161 /* PhotoCreditsView.swift */,
 				D921A8D3EAFD9FF2245F208B /* RegionPickerView.swift */,
@@ -366,6 +369,7 @@
 				C1289E25CCE0D11F12F3C2F6 /* ContentView.swift in Sources */,
 				FB538808A4334D85E46F77DD /* GlassBackground.swift in Sources */,
 				5A1AFB398EF3A754F7242101 /* InteractiveMapView.swift in Sources */,
+				19426F3C206A152A238DE8FC /* MapResizeHandle.swift in Sources */,
 				43A734B64961434BB158661E /* MapScreenState.swift in Sources */,
 				16E3AAA1E68A9D8C55B22B38 /* MapScreenView.swift in Sources */,
 				534EE6B719E4EFF861B5CA40 /* MushroomSignalApp.swift in Sources */,

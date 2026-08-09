@@ -4,26 +4,15 @@ import MushroomSignalCore
 
 struct SpeciesLibraryView: View {
     @ObservedObject var mapState: MapScreenState
-    @State private var columnCount = 3
     @State private var detailSpecies: Species?
-
-    private var columns: [GridItem] {
-        Array(repeating: GridItem(.flexible(), spacing: DesignSystem.spacingSmall), count: columnCount)
-    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
-            HStack {
-                Text("Knižnica druhov")
-                    .font(.system(size: DesignSystem.titleSize, weight: .semibold))
-                    .foregroundStyle(DesignSystem.Colors.cloud)
-                Spacer()
-                Stepper("Stĺpce: \(columnCount)", value: $columnCount, in: 2...4)
-                    .fixedSize()
-                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.8))
-            }
+            Text("Knižnica druhov")
+                .font(.system(size: DesignSystem.titleSize, weight: .semibold))
+                .foregroundStyle(DesignSystem.Colors.cloud)
 
-            LazyVGrid(columns: columns, spacing: DesignSystem.spacingSmall) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: DesignSystem.speciesCardMinWidth), spacing: DesignSystem.spacingSmall)], spacing: DesignSystem.spacingSmall) {
                 ForEach(mapState.allSpecies) { species in
                     speciesCard(species)
                 }
@@ -38,9 +27,8 @@ struct SpeciesLibraryView: View {
         let active = mapState.isActive(species.id)
         let photo = mapState.photosBySpeciesID[species.id]?.first
 
-        return VStack(spacing: DesignSystem.spacingTight * 2) {
-            ZStack(alignment: .topTrailing) {
-                photoThumbnail(photo)
+        return SpeciesCardView(species: species, photo: photo, signal: nil, isActiveOnMap: active)
+            .overlay(alignment: .topTrailing) {
                 Button {
                     detailSpecies = species
                 } label: {
@@ -51,41 +39,6 @@ struct SpeciesLibraryView: View {
                 .buttonStyle(.plain)
                 .padding(DesignSystem.iconButtonPadding)
             }
-
-            Text(species.commonNameSk)
-                .font(.system(size: DesignSystem.captionSize))
-                .foregroundStyle(DesignSystem.Colors.cloud)
-                .lineLimit(2)
-                .multilineTextAlignment(.center)
-        }
-        .padding(DesignSystem.spacingSmall)
-        .background(active ? DesignSystem.Colors.mossAccent.opacity(0.35) : DesignSystem.Colors.forestMid.opacity(0.5))
-        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 3))
-        .overlay(
-            RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 3)
-                .stroke(active ? DesignSystem.Colors.mossAccent : .clear, lineWidth: DesignSystem.borderWidth)
-        )
-        .onTapGesture { mapState.toggleSpecies(species.id) }
-    }
-
-    @ViewBuilder
-    private func photoThumbnail(_ photo: SpeciesPhoto?) -> some View {
-        if let photo {
-            CachedAsyncImage(url: photo.imageURL) { image in
-                image.resizable().aspectRatio(contentMode: .fill)
-            } placeholder: {
-                placeholder
-            }
-            .frame(height: DesignSystem.thumbnailHeight)
-            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 4))
-        } else {
-            placeholder.frame(height: DesignSystem.thumbnailHeight)
-        }
-    }
-
-    private var placeholder: some View {
-        RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 4)
-            .fill(DesignSystem.Colors.bark.opacity(0.4))
-            .overlay(Image(systemName: "photo").foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5)))
+            .onTapGesture { mapState.toggleSpecies(species.id) }
     }
 }

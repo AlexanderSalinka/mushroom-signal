@@ -37,10 +37,14 @@ public enum DesignSystem {
     public static let speciesCardPhotoHeight: Double = 255
     public static let borderWidth: Double = 2
     public static let iconButtonPadding: Double = 4
-    public static let mapDominantHeightFraction: Double = 0.5
+    /// InteractiveMapView's starting height before the user drags `MapResizeHandle`.
+    public static let mapDefaultHeight: Double = 400
     /// Floor for InteractiveMapView's height so its legend/loading overlay stays legible even if the
     /// window is resized right down to ContentView's declared minHeight.
     public static let mapMinimumHeight: Double = 220
+    /// Ceiling for InteractiveMapView's drag-resized height — generous enough that the map can be
+    /// dragged roughly square against a typical window width, not just its original fixed rectangle.
+    public static let mapMaximumHeight: Double = 900
     /// SpeciesDetailView's horizontal photo gallery cell size (~4:3, sized for a comfortable
     /// horizontal-scroll thumbnail — distinct from the smaller list-row `thumbnailHeight`).
     public static let detailPhotoWidth: Double = 220
