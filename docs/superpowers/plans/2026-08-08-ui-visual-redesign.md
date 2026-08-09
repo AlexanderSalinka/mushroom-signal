@@ -146,7 +146,11 @@ git commit -m "feat: migrate raw system font styles to DesignSystem's 20pt+ toke
 
 ---
 
-## Task 3: Redesign the Widget's Small/Medium Family Layout for the 20pt Floor
+## Task 3: ~~Redesign the Widget's Small/Medium Family Layout for the 20pt Floor~~ — Cancelled 2026-08-09
+
+**Cancelled, not deferred.** Alexander decided to drop this task entirely rather than schedule it later. The widget keeps its pre-20pt-floor small/medium layout for now (a real, known mismatch — small/medium widget text sizes don't reflect Task 1's typography floor — left as-is by explicit choice, not oversight). If revisited later, re-scope from scratch rather than resuming the steps below, since app-side work has moved on since this was written.
+
+The original task text below is kept for reference only, not to be executed:
 
 **Files:**
 - Modify: `MushroomSignalWidget/ShortlistWidgetView.swift`
