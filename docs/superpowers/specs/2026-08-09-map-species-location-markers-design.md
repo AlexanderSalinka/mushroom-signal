@@ -102,7 +102,11 @@ func dominantSignal(at pointID: String) -> SpeciesSignal? {
     let active = allSpecies.filter { activeSpeciesOrder.contains($0.id) }
     guard !active.isEmpty else { return nil }
     let month = Calendar.current.component(.month, from: Date())
-    return SignalPipeline.rankedSignals(candidates: active, weather: snapshot, month: month, flushTriggered: false, limit: 1).first
+    guard let top = SignalPipeline.rankedSignals(candidates: active, weather: snapshot, month: month, flushTriggered: false, limit: 1).first,
+          top.score > 0 else {
+        return nil
+    }
+    return top
 }
 ```
 
@@ -144,10 +148,17 @@ ForEach(mapState.gridPoints) { point in
 `Annotation` renders at a fixed screen size regardless of map zoom — unlike `MapCircle`, whose
 geographic radius is what made the prior attempt look oversized at some zoom levels. This
 isn't just "pick smaller numbers," it's a different rendering primitive that can't develop the
-same problem. New `DesignSystem` token: `mapMarkerDotSize: Double = 6` (a decorative map-icon
-scale, matching the precedent already set by the existing `legendDotSize: Double = 8` swatch —
-not subject to the 20pt body-text floor, which governs readable text, not small status
-glyphs). The capsule background reuses the exact same treatment as the existing legend chip
+same problem. New `DesignSystem` token, added next to `legendDotSize` in
+`DesignSystem.swift`, same `Double` type as every other token in that file:
+
+```swift
+/// Score-dot glyph size inside a map marker — a decorative map-icon scale, matching the
+/// precedent set by `legendDotSize`. Not subject to the 20pt body-text floor, which governs
+/// readable text, not small status glyphs.
+public static let mapMarkerDotSize: Double = 6
+```
+
+The capsule background reuses the exact same treatment as the existing legend chip
 (`forestDeep.opacity(0.85)`), so markers and legend read as one visual family.
 
 ### 5. Legend stays as-is
