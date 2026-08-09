@@ -166,7 +166,12 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
 - **`species-photos.json`'s `photographer`/`license` fields are all literal `"UNVERIFIED"`
   placeholders** (Task 6 of the 2026-08-08 UI visual redesign, revised 2026-08-09) — Alexander
   supplied 20 direct Wikimedia image URLs himself, license/attribution research was explicitly
-  descoped to save tokens. Image reusability has not been checked; some could be non-reusable
-  (all-rights-reserved images occasionally get mirrored onto Commons/Wikipedia incorrectly).
-  Fine for local personal use — **must be verified (real photographer + exact license per
-  photo) before any public release or distribution of the app.**
+  descoped to save tokens. Content confirmed good by Alexander (2026-08-09) — each photo is a
+  clear, representative shot of its species. Reusability risk is lower than a generic external
+  image would carry: all 20 URLs resolve under `/wikipedia/commons/`, and Wikimedia Commons'
+  submission policy only accepts free-licensed content (CC-BY/CC-BY-SA/CC0/public domain),
+  unlike Wikipedia's separate non-free/fair-use namespace (`/wikipedia/en/`). What's still
+  unconfirmed: the *specific* license per photo and the photographer's name — most Commons
+  licenses (CC-BY, CC-BY-SA) legally require attribution by name, which isn't captured yet.
+  Fine for local personal use — **must fill in the real photographer + exact license per photo
+  before any public release or distribution of the app.**
