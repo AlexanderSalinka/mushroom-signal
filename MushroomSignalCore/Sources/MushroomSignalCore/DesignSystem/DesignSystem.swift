@@ -63,6 +63,10 @@ public enum DesignSystem {
     public static let rankBadgeSize: Double = 26
     /// Corner radius for Predpoveď's daily weather bar chart marks.
     public static let chartBarCornerRadius: Double = 7
+    /// Predpoveď's season-calendar chip — small color-coded swatch dot before each species name.
+    public static let chipDotSize: Double = 8
+    /// Predpoveď's season-calendar chip — fully rounded pill shape, matching the approved mockup.
+    public static let chipCornerRadius: Double = 100
 
     public enum Colors {
         public static let forestDeep = Color(red: 0.11, green: 0.16, blue: 0.11)
