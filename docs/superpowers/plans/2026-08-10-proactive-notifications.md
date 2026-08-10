@@ -253,7 +253,7 @@ git commit -m "feat: add WatchedAlert, NotificationPreferences, NotificationThre
 - Create: `MushroomSignalCore/Tests/MushroomSignalCoreTests/WatchedAlertEvaluatorTests.swift`
 
 **Interfaces:**
-- Consumes: `WatchedAlert` (Task 1), `NotificationThreshold.shouldNotify` (Task 1), `SignalPipeline.rankedSignals(candidates:weather:month:flushTriggered:limit:) -> [SpeciesSignal]` (existing), `WeatherClient.fetchSnapshot(for:) -> WeatherSnapshot` (existing), `RegionDatabase.find(id:) -> Region?` (existing).
+- Consumes: `WatchedAlert` (Task 1), `NotificationThreshold.shouldNotify` (Task 1), `SignalPipeline.rankedSignals(species:region:weather:month:flushTriggered:limit:) -> [SpeciesSignal]` (existing, region-aware overload — filters by `regionalAffinity` before scoring), `WeatherClient.fetchSnapshots(for:) -> [String: WeatherSnapshot]` (existing, batched) keyed by `GridPoint.id`, `RegionDatabase.find(id:) -> Region?` (existing).
 - Produces: `WatchedAlertUpdate { alert: WatchedAlert, newScore: Int, shouldNotify: Bool }` and `WatchedAlertEvaluator.evaluate(alerts:species:weatherClient:month:) async -> [WatchedAlertUpdate]`. Task 3 (widget hook) consumes both directly.
 
 - [ ] **Step 1: Write the failing tests**
@@ -273,12 +273,12 @@ final class WatchedAlertEvaluatorTests: XCTestCase {
             guard let snapshot = snapshots[region.id] else { throw StubError() }
             return snapshot
         }
-        func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] { [:] }
+        func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] { snapshots }
         func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] { [] }
     }
 
-    private func species(id: String) -> Species {
-        Species(id: id, commonNameSk: id, latinName: id, edibility: .edible, fruitingMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], idealTempMinC: 0, idealTempMaxC: 40, idealHumidityMinPercent: 0, idealHumidityMaxPercent: 100, rainfallSensitivity: .low, habitat: "test", regionalAffinity: [])
+    private func species(id: String, regionalAffinity: Set<String> = ["zilinsky", "kosicky"]) -> Species {
+        Species(id: id, commonNameSk: id, latinName: id, edibility: .edible, fruitingMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], idealTempMinC: 0, idealTempMaxC: 40, idealHumidityMinPercent: 0, idealHumidityMaxPercent: 100, rainfallSensitivity: .low, habitat: "test", regionalAffinity: regionalAffinity)
     }
 
     private func snapshot(regionId: String) -> WeatherSnapshot {
@@ -329,6 +329,16 @@ final class WatchedAlertEvaluatorTests: XCTestCase {
         let updates = await WatchedAlertEvaluator.evaluate(alerts: [], species: [], weatherClient: client, month: 7)
         XCTAssertTrue(updates.isEmpty)
     }
+
+    func testSkipsAlertWhenSpeciesHasNoAffinityForWatchedRegion() async {
+        let alert = WatchedAlert(speciesId: "a", regionId: "zilinsky", threshold: 2)
+        let client = StubClient(snapshots: ["zilinsky": snapshot(regionId: "zilinsky")])
+        let outOfRegionSpecies = species(id: "a", regionalAffinity: ["kosicky"])
+
+        let updates = await WatchedAlertEvaluator.evaluate(alerts: [alert], species: [outOfRegionSpecies], weatherClient: client, month: 7)
+
+        XCTAssertTrue(updates.isEmpty, "species without affinity for the watched region should never be scored or notified")
+    }
 }
 ```
 
@@ -351,11 +361,17 @@ public struct WatchedAlertUpdate: Sendable {
 }
 
 /// Scores each watched alert against current weather, reusing SignalPipeline — no new scoring
-/// logic. Fetches weather once per DISTINCT watched region, not once per alert, since several
-/// alerts commonly share a region. flushTriggered is always false, matching the same
-/// simplification the map's DominantSpeciesResolver-era code used: evaluating the flush
-/// trigger per watched region would need a second, batched daily-breakdown fetch, out of
-/// scope for this pass.
+/// logic. Fetches weather for every DISTINCT watched region in a single batched request (not
+/// once per alert, not one request per region), since several alerts commonly share a region
+/// and this runs ahead of the widget's completion(timeline) call. Uses the region-aware
+/// SignalPipeline overload so a species outside its regionalAffinity for the watched region is
+/// never scored — the same filtering every other consumer (AppState, the widget's own
+/// shortlist, the map) applies; an alert whose species has no affinity for its watched region
+/// is skipped, matching how that combination can't occur anywhere else in the app.
+/// flushTriggered is always false, matching the same simplification the map's
+/// DominantSpeciesResolver-era code used: evaluating the flush trigger per watched region would
+/// need a second, batched daily-breakdown fetch, out of scope for this pass (see
+/// KNOWN_ISSUES.md).
 public enum WatchedAlertEvaluator {
     public static func evaluate(
         alerts: [WatchedAlert],
@@ -366,21 +382,16 @@ public enum WatchedAlertEvaluator {
         guard !alerts.isEmpty else { return [] }
 
         let speciesByID = Dictionary(uniqueKeysWithValues: species.map { ($0.id, $0) })
-        let distinctRegionIds = Set(alerts.map(\.regionId))
-
-        var snapshotsByRegion: [String: WeatherSnapshot] = [:]
-        for regionId in distinctRegionIds {
-            guard let region = RegionDatabase.find(id: regionId) else { continue }
-            if let snapshot = try? await weatherClient.fetchSnapshot(for: region) {
-                snapshotsByRegion[regionId] = snapshot
-            }
-        }
+        let distinctRegions = Set(alerts.map(\.regionId)).compactMap { RegionDatabase.find(id: $0) }
+        let points = distinctRegions.map { GridPoint(id: $0.id, latitude: $0.latitude, longitude: $0.longitude) }
+        let snapshotsByRegion = (try? await weatherClient.fetchSnapshots(for: points)) ?? [:]
 
         var updates: [WatchedAlertUpdate] = []
         for alert in alerts {
             guard let speciesForAlert = speciesByID[alert.speciesId],
+                  let region = RegionDatabase.find(id: alert.regionId),
                   let snapshot = snapshotsByRegion[alert.regionId],
-                  let signal = SignalPipeline.rankedSignals(candidates: [speciesForAlert], weather: snapshot, month: month, flushTriggered: false, limit: 1).first else { continue }
+                  let signal = SignalPipeline.rankedSignals(species: [speciesForAlert], region: region, weather: snapshot, month: month, flushTriggered: false, limit: 1).first else { continue }
             let notify = NotificationThreshold.shouldNotify(previousScore: alert.lastKnownScore, newScore: signal.score, threshold: alert.threshold)
             updates.append(WatchedAlertUpdate(alert: alert, newScore: signal.score, shouldNotify: notify))
         }
@@ -392,7 +403,7 @@ public enum WatchedAlertEvaluator {
 - [ ] **Step 4: Run the tests to verify they pass**
 
 Run: `swift test --package-path MushroomSignalCore --filter WatchedAlertEvaluatorTests`
-Expected: PASS, all 4 tests.
+Expected: PASS, all 5 tests.
 
 - [ ] **Step 5: Run the full core package test suite**
 
@@ -457,23 +468,29 @@ enum NotificationPoster {
 
         let month = Calendar.current.component(.month, from: Date())
         let updates = await WatchedAlertEvaluator.evaluate(alerts: alerts, species: allSpecies, weatherClient: OpenMeteoClient(), month: month)
+        let updatesByAlertID = Dictionary(uniqueKeysWithValues: updates.map { ($0.alert.id, $0) })
 
-        // Merge updates back into the FULL alert list, keyed by id — evaluate() can skip an
-        // alert (e.g. its region's weather fetch failed) without that alert being silently
-        // dropped from storage, since setWatchedAlerts below is a full replace.
-        var alertsByID = Dictionary(uniqueKeysWithValues: alerts.map { ($0.id, $0) })
+        // Rebuild in the original stored order (not the update dictionary's unspecified
+        // order) so the settings list doesn't silently reshuffle after every widget refresh.
+        // An alert missing from `updates` (e.g. its region's weather fetch failed) is carried
+        // over unchanged rather than dropped, since setWatchedAlerts below is a full replace.
+        var finalAlerts: [WatchedAlert] = []
+        finalAlerts.reserveCapacity(alerts.count)
 
-        for update in updates {
-            var alert = update.alert
+        for var alert in alerts {
+            guard let update = updatesByAlertID[alert.id] else {
+                finalAlerts.append(alert)
+                continue
+            }
             alert.lastKnownScore = update.newScore
-            alertsByID[alert.id] = alert
+            finalAlerts.append(alert)
 
             guard update.shouldNotify else { continue }
             let speciesName = allSpecies.first { $0.id == alert.speciesId }?.commonNameSk ?? alert.speciesId
             let regionName = RegionDatabase.find(id: alert.regionId)?.nameSk ?? alert.regionId
             let content = UNMutableNotificationContent()
-            content.title = "Hríby sa dnes darí"
-            content.body = "\(speciesName) v \(regionName)"
+            content.title = "Hubám sa dnes darí"
+            content.body = "\(speciesName) — \(regionName)"
             content.sound = .default
             let request = UNNotificationRequest(identifier: alert.id, content: content, trigger: nil)
             do {
@@ -483,7 +500,7 @@ enum NotificationPoster {
             }
         }
 
-        preferences.setWatchedAlerts(Array(alertsByID.values))
+        preferences.setWatchedAlerts(finalAlerts)
     }
 }
 ```
@@ -601,6 +618,21 @@ final class NotificationSettingsStateTests: XCTestCase {
         XCTAssertTrue(state.watchedAlerts.isEmpty)
         XCTAssertTrue(prefs.watchedAlerts().isEmpty)
     }
+
+    func testUpdatingThresholdPreservesLastKnownScore() {
+        let (prefs, suiteName) = makePreferences()
+        defer { UserDefaults(suiteName: suiteName)?.removePersistentDomain(forName: suiteName) }
+        let state = NotificationSettingsState(preferences: prefs)
+        state.addOrUpdateWatch(speciesId: "boletus-edulis", regionId: "zilinsky", threshold: 4)
+        var updated = state.watchedAlerts[0]
+        updated.lastKnownScore = 2
+        prefs.setWatchedAlerts([updated])
+        let reloaded = NotificationSettingsState(preferences: prefs)
+
+        reloaded.addOrUpdateWatch(speciesId: "boletus-edulis", regionId: "zilinsky", threshold: 3)
+
+        XCTAssertEqual(reloaded.watchedAlerts.first?.lastKnownScore, 2, "editing an existing watch's threshold must not discard its recorded baseline score")
+    }
 }
 ```
 
@@ -642,7 +674,9 @@ final class NotificationSettingsState: ObservableObject {
     }
 
     func addOrUpdateWatch(speciesId: String, regionId: String, threshold: Int) {
-        let newAlert = WatchedAlert(speciesId: speciesId, regionId: regionId, threshold: threshold)
+        let id = WatchedAlert(speciesId: speciesId, regionId: regionId, threshold: threshold).id
+        let existingScore = watchedAlerts.first { $0.id == id }?.lastKnownScore
+        let newAlert = WatchedAlert(speciesId: speciesId, regionId: regionId, threshold: threshold, lastKnownScore: existingScore)
         watchedAlerts.removeAll { $0.id == newAlert.id }
         watchedAlerts.append(newAlert)
         preferences?.setWatchedAlerts(watchedAlerts)
@@ -658,7 +692,7 @@ final class NotificationSettingsState: ObservableObject {
 - [ ] **Step 4: Regenerate the Xcode project (new file) and run the tests**
 
 Run: `xcodegen generate && xcodebuild test -scheme MushroomSignal -destination 'platform=macOS' -derivedDataPath DerivedData -only-testing:MushroomSignalTests/NotificationSettingsStateTests`
-Expected: `** TEST SUCCEEDED **`, all 3 tests pass.
+Expected: `** TEST SUCCEEDED **`, all 4 tests pass.
 
 - [ ] **Step 5: Create `NotificationSettingsView`**
 
@@ -673,30 +707,39 @@ struct NotificationSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var allSpecies: [Species] = []
     @State private var selectedSpeciesId: String = ""
-    @State private var selectedRegionId: String = RegionDatabase.all[0].id
+    @State private var selectedRegionId: String = RegionStore()?.selectedRegion().id ?? RegionStoreConstants.defaultRegionId
     @State private var threshold: Int = 3
+
+    private var filteredSpecies: [Species] {
+        allSpecies.filter { $0.regionalAffinity.contains(selectedRegionId) }
+    }
 
     var body: some View {
         NavigationStack {
             Form {
                 if state.authorizationStatus != .authorized {
                     Section {
-                        Text("Upozornenia nie sú povolené.")
-                        Button("Povoliť upozornenia") {
-                            Task { await state.requestAuthorizationIfNeeded() }
+                        Text(state.authorizationStatus == .denied ? "Upozornenia sú zakázané. Povoľte ich v Nastaveniach systému." : "Upozornenia nie sú povolené.")
+                            .font(.system(size: DesignSystem.captionSize))
+                            .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.8))
+                        if state.authorizationStatus == .notDetermined {
+                            Button("Povoliť upozornenia") {
+                                Task { await state.requestAuthorizationIfNeeded() }
+                            }
+                            .tint(DesignSystem.Colors.mossAccent)
                         }
                     }
                 }
 
                 Section("Pridať sledovanie") {
-                    Picker("Druh", selection: $selectedSpeciesId) {
-                        ForEach(allSpecies) { species in
-                            Text(species.commonNameSk).tag(species.id)
-                        }
-                    }
                     Picker("Kraj", selection: $selectedRegionId) {
                         ForEach(RegionDatabase.all) { region in
                             Text(region.nameSk).tag(region.id)
+                        }
+                    }
+                    Picker("Druh", selection: $selectedSpeciesId) {
+                        ForEach(filteredSpecies) { species in
+                            Text(species.commonNameSk).tag(species.id)
                         }
                     }
                     Picker("Prah", selection: $threshold) {
@@ -708,17 +751,31 @@ struct NotificationSettingsView: View {
                         guard !selectedSpeciesId.isEmpty else { return }
                         state.addOrUpdateWatch(speciesId: selectedSpeciesId, regionId: selectedRegionId, threshold: threshold)
                     }
+                    .tint(DesignSystem.Colors.mossAccent)
                 }
 
                 Section("Sledované druhy") {
                     ForEach(state.watchedAlerts) { alert in
                         HStack {
-                            Text(allSpecies.first { $0.id == alert.speciesId }?.commonNameSk ?? alert.speciesId)
+                            VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
+                                Text(allSpecies.first { $0.id == alert.speciesId }?.commonNameSk ?? alert.speciesId)
+                                    .font(.system(size: DesignSystem.bodySize))
+                                Text(RegionDatabase.find(id: alert.regionId)?.nameSk ?? alert.regionId)
+                                    .font(.system(size: DesignSystem.captionSize))
+                                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+                            }
                             Spacer()
-                            Text(RegionDatabase.find(id: alert.regionId)?.nameSk ?? alert.regionId)
-                                .foregroundStyle(.secondary)
                             Text("≥\(alert.threshold)")
-                                .foregroundStyle(.secondary)
+                                .font(.system(size: DesignSystem.captionSize))
+                                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+                            Button {
+                                state.removeWatch(alert)
+                            } label: {
+                                Image(systemName: "trash")
+                            }
+                            .buttonStyle(.borderless)
+                            .tint(DesignSystem.Colors.danger)
+                            .help("Odstrániť sledovanie")
                         }
                         .swipeActions {
                             Button("Odstrániť", role: .destructive) {
@@ -736,15 +793,29 @@ struct NotificationSettingsView: View {
             }
             .task {
                 allSpecies = (try? SpeciesDatabase.loadAll()) ?? []
-                if let first = allSpecies.first, selectedSpeciesId.isEmpty {
-                    selectedSpeciesId = first.id
+                if selectedSpeciesId.isEmpty {
+                    selectedSpeciesId = filteredSpecies.first?.id ?? ""
                 }
                 await state.refreshAuthorizationStatus()
+            }
+            .onChange(of: selectedRegionId) { _, _ in
+                if !filteredSpecies.contains(where: { $0.id == selectedSpeciesId }) {
+                    selectedSpeciesId = filteredSpecies.first?.id ?? ""
+                }
             }
         }
     }
 }
 ```
+
+**Note (post final-review fix):** `selectedRegionId` now defaults to the app's actual currently-selected
+region (via `RegionStore`) rather than `RegionDatabase.all[0]`'s array-order default, and the species
+picker is filtered to `filteredSpecies` (species with `regionalAffinity` for the selected region) —
+both an `onChange(of: selectedRegionId)` and the initial `.task` keep `selectedSpeciesId` in sync with
+that filtered list. An explicit trash-icon delete button was added alongside `.swipeActions` since
+swipe-to-delete isn't a universally reliable gesture on macOS `Form`/`List` rows. The `.denied` vs
+`.notDetermined` copy split avoids showing a "Povoliť upozornenia" button that silently no-ops after a
+real denial. See the 2026-08-10 final-review-fix report for the full rationale.
 
 - [ ] **Step 6: Wire the settings sheet into `ContentView`**
 
