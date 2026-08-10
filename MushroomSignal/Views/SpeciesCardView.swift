@@ -43,10 +43,7 @@ struct SpeciesCardView: View {
                     .lineLimit(1)
 
                 if let signal {
-                    let clampedScore = max(0, min(4, signal.score))
-                    Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 4 - clampedScore))
-                        .font(.system(size: DesignSystem.captionSize))
-                        .foregroundStyle(DesignSystem.Colors.mossAccent)
+                    ScoreDotsView(score: signal.score, color: DesignSystem.Colors.mossAccent, dotSize: DesignSystem.captionSize)
                     if let reason = signal.reason {
                         Text(reason)
                             .font(.system(size: DesignSystem.captionSize))
