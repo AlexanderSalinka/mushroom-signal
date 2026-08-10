@@ -2,6 +2,7 @@ import SwiftUI
 import MushroomSignalCore
 
 struct MapScreenView: View {
+    let regionId: String
     @StateObject private var mapState = MapScreenState()
     @State private var mapHeight: CGFloat = DesignSystem.mapDefaultHeight
 
@@ -14,7 +15,7 @@ struct MapScreenView: View {
 
                 MapResizeHandle(height: $mapHeight)
 
-                SpeciesLibraryView(mapState: mapState)
+                SpeciesLibraryView(mapState: mapState, regionId: regionId)
                     .padding(.top, DesignSystem.spacingMedium - DesignSystem.spacingSmall)
             }
             .padding(DesignSystem.spacingLarge)

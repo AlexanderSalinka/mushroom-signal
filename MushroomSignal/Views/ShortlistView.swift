@@ -36,7 +36,7 @@ struct ShortlistView: View {
             photosBySpeciesID = (try? SpeciesPhotoDatabase.loadAll()).map { Dictionary(grouping: $0, by: \.speciesId) } ?? [:]
         }
         .sheet(item: $detailSpecies) { species in
-            SpeciesDetailView(species: species, photos: photosBySpeciesID[species.id] ?? [])
+            SpeciesDetailView(species: species, photos: photosBySpeciesID[species.id] ?? [], regionId: appState.selectedRegion.id)
         }
     }
 

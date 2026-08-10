@@ -1,12 +1,15 @@
 // MushroomSignal/Views/SpeciesDetailView.swift
 import SwiftUI
+import Charts
 import MushroomSignalCore
 
 struct SpeciesDetailView: View {
     let species: Species
     let photos: [SpeciesPhoto]
+    let regionId: String
     @Environment(\.dismiss) private var dismiss
     @State private var showingCredits = false
+    @StateObject private var trendState = SpeciesTrendState()
 
     var body: some View {
         NavigationStack {
@@ -42,6 +45,10 @@ struct SpeciesDetailView: View {
                             .foregroundStyle(DesignSystem.warningColor(for: species.edibility))
                     }
 
+                    if !trendState.points.isEmpty {
+                        trendChart
+                    }
+
                     detailRow(title: "Biotop", value: species.habitat)
                     if !species.lookAlikes.isEmpty {
                         detailRow(title: "Zámena s", value: species.lookAlikes.joined(separator: ", "))
@@ -63,6 +70,23 @@ struct SpeciesDetailView: View {
             .sheet(isPresented: $showingCredits) {
                 PhotoCreditsView(photos: photos)
             }
+        }
+        .task { await trendState.load(species: species, regionId: regionId) }
+    }
+
+    private var trendChart: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
+            Text("Trend")
+                .font(.system(size: DesignSystem.captionSize, weight: .bold))
+                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+            Chart(trendState.points, id: \.date) { point in
+                LineMark(x: .value("Deň", point.date), y: .value("Skóre", point.score))
+                    .foregroundStyle(DesignSystem.Colors.mossAccent)
+                PointMark(x: .value("Deň", point.date), y: .value("Skóre", point.score))
+                    .foregroundStyle(DesignSystem.Colors.mossAccent.opacity(point.isForecast ? 0.5 : 1.0))
+            }
+            .chartYScale(domain: 0...4)
+            .frame(height: DesignSystem.trendChartHeight)
         }
     }
 

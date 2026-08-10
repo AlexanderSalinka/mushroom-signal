@@ -55,6 +55,9 @@ public enum DesignSystem {
     /// precedent set by `legendDotSize`. Not subject to the 20pt body-text floor, which governs
     /// readable text, not small status glyphs.
     public static let mapMarkerDotSize: Double = 6
+    /// Height of the trend/weather charts (SpeciesDetailView's score trend, Predpoveď's daily
+    /// weather strip) — shared so both charts read as one visual family.
+    public static let trendChartHeight: Double = 120
 
     public enum Colors {
         public static let forestDeep = Color(red: 0.11, green: 0.16, blue: 0.11)

@@ -4,6 +4,7 @@ import MushroomSignalCore
 
 struct SpeciesLibraryView: View {
     @ObservedObject var mapState: MapScreenState
+    let regionId: String
     @State private var detailSpecies: Species?
 
     var body: some View {
@@ -19,7 +20,7 @@ struct SpeciesLibraryView: View {
             }
         }
         .sheet(item: $detailSpecies) { species in
-            SpeciesDetailView(species: species, photos: mapState.photosBySpeciesID[species.id] ?? [])
+            SpeciesDetailView(species: species, photos: mapState.photosBySpeciesID[species.id] ?? [], regionId: regionId)
         }
     }
 

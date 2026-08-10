@@ -17,7 +17,7 @@ struct ContentView: View {
                     .tabItem { Label("Zoznam", systemImage: "list.bullet") }
                     .tag(Tab.shortlist)
 
-                MapScreenView()
+                MapScreenView(regionId: appState.selectedRegion.id)
                     .tabItem { Label("Mapa", systemImage: "map") }
                     .tag(Tab.map)
             }
