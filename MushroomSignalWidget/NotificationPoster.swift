@@ -27,23 +27,29 @@ enum NotificationPoster {
 
         let month = Calendar.current.component(.month, from: Date())
         let updates = await WatchedAlertEvaluator.evaluate(alerts: alerts, species: allSpecies, weatherClient: OpenMeteoClient(), month: month)
+        let updatesByAlertID = Dictionary(uniqueKeysWithValues: updates.map { ($0.alert.id, $0) })
 
-        // Merge updates back into the FULL alert list, keyed by id — evaluate() can skip an
-        // alert (e.g. its region's weather fetch failed) without that alert being silently
-        // dropped from storage, since setWatchedAlerts below is a full replace.
-        var alertsByID = Dictionary(uniqueKeysWithValues: alerts.map { ($0.id, $0) })
+        // Rebuild in the original stored order (not the update dictionary's unspecified
+        // order) so the settings list doesn't silently reshuffle after every widget refresh.
+        // An alert missing from `updates` (e.g. its region's weather fetch failed) is carried
+        // over unchanged rather than dropped, since setWatchedAlerts below is a full replace.
+        var finalAlerts: [WatchedAlert] = []
+        finalAlerts.reserveCapacity(alerts.count)
 
-        for update in updates {
-            var alert = update.alert
+        for var alert in alerts {
+            guard let update = updatesByAlertID[alert.id] else {
+                finalAlerts.append(alert)
+                continue
+            }
             alert.lastKnownScore = update.newScore
-            alertsByID[alert.id] = alert
+            finalAlerts.append(alert)
 
             guard update.shouldNotify else { continue }
             let speciesName = allSpecies.first { $0.id == alert.speciesId }?.commonNameSk ?? alert.speciesId
             let regionName = RegionDatabase.find(id: alert.regionId)?.nameSk ?? alert.regionId
             let content = UNMutableNotificationContent()
-            content.title = "Hríby sa dnes darí"
-            content.body = "\(speciesName) v \(regionName)"
+            content.title = "Hubám sa dnes darí"
+            content.body = "\(speciesName) — \(regionName)"
             content.sound = .default
             let request = UNNotificationRequest(identifier: alert.id, content: content, trigger: nil)
             do {
@@ -53,6 +59,6 @@ enum NotificationPoster {
             }
         }
 
-        preferences.setWatchedAlerts(Array(alertsByID.values))
+        preferences.setWatchedAlerts(finalAlerts)
     }
 }

@@ -26,7 +26,9 @@ final class NotificationSettingsState: ObservableObject {
     }
 
     func addOrUpdateWatch(speciesId: String, regionId: String, threshold: Int) {
-        let newAlert = WatchedAlert(speciesId: speciesId, regionId: regionId, threshold: threshold)
+        let id = WatchedAlert(speciesId: speciesId, regionId: regionId, threshold: threshold).id
+        let existingScore = watchedAlerts.first { $0.id == id }?.lastKnownScore
+        let newAlert = WatchedAlert(speciesId: speciesId, regionId: regionId, threshold: threshold, lastKnownScore: existingScore)
         watchedAlerts.removeAll { $0.id == newAlert.id }
         watchedAlerts.append(newAlert)
         preferences?.setWatchedAlerts(watchedAlerts)

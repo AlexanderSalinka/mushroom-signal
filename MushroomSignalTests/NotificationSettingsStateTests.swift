@@ -43,4 +43,19 @@ final class NotificationSettingsStateTests: XCTestCase {
         XCTAssertTrue(state.watchedAlerts.isEmpty)
         XCTAssertTrue(prefs.watchedAlerts().isEmpty)
     }
+
+    func testUpdatingThresholdPreservesLastKnownScore() {
+        let (prefs, suiteName) = makePreferences()
+        defer { UserDefaults(suiteName: suiteName)?.removePersistentDomain(forName: suiteName) }
+        let state = NotificationSettingsState(preferences: prefs)
+        state.addOrUpdateWatch(speciesId: "boletus-edulis", regionId: "zilinsky", threshold: 4)
+        var updated = state.watchedAlerts[0]
+        updated.lastKnownScore = 2
+        prefs.setWatchedAlerts([updated])
+        let reloaded = NotificationSettingsState(preferences: prefs)
+
+        reloaded.addOrUpdateWatch(speciesId: "boletus-edulis", regionId: "zilinsky", threshold: 3)
+
+        XCTAssertEqual(reloaded.watchedAlerts.first?.lastKnownScore, 2, "editing an existing watch's threshold must not discard its recorded baseline score")
+    }
 }
