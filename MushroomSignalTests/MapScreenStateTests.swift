@@ -39,19 +39,42 @@ final class MapScreenStateTests: XCTestCase {
         XCTAssertEqual(state.activeSpeciesOrder, [])
     }
 
-    func testDominantSpeciesReturnsNilWithNoActiveSpecies() async {
+    func testDominantSignalReturnsNilWithNoActiveSpecies() async {
         // Load a real snapshot first so the assertion below exercises the "no active species"
         // path specifically, not the separate "no snapshot for this point" early-return.
         let snapshot = WeatherSnapshot(regionId: "grid-00", averageTempLast10DaysC: 15, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 10, fetchedAt: .now)
         let state = MapScreenState(weatherClient: StubWeatherClient(snapshots: [nil], gridSnapshots: ["grid-00": snapshot]))
         await state.loadGrid()
 
-        XCTAssertNil(state.dominantSpecies(at: "grid-00"))
+        XCTAssertNil(state.dominantSignal(at: "grid-00"))
     }
 
-    func testDominantSpeciesReturnsNilWhenSnapshotMissing() {
+    func testDominantSignalReturnsNilWhenSnapshotMissing() {
         let state = MapScreenState(weatherClient: StubWeatherClient(snapshots: [nil]))
         state.toggleSpecies("boletus-edulis")
-        XCTAssertNil(state.dominantSpecies(at: "grid-00"), "no snapshot was ever loaded for this point")
+        XCTAssertNil(state.dominantSignal(at: "grid-00"), "no snapshot was ever loaded for this point")
+    }
+
+    func testDominantSignalReturnsNilWhenActiveSpeciesScoresZero() async {
+        // Uses the real bundled species dataset (MapScreenState.allSpecies isn't injectable) and
+        // picks whichever species is genuinely out of season for "today" (calendarFit == 0 is the
+        // only way SignalAlgorithm.computeSignal can resolve to a hard score of 0), rather than
+        // hardcoding a month/species pair that would only hold on some calendar dates.
+        let snapshot = WeatherSnapshot(regionId: "grid-00", averageTempLast10DaysC: 15, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 10, fetchedAt: .now)
+        let state = MapScreenState(weatherClient: StubWeatherClient(snapshots: [nil], gridSnapshots: ["grid-00": snapshot]))
+        await state.loadGrid()
+
+        let month = Calendar.current.component(.month, from: Date())
+        let previousMonth = month == 1 ? 12 : month - 1
+        let nextMonth = month == 12 ? 1 : month + 1
+        guard let outOfSeasonSpecies = state.allSpecies.first(where: {
+            !$0.fruitingMonths.contains(month) && !$0.fruitingMonths.contains(previousMonth) && !$0.fruitingMonths.contains(nextMonth)
+        }) else {
+            XCTFail("expected at least one species in the real dataset out of season for the current month")
+            return
+        }
+
+        state.toggleSpecies(outOfSeasonSpecies.id)
+        XCTAssertNil(state.dominantSignal(at: "grid-00"))
     }
 }

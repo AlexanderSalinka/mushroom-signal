@@ -1,9 +1,9 @@
 import Foundation
 
 /// The one shared score→rank path for turning candidate species into a ranked shortlist.
-/// Used by the app's `AppState.refresh()`, the widget's `ShortlistProvider`, and (via
-/// `DominantSpeciesResolver`) the map's per-point dominant-species resolution — previously
-/// each reimplemented filter→score→rank independently (see KNOWN_ISSUES.md).
+/// Used by the app's `AppState.refresh()`, the widget's `ShortlistProvider`, and
+/// `MapScreenState.dominantSignal(at:)` for the map's per-point dominant-species resolution —
+/// previously each reimplemented filter→score→rank independently (see KNOWN_ISSUES.md).
 public enum SignalPipeline {
     /// Scores the given candidates against weather/month and returns them ranked
     /// (best score first, then edibility, then name — see `ShortlistRanker`).

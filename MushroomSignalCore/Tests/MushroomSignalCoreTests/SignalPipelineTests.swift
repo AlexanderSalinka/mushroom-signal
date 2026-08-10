@@ -30,7 +30,7 @@ final class SignalPipelineTests: XCTestCase {
 
     func testCandidatesOverloadDoesNotFilterByRegion() {
         // The lower-level overload takes pre-filtered candidates directly (used by
-        // DominantSpeciesResolver, whose "active species" list isn't region-derived).
+        // MapScreenState.dominantSignal(at:), whose "active species" list isn't region-derived).
         let candidate = species(id: "a", name: "Alpha", affinity: ["some-other-region"])
         let ranked = SignalPipeline.rankedSignals(candidates: [candidate], weather: warmWetWeather, month: 7, flushTriggered: false)
         XCTAssertEqual(ranked.map { $0.species.id }, ["a"])

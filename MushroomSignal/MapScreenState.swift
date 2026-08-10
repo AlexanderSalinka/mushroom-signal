@@ -63,12 +63,16 @@ final class MapScreenState: ObservableObject {
         }
     }
 
-    func dominantSpecies(at pointID: String) -> Species? {
+    func dominantSignal(at pointID: String) -> SpeciesSignal? {
         guard let snapshot = snapshots[pointID] else { return nil }
         let active = allSpecies.filter { activeSpeciesOrder.contains($0.id) }
         guard !active.isEmpty else { return nil }
         let month = Calendar.current.component(.month, from: Date())
-        return DominantSpeciesResolver.resolve(activeSpecies: active, weather: snapshot, month: month)
+        guard let top = SignalPipeline.rankedSignals(candidates: active, weather: snapshot, month: month, flushTriggered: false, limit: 1).first,
+              top.score > 0 else {
+            return nil
+        }
+        return top
     }
 
     var speciesColors: [String: Color] {
