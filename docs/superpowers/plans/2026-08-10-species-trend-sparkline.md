@@ -114,23 +114,33 @@ Edit `MushroomSignalCore/Sources/MushroomSignalCore/Weather/WeatherSnapshot.swif
 ```swift
 
 public extension WeatherSnapshot {
-    /// Builds a WeatherSnapshot from ONE day's readings, reusing SignalAlgorithm's existing
-    /// fit functions for trend-chart scoring. Deliberate simplification, not a true 10-day
-    /// rolling aggregate like every other WeatherSnapshot in this app — a trend dot may not
-    /// exactly equal what the shortlist showed that historical day. The value here is
-    /// direction (improving/fading), not exact historical reproduction. See
-    /// docs/superpowers/specs/2026-08-10-sparkline-notifications-predpoved-design.md.
-    static func singleDay(regionId: String, day: DailyWeather) -> WeatherSnapshot {
+    /// Builds a WeatherSnapshot for `day`, reusing SignalAlgorithm's existing fit functions
+    /// for trend-chart scoring. Temp/humidity use `day`'s own single-day mean — a deliberate,
+    /// still-accurate simplification since both are already means at both scales (single-day
+    /// vs 10-day). Precipitation is NOT single-day: `SignalAlgorithm.rainfallFit`'s thresholds
+    /// are calibrated as 10-day SUMS, so `totalPrecipitationLast10DaysMm` must be passed in
+    /// as a real trailing sum computed by the caller (see `SpeciesTrendCalculator`), not
+    /// `day.precipitationMm` alone — that was a real bug (2026-08-10 final review), not a
+    /// deliberate simplification like the temp/humidity one above.
+    static func singleDay(regionId: String, day: DailyWeather, totalPrecipitationLast10DaysMm: Double) -> WeatherSnapshot {
         WeatherSnapshot(
             regionId: regionId,
             averageTempLast10DaysC: day.meanTempC,
             averageHumidityLast10DaysPercent: day.humidityPercent,
-            totalPrecipitationLast10DaysMm: day.precipitationMm,
+            totalPrecipitationLast10DaysMm: totalPrecipitationLast10DaysMm,
             fetchedAt: day.date
         )
     }
 }
 ```
+
+**Corrected 2026-08-10 (final review, fix wave 1):** the code above reflects the shipped
+version, not the original first draft. The first draft's `singleDay` took only `day:` and
+read `day.precipitationMm` directly into `totalPrecipitationLast10DaysMm` — a real bug, not
+the deliberate temp/humidity simplification the doc comment describes: `SignalAlgorithm`'s
+rainfall thresholds are calibrated as 10-day sums, so feeding in one day's reading
+systematically under-scored rain for every rainfall-sensitive species. See
+`docs/superpowers/KNOWN_ISSUES.md` for the full writeup.
 
 - [ ] **Step 4: Create `SpeciesTrendCalculator`**
 
@@ -153,7 +163,17 @@ public struct TrendPoint: Equatable, Sendable {
 
 /// Turns a daily-weather series into a per-day score series for one species, reusing
 /// SignalAlgorithm.computeSignal via WeatherSnapshot.singleDay — no new scoring logic.
+///
+/// Every displayed point requires a full trailing `rollingWindowDays`-day window of real
+/// data behind it (including itself) — both to compute a real 10-day precipitation sum
+/// (SignalAlgorithm's rainfall thresholds are calibrated as 10-day sums, not single-day
+/// readings) and to give FlushTriggerDetector's 2-7-day lookback real data at every
+/// displayed point, not just later ones. Days without a full window are consumed purely as
+/// lookback context, never displayed — the caller (SpeciesTrendState) fetches extra history
+/// specifically to make this possible. See the 2026-08-10 final review findings.
 public enum SpeciesTrendCalculator {
+    private static let rollingWindowDays = 10
+
     public static func trend(
         species: Species,
         dailyWeather: [DailyWeather],
@@ -164,22 +184,41 @@ public enum SpeciesTrendCalculator {
         calendar.timeZone = TimeZone(identifier: "UTC") ?? calendar.timeZone
         let todayStart = calendar.startOfDay(for: today)
 
-        return dailyWeather.map { day in
-            let snapshot = WeatherSnapshot.singleDay(regionId: regionId, day: day)
+        let sorted = dailyWeather.sorted { $0.date < $1.date }
+        guard sorted.count >= rollingWindowDays else { return [] }
+
+        var points: [TrendPoint] = []
+        for index in (rollingWindowDays - 1)..<sorted.count {
+            let day = sorted[index]
+            let window = sorted[(index - rollingWindowDays + 1)...index]
+            let rollingPrecipitation = window.reduce(0.0) { $0 + $1.precipitationMm }
+            let snapshot = WeatherSnapshot.singleDay(regionId: regionId, day: day, totalPrecipitationLast10DaysMm: rollingPrecipitation)
             let month = calendar.component(.month, from: day.date)
-            let flushTriggered = FlushTriggerDetector.triggered(in: dailyWeather, asOf: day.date, calendar: calendar)
+            let flushTriggered = FlushTriggerDetector.triggered(in: sorted, asOf: day.date, calendar: calendar)
             let signal = SignalAlgorithm.computeSignal(species: species, weather: snapshot, month: month, flushTriggered: flushTriggered)
             let dayStart = calendar.startOfDay(for: day.date)
-            return TrendPoint(date: day.date, score: signal.score, isForecast: dayStart > todayStart)
+            points.append(TrendPoint(date: day.date, score: signal.score, isForecast: dayStart > todayStart))
         }
+        return points
     }
 }
 ```
 
+**Corrected 2026-08-10 (final review, fix wave 1):** the code above reflects the shipped
+version. The first draft mapped every input day 1:1 to an output point with no minimum
+trailing-history requirement, which meant the earliest displayed points had no real data
+7 days behind them — starving `FlushTriggerDetector`'s 2-7-day lookback and biasing the
+chart's left edge low. The fix requires a full 10-day trailing window behind every
+displayed point (`sorted.count >= rollingWindowDays`, iterating from
+`rollingWindowDays - 1`), which also supplies the real rolling precipitation sum the
+`WeatherSnapshot.singleDay` fix above needs. `SpeciesTrendState` (Task 3) was updated to
+fetch 20 days instead of 10 to keep this window full across the whole displayed range. See
+`docs/superpowers/KNOWN_ISSUES.md` for the full writeup.
+
 - [ ] **Step 5: Run the tests to verify they pass**
 
 Run: `swift test --package-path MushroomSignalCore --filter SpeciesTrendCalculatorTests`
-Expected: PASS, all 6 tests.
+Expected: PASS, all 8 tests.
 
 - [ ] **Step 6: Run the full core package test suite**
 
@@ -456,7 +495,12 @@ final class SpeciesTrendState: ObservableObject {
         errorMessage = nil
         defer { isLoading = false }
         do {
-            let dailyWeather = try await weatherClient.fetchDailyBreakdown(for: region, pastDays: 10, forecastDays: 4)
+            // 20 past days, not 10 — SpeciesTrendCalculator needs a full 10-day trailing
+            // window of real data behind EVERY displayed point (for both the rolling
+            // precipitation sum and the flush-trigger's 7-day lookback), so ~10 of these 20
+            // fetched days are consumed as lookback context, leaving ~10 real displayed
+            // points plus the forecast days. See the 2026-08-10 final review findings.
+            let dailyWeather = try await weatherClient.fetchDailyBreakdown(for: region, pastDays: 20, forecastDays: 4)
             points = SpeciesTrendCalculator.trend(species: species, dailyWeather: dailyWeather, regionId: regionId)
         } catch {
             points = []

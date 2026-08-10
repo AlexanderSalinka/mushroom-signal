@@ -140,6 +140,20 @@ no new scoring logic, only new call sites of the existing function.
 `SpeciesTrendState` view-model that fetches `fetchDailyBreakdown(pastDays: 10, forecastDays: 4)`
 and runs it through `SpeciesTrendCalculator`.
 
+**Correction (2026-08-10, final review):** the "deliberate simplification" framing above
+does not hold for all three `WeatherSnapshot` fields equally. Temp and humidity are safe as
+single-day readings because they're already means at both scales (single-day mean vs 10-day
+mean of means). Precipitation is not: `SignalAlgorithm.rainfallFit`'s thresholds
+(≥20mm/≥8mm high sensitivity, ≥10mm/≥3mm medium) are calibrated as 10-day **sums**, so
+feeding in one day's precipitation reading systematically under-scored rain for 24 of 27
+species. The final review also caught that every fetched day became a displayable point
+regardless of whether `FlushTriggerDetector`'s 7-day lookback had real data behind it,
+biasing the chart's earliest points low. Both were fixed the same day, before merge: every
+displayed point now requires a full 10-day trailing window of real data (giving both a real
+rolling precipitation sum and a full flush-trigger lookback), and `SpeciesTrendState` fetches
+20 past days instead of 10 to make that possible across the whole displayed range. See
+`docs/superpowers/KNOWN_ISSUES.md` for the full writeup.
+
 ### 3. Proactive notifications
 
 No code in the main app runs periodically without it being open — `AppState.refresh()` only

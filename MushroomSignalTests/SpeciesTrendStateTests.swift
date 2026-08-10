@@ -9,8 +9,10 @@ final class SpeciesTrendStateTests: XCTestCase {
     }
 
     func testLoadPopulatesPointsOnSuccess() async {
-        let day = DailyWeather(date: .now, meanTempC: 15, maxTempC: 20, minTempC: 10, precipitationMm: 5, humidityPercent: 70)
-        let client = StubWeatherClient(snapshots: [nil], dailyWeather: [day])
+        let days = (-9...0).map { offset in
+            DailyWeather(date: Date().addingTimeInterval(Double(offset) * 86400), meanTempC: 15, maxTempC: 20, minTempC: 10, precipitationMm: 5, humidityPercent: 70)
+        }
+        let client = StubWeatherClient(snapshots: [nil], dailyWeather: days)
         let state = SpeciesTrendState(weatherClient: client)
 
         await state.load(species: species(), regionId: "zilinsky")

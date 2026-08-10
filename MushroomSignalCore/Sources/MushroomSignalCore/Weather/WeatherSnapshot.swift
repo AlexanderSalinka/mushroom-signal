@@ -17,18 +17,20 @@ public struct WeatherSnapshot: Codable, Equatable, Sendable {
 }
 
 public extension WeatherSnapshot {
-    /// Builds a WeatherSnapshot from ONE day's readings, reusing SignalAlgorithm's existing
-    /// fit functions for trend-chart scoring. Deliberate simplification, not a true 10-day
-    /// rolling aggregate like every other WeatherSnapshot in this app — a trend dot may not
-    /// exactly equal what the shortlist showed that historical day. The value here is
-    /// direction (improving/fading), not exact historical reproduction. See
-    /// docs/superpowers/specs/2026-08-10-sparkline-notifications-predpoved-design.md.
-    static func singleDay(regionId: String, day: DailyWeather) -> WeatherSnapshot {
+    /// Builds a WeatherSnapshot for `day`, reusing SignalAlgorithm's existing fit functions
+    /// for trend-chart scoring. Temp/humidity use `day`'s own single-day mean — a deliberate,
+    /// still-accurate simplification since both are already means at both scales (single-day
+    /// vs 10-day). Precipitation is NOT single-day: `SignalAlgorithm.rainfallFit`'s thresholds
+    /// are calibrated as 10-day SUMS, so `totalPrecipitationLast10DaysMm` must be passed in
+    /// as a real trailing sum computed by the caller (see `SpeciesTrendCalculator`), not
+    /// `day.precipitationMm` alone — that was a real bug (2026-08-10 final review), not a
+    /// deliberate simplification like the temp/humidity one above.
+    static func singleDay(regionId: String, day: DailyWeather, totalPrecipitationLast10DaysMm: Double) -> WeatherSnapshot {
         WeatherSnapshot(
             regionId: regionId,
             averageTempLast10DaysC: day.meanTempC,
             averageHumidityLast10DaysPercent: day.humidityPercent,
-            totalPrecipitationLast10DaysMm: day.precipitationMm,
+            totalPrecipitationLast10DaysMm: totalPrecipitationLast10DaysMm,
             fetchedAt: day.date
         )
     }

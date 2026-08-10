@@ -173,6 +173,39 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   that proved the tap region itself was wrong, not the gesture-recognizer type) but is a more
   robust interaction pattern kept alongside the real fix. Live-verified by Alexander 2026-08-10.
 
+## Fixed (2026-08-10 trend sparkline pass)
+
+- **New feature: per-species trend sparkline** — `SpeciesDetailView` gained a `Charts`-based
+  section (`LineMark`/`PointMark`) showing a per-day score trend, backed by a new pure
+  `SpeciesTrendCalculator` (`MushroomSignalCore/Sources/MushroomSignalCore/Signal/SpeciesTrendCalculator.swift`)
+  that runs the existing `SignalAlgorithm.computeSignal` once per displayable day via a new
+  `WeatherSnapshot.singleDay` factory — no new scoring logic, only new call sites of the
+  existing function. A new `SpeciesTrendState` view-model (`MushroomSignal/SpeciesTrendState.swift`)
+  fetches the daily-weather series and drives the chart.
+- **Single-day precipitation fed into thresholds calibrated for 10-day sums** — caught by the
+  final whole-branch review the same day this feature was built. `SignalAlgorithm.rainfallFit`'s
+  thresholds (≥20mm/≥8mm high sensitivity, ≥10mm/≥3mm medium) are only meaningful as 10-day
+  **sums**, but the trend calculator was feeding in a single day's `precipitationMm` reading
+  instead — systematically under-scoring rain for 24 of 27 species (all except `.low`
+  sensitivity, which ignores precipitation entirely). Fixed: `WeatherSnapshot.singleDay` now
+  takes an explicit `totalPrecipitationLast10DaysMm:` parameter, and `SpeciesTrendCalculator`
+  computes a real trailing 10-day sum for each displayed day instead of reading one day's value.
+- **Flush-trigger lookback truncated at the chart's left edge** — also caught by the same
+  review. `FlushTriggerDetector` needs to look 2-7 days before each scored day, but the app only
+  fetched 10 days of history and treated every fetched day as displayable, so the earliest
+  displayed points had no real data 7 days before them and could never show the flush bonus —
+  artificially biasing the chart's left side low and potentially rendering a fake upward trend
+  that was really just missing lookback data filling in. Both bugs shared one root cause: no
+  minimum trailing-history requirement before a day was treated as displayable. Fixed by the
+  same change: `SpeciesTrendCalculator.trend` now requires a full 10-day trailing window of
+  real data behind every displayed point (`sorted.count >= rollingWindowDays`, iterating from
+  `rollingWindowDays - 1`) — 10 days satisfies both the rolling-sum need and the 7-day lookback
+  need in one requirement. `SpeciesTrendState.load` fetches 20 past days instead of 10 so a
+  full displayed range still has a full trailing window behind its earliest point. Both fixed
+  same-day, before merge — see `docs/superpowers/plans/2026-08-10-species-trend-sparkline.md`
+  and `docs/superpowers/specs/2026-08-10-sparkline-notifications-predpoved-design.md` for the
+  corrected plan/spec.
+
 ## Open Issues
 - **Dataset common names need a native-speaker pass** — the v1 final review flagged a few
   possibly-off Slovak common names (e.g. `coprinus-comatus` → "Hnojník obyčajný" vs. the
