@@ -2,6 +2,31 @@ import XCTest
 @testable import MushroomSignal
 import MushroomSignalCore
 
+/// A per-region stub that can delay one region's response independently of another's — needed
+/// to prove the generation-token guard actually discards a late-arriving stale result, which
+/// the shared `StubWeatherClient` can't exercise (it ignores the region and returns one fixed
+/// array for every call, so a "stale" and a "fresh" load are indistinguishable through it).
+private actor OrderedRegionStub: WeatherClient {
+    struct StubError: Error, Sendable {}
+    private let dataByRegionID: [String: [DailyWeather]]
+    private let delayByRegionID: [String: Duration]
+
+    init(dataByRegionID: [String: [DailyWeather]], delayByRegionID: [String: Duration] = [:]) {
+        self.dataByRegionID = dataByRegionID
+        self.delayByRegionID = delayByRegionID
+    }
+
+    func fetchSnapshot(for region: Region) async throws -> WeatherSnapshot { throw StubError() }
+    func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] { [:] }
+
+    func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] {
+        if let delay = delayByRegionID[region.id] {
+            try? await Task.sleep(for: delay)
+        }
+        return dataByRegionID[region.id] ?? []
+    }
+}
+
 @MainActor
 final class RegionWeatherStateTests: XCTestCase {
     func testLoadPopulatesDailyWeatherOnSuccess() async {
@@ -41,18 +66,22 @@ final class RegionWeatherStateTests: XCTestCase {
     func testStaleLoadDoesNotOverwriteNewerData() async {
         let staleDay = DailyWeather(date: .now, meanTempC: 5, maxTempC: 8, minTempC: 2, precipitationMm: 0, humidityPercent: 40)
         let freshDay = DailyWeather(date: .now, meanTempC: 20, maxTempC: 25, minTempC: 15, precipitationMm: 1, humidityPercent: 55)
-        let client = StubWeatherClient(snapshots: [nil], dailyWeather: [freshDay])
+        // zilinsky's response is deliberately delayed so it lands AFTER kosicky's, even
+        // though zilinsky's load starts first — simulates a fast region switch where the
+        // first (now-stale) request's network response arrives last. Without the
+        // generation-token guard, this stale response would overwrite kosicky's already-
+        // current data.
+        let client = OrderedRegionStub(
+            dataByRegionID: ["zilinsky": [staleDay], "kosicky": [freshDay]],
+            delayByRegionID: ["zilinsky": .milliseconds(50)]
+        )
         let state = RegionWeatherState(weatherClient: client)
 
-        // Start a load, then immediately start a second one before the first can write —
-        // simulates a fast region switch. Both use the same stub, so this proves the guard
-        // exists and doesn't itself break the common case (second load's result wins).
         async let first: Void = state.load(regionId: "zilinsky")
         async let second: Void = state.load(regionId: "kosicky")
         _ = await (first, second)
 
-        XCTAssertEqual(state.dailyWeather, [freshDay])
-        _ = staleDay // silence unused-variable warning if the compiler flags it; documents intent
+        XCTAssertEqual(state.dailyWeather, [freshDay], "the stale zilinsky load must not overwrite kosicky's already-current data, even though it finishes later")
     }
 
     func testLoadingANewRegionReplacesRatherThanAppendsPreviousData() async {
