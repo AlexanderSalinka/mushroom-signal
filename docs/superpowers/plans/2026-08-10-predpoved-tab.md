@@ -219,7 +219,14 @@ struct PredpovedView: View {
                     yStart: .value("Min", day.minTempC),
                     yEnd: .value("Max", day.maxTempC)
                 )
-                .foregroundStyle(isForecastDay(day) ? DesignSystem.Colors.mossAccent.opacity(0.5) : DesignSystem.Colors.mossAccent)
+                // Cold-to-hot gradient per bar (caution at the top/max end, water at the
+                // bottom/min end) — matches the approved mockup and gives `water` its first
+                // real use anywhere in the app (previously defined, never consumed).
+                .foregroundStyle(
+                    LinearGradient(colors: [DesignSystem.Colors.caution, DesignSystem.Colors.water], startPoint: .top, endPoint: .bottom)
+                        .opacity(isForecastDay(day) ? 0.5 : 1.0)
+                )
+                .cornerRadius(7)
             }
             .frame(height: DesignSystem.trendChartHeight)
         }
@@ -574,7 +581,7 @@ Expected: `** TEST SUCCEEDED **`
 
 Launch the app. Confirm three tabs (Zoznam, Mapa, Predpoveď). Open Predpoveď: confirm real
 Open-Meteo data renders (spot-check a temperature value against a real weather source),
-the daily strip shows a visible min→max range bar per day with forecast days visually
+the daily strip shows a visible cold-to-hot gradient min→max range bar per day with forecast days visually
 lighter, the "Odporúčané dnes" section shows up to 3 species matching Zoznam's own top 3
 for the same region (same names, same order, same score dots), and the season-calendar
 section lists species with real Slovak names. Switch the shared region picker (toolbar) and
