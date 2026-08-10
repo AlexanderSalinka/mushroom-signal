@@ -6,6 +6,28 @@ scratch. Append to this file whenever a new idea comes up in conversation; each 
 be a few sentences, not a full write-up (that's what a spec in `docs/superpowers/specs/` is
 for, once an idea is actually being built).
 
+## 2026-08-10 — Alexander's priority pass ("Alpha 0.10")
+
+Alexander reviewed this whole list and reprioritized it, renaming the app's current state
+"Alpha 0.10" going forward (informal versioning, not a formal scheme).
+
+**HIGH PRIO, in progress** — see
+`docs/superpowers/plans/2026-08-10-sparkline-notifications-predpoved.md`:
+- #3 Historical trend sparkline
+- #4 Proactive local notifications
+- A new "Predpoveď" tab (not on this list originally — added mid-conversation): a native-
+  Weather-app-style dashboard showing the *raw* Open-Meteo data (daily high/low temp, humidity,
+  rainfall) that drives every score, plus a season-calendar section derived from #6 below.
+  Motivation: the app shows derived 0-4 scores everywhere but never the real numbers behind
+  them; Alexander wants that transparency in its own tab.
+
+**LOW PRIO** (everything else, explicitly reprioritized down):
+- #8 Paid Apple Developer Program enrollment — moved to end-of-Beta (was previously flagged as
+  the single highest-leverage item; still true for the widget bug, but Alexander wants it last).
+- #5 watchOS complication — moved to Beta-earliest, not before.
+- #1 Photo-ID, #2 GPS find-pinning, #7 share-a-forecast export, #9 TestFlight beta, #10
+  community flush reports — all unchanged, still queued behind the above.
+
 ## 2026-08-08
 
 Brainstormed while deciding what to prioritize after the UI visual redesign plan (see
