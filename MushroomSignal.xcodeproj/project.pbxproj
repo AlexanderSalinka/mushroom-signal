@@ -8,9 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		03E7041F6EA3BB051106A46E /* MushroomSignalWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7121D9BEBDD981DC5A5A7F87 /* MushroomSignalWidgetBundle.swift */; };
+		0DDA9573388B544E8983F1DD /* NotificationSettingsState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD306E3B17FFEF1E874435FC /* NotificationSettingsState.swift */; };
 		0FAF8DADEDA96F713383337F /* PhotoCreditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06442830610580CEB0AF161 /* PhotoCreditsView.swift */; };
 		16E3AAA1E68A9D8C55B22B38 /* MapScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E508520517A594C06FD0468 /* MapScreenView.swift */; };
 		19426F3C206A152A238DE8FC /* MapResizeHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406769D67F45636883C7A794 /* MapResizeHandle.swift */; };
+		19444B328ADE1BDADE39C990 /* NotificationSettingsStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110AD9FC35B9B74F20358F50 /* NotificationSettingsStateTests.swift */; };
 		236FFC17F60E79744D2296E3 /* ShortlistWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C374D590D0DB48C3B165D63 /* ShortlistWidgetView.swift */; };
 		2A74A8E81EEBF5310F3F9DF9 /* SpeciesDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41CD56B6EA7546BE828E356 /* SpeciesDetailView.swift */; };
 		2C2C190D6F520DB4BEDEBDB4 /* CachedAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F80C4161C989E348E7F683 /* CachedAsyncImage.swift */; };
@@ -29,6 +31,7 @@
 		B3E45FAFCA78015CBE59470B /* MushroomSignalWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81841490E6D542F22EC19628 /* MushroomSignalWidget.swift */; };
 		BAB4DFBF3B25AAEFA8DCB13F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3ED179E8F93BB1C9D3122168 /* Assets.xcassets */; };
 		BE4EB3EB93DC626A0BE2185B /* SpeciesCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1914F91EBAA6F0E2CCC49638 /* SpeciesCardView.swift */; };
+		C1196A67D5D55F63E294C062 /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000427DD51C4A972F4FED1D /* NotificationSettingsView.swift */; };
 		C1289E25CCE0D11F12F3C2F6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F342E2888340E1136922BC /* ContentView.swift */; };
 		C4B38ACF47990776E35A665B /* RegionPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D921A8D3EAFD9FF2245F208B /* RegionPickerView.swift */; };
 		C7E40FBE9440D3375902F3D9 /* AppStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1FB316DE56516A4B21295F /* AppStateTests.swift */; };
@@ -76,6 +79,7 @@
 		052C8A78E1FA1937EA12ED61 /* MushroomSignalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MushroomSignalApp.swift; sourceTree = "<group>"; };
 		0A1FB316DE56516A4B21295F /* AppStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
 		0E508520517A594C06FD0468 /* MapScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapScreenView.swift; sourceTree = "<group>"; };
+		110AD9FC35B9B74F20358F50 /* NotificationSettingsStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsStateTests.swift; sourceTree = "<group>"; };
 		1914F91EBAA6F0E2CCC49638 /* SpeciesCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeciesCardView.swift; sourceTree = "<group>"; };
 		1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MushroomSignalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveMapView.swift; sourceTree = "<group>"; };
@@ -95,6 +99,7 @@
 		94F63D66DD01AC73FEAB0332 /* SpeciesTrendState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeciesTrendState.swift; sourceTree = "<group>"; };
 		9799B53210927467F62E21E0 /* MushroomSignal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MushroomSignal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D621AB64829FC3E73610130 /* ScoreDotsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreDotsView.swift; sourceTree = "<group>"; };
+		A000427DD51C4A972F4FED1D /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
 		A00092787872DF0EF407DD3A /* MushroomSignal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MushroomSignal.entitlements; sourceTree = "<group>"; };
 		A231A7819903E4B8552E4F2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B41CD56B6EA7546BE828E356 /* SpeciesDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeciesDetailView.swift; sourceTree = "<group>"; };
@@ -105,6 +110,7 @@
 		CED03FE1A9085BBA24624FA2 /* SpeciesTrendStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeciesTrendStateTests.swift; sourceTree = "<group>"; };
 		D2D0E1BA2D29697E1EE3ACA0 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		D921A8D3EAFD9FF2245F208B /* RegionPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionPickerView.swift; sourceTree = "<group>"; };
+		DD306E3B17FFEF1E874435FC /* NotificationSettingsState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsState.swift; sourceTree = "<group>"; };
 		E80F3D521EE5DF973B8230E9 /* ShortlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortlistView.swift; sourceTree = "<group>"; };
 		EB6EFE36C5769E4BD4C6359A /* WidgetReloading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetReloading.swift; sourceTree = "<group>"; };
 		F0A73DD10B0C80DC04F1C19E /* NotificationPoster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPoster.swift; sourceTree = "<group>"; };
@@ -147,6 +153,7 @@
 				254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */,
 				406769D67F45636883C7A794 /* MapResizeHandle.swift */,
 				0E508520517A594C06FD0468 /* MapScreenView.swift */,
+				A000427DD51C4A972F4FED1D /* NotificationSettingsView.swift */,
 				C06442830610580CEB0AF161 /* PhotoCreditsView.swift */,
 				D921A8D3EAFD9FF2245F208B /* RegionPickerView.swift */,
 				9D621AB64829FC3E73610130 /* ScoreDotsView.swift */,
@@ -184,6 +191,7 @@
 			children = (
 				0A1FB316DE56516A4B21295F /* AppStateTests.swift */,
 				BAD99729FBB887B89C2D3D43 /* MapScreenStateTests.swift */,
+				110AD9FC35B9B74F20358F50 /* NotificationSettingsStateTests.swift */,
 				CED03FE1A9085BBA24624FA2 /* SpeciesTrendStateTests.swift */,
 				2CDC18618DDF39FAA6E66948 /* SpyWidgetReloader.swift */,
 				5CED92FB89921C454532799B /* StubWeatherClient.swift */,
@@ -222,6 +230,7 @@
 				C6B2C7634179D7F2C2F0DAE0 /* MapScreenState.swift */,
 				A00092787872DF0EF407DD3A /* MushroomSignal.entitlements */,
 				052C8A78E1FA1937EA12ED61 /* MushroomSignalApp.swift */,
+				DD306E3B17FFEF1E874435FC /* NotificationSettingsState.swift */,
 				94F63D66DD01AC73FEAB0332 /* SpeciesTrendState.swift */,
 				EB6EFE36C5769E4BD4C6359A /* WidgetReloading.swift */,
 				181FD1C255476D8C1BAF3947 /* Views */,
@@ -357,6 +366,7 @@
 			files = (
 				C7E40FBE9440D3375902F3D9 /* AppStateTests.swift in Sources */,
 				90410647C8266446E776F743 /* MapScreenStateTests.swift in Sources */,
+				19444B328ADE1BDADE39C990 /* NotificationSettingsStateTests.swift in Sources */,
 				A73E3143F33570B52618AE7D /* SpeciesTrendStateTests.swift in Sources */,
 				4A6A84D5C179D025C3C2B2A8 /* SpyWidgetReloader.swift in Sources */,
 				E72EC42B78F7DEA7BD50FA91 /* StubWeatherClient.swift in Sources */,
@@ -387,6 +397,8 @@
 				43A734B64961434BB158661E /* MapScreenState.swift in Sources */,
 				16E3AAA1E68A9D8C55B22B38 /* MapScreenView.swift in Sources */,
 				534EE6B719E4EFF861B5CA40 /* MushroomSignalApp.swift in Sources */,
+				0DDA9573388B544E8983F1DD /* NotificationSettingsState.swift in Sources */,
+				C1196A67D5D55F63E294C062 /* NotificationSettingsView.swift in Sources */,
 				0FAF8DADEDA96F713383337F /* PhotoCreditsView.swift in Sources */,
 				C4B38ACF47990776E35A665B /* RegionPickerView.swift in Sources */,
 				4B0915BCA4766B74EC78D523 /* ScoreDotsView.swift in Sources */,

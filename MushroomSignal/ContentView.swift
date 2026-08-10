@@ -4,6 +4,7 @@ import MushroomSignalCore
 struct ContentView: View {
     @StateObject private var appState = AppState()
     @State private var selectedTab: Tab = .shortlist
+    @State private var showingNotificationSettings = false
 
     enum Tab {
         case shortlist
@@ -36,10 +37,21 @@ struct ContentView: View {
                     .disabled(appState.isLoading)
                     .help("Obnoviť údaje o počasí")
                 }
+                ToolbarItem(placement: .automatic) {
+                    Button {
+                        showingNotificationSettings = true
+                    } label: {
+                        Label("Upozornenia", systemImage: "gearshape")
+                    }
+                    .help("Nastavenia upozornení")
+                }
             }
         }
         .task { await appState.refresh() }
         .frame(minWidth: 420, minHeight: 480)
         .background(WindowTransparencyConfigurator())
+        .sheet(isPresented: $showingNotificationSettings) {
+            NotificationSettingsView()
+        }
     }
 }
