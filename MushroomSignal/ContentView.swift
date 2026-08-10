@@ -9,6 +9,7 @@ struct ContentView: View {
     enum Tab {
         case shortlist
         case map
+        case forecast
     }
 
     var body: some View {
@@ -21,6 +22,10 @@ struct ContentView: View {
                 MapScreenView(regionId: appState.selectedRegion.id)
                     .tabItem { Label("Mapa", systemImage: "map") }
                     .tag(Tab.map)
+
+                PredpovedView(regionId: appState.selectedRegion.id, topSignals: appState.signals)
+                    .tabItem { Label("Predpoveď", systemImage: "cloud.sun") }
+                    .tag(Tab.forecast)
             }
             .navigationTitle("Mushroom Signal")
             .toolbarBackground(.ultraThinMaterial, for: .windowToolbar)
