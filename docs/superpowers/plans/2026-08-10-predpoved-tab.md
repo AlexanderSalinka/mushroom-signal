@@ -2,15 +2,15 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** A new third tab showing the raw Open-Meteo weather data (daily high/low temperature, humidity, rainfall) behind every score, plus which species are typically in season this month — giving the user visibility into "the real actual data Mushroom Signal gets its prognosis from," not just derived 0-4 scores.
+**Goal:** A new third tab showing the raw Open-Meteo weather data (daily high/low temperature, humidity, rainfall) behind every score, the top-3 recommended species for today (reusing the exact ranked list Zoznam and the widget already compute), and which species are typically in season this month — giving the user visibility into "the real actual data Mushroom Signal gets its prognosis from," not just derived 0-4 scores.
 
-**Architecture:** A `RegionWeatherState` view-model fetches the extended daily breakdown for the selected region. `PredpovedView` renders it as a native-Weather-app-style hero + daily bar chart (Swift Charts), plus a season-calendar section computed locally from the species dataset (no network call) via `SignalAlgorithm.calendarFit`, made public for reuse. Wired in as `ContentView`'s third `TabView` tab, region-scoped via the same `appState.selectedRegion` binding every other tab already uses.
+**Architecture:** A `RegionWeatherState` view-model fetches the extended daily breakdown for the selected region. `PredpovedView` renders it as a native-Weather-app-style hero + daily bar chart (Swift Charts), a top-3 picks section fed directly by `AppState.signals` (no new fetch or scoring call), plus a season-calendar section computed locally from the species dataset (no network call) via `SignalAlgorithm.calendarFit`, made public for reuse. Wired in as `ContentView`'s third `TabView` tab, region-scoped via the same `appState.selectedRegion` binding every other tab already uses.
 
 **Tech Stack:** Swift, Foundation, SwiftUI, Swift Charts, XCTest.
 
 **Depends on:** `docs/superpowers/plans/2026-08-10-weather-client-extension.md` must be merged first — this plan calls `fetchDailyBreakdown(for:pastDays:forecastDays:)` and uses `DailyWeather.minTempC`/`humidityPercent`, and its tests use `StubWeatherClient`'s injectable `dailyWeather`, all introduced there.
 
-**Build order note:** this plan's `ContentView.swift` edit (Task 4) is written assuming `2026-08-10-species-trend-sparkline.md` and `2026-08-10-proactive-notifications.md` have both already been merged (both also touch `ContentView.swift`). Recommended overall order: weather-client-extension → species-trend-sparkline → proactive-notifications → this plan. If building in a different order, re-derive Task 4's before/after snippets from the actual current file state rather than assuming this plan's text matches verbatim.
+**Build order note:** this plan's `ContentView.swift` edit (Task 5) is written assuming `2026-08-10-species-trend-sparkline.md` and `2026-08-10-proactive-notifications.md` have both already been merged (both also touch `ContentView.swift`). Recommended overall order: weather-client-extension → species-trend-sparkline → proactive-notifications → this plan. If building in a different order, re-derive Task 5's before/after snippets from the actual current file state rather than assuming this plan's text matches verbatim.
 
 ## Global Constraints
 
@@ -147,7 +147,7 @@ git commit -m "feat: add RegionWeatherState for region-level daily weather"
 
 **Interfaces:**
 - Consumes: `RegionWeatherState` (Task 1), `DesignSystem.trendChartHeight` (introduced by the trend-sparkline plan — reused here, not redefined).
-- Produces: `PredpovedView(regionId: String)`. Task 4 consumes this to wire it into `ContentView`. Task 3 extends this same file with a season-calendar section.
+- Produces: `PredpovedView(regionId: String)`. Task 5 consumes this to wire it into `ContentView`. Tasks 3 and 4 extend this same file with a top-picks section and a season-calendar section, respectively.
 
 This task has no dedicated automated test — pure SwiftUI rendering, same convention as every
 other view in this project (build + manual visual check).
@@ -246,7 +246,116 @@ git commit -m "feat: add PredpovedView weather dashboard (not yet wired into a t
 
 ---
 
-### Task 3: Season calendar section
+### Task 3: Top-3 daily picks
+
+**Files:**
+- Modify: `MushroomSignal/Views/PredpovedView.swift`
+
+**Interfaces:**
+- Consumes: `AppState.signals: [SpeciesSignal]` (existing, `@Published`) — the exact same ranked list Zoznam and the widget already display, via the shared `SignalPipeline`. No new fetch, no new scoring call — real reuse, per Alexander's explicit ask.
+- Produces: `PredpovedView` gains a new required `topSignals: [SpeciesSignal]` stored property. No existing call site breaks — `PredpovedView` isn't constructed anywhere yet (Task 5 adds its first and only call site), so this is a pure additive change to the struct, not a breaking one. Task 4 (season calendar)'s body edit is sequenced after this task's, not directly after Task 2's. Task 5 constructs `PredpovedView(regionId:topSignals:)` with both arguments already, from the start.
+
+This task has no dedicated automated test — pure SwiftUI rendering, same convention as every other view in this project.
+
+- [ ] **Step 1: Add `topSignals` and the picks section to `PredpovedView`**
+
+Edit `MushroomSignal/Views/PredpovedView.swift`, replace:
+
+```swift
+struct PredpovedView: View {
+    let regionId: String
+    @StateObject private var weatherState = RegionWeatherState()
+```
+
+with:
+
+```swift
+struct PredpovedView: View {
+    let regionId: String
+    let topSignals: [SpeciesSignal]
+    @StateObject private var weatherState = RegionWeatherState()
+```
+
+Then replace:
+
+```swift
+                heroSection
+                dailyStripSection
+            }
+            .padding(DesignSystem.spacingLarge)
+        }
+        .mushroomGlassBackground()
+        .task(id: regionId) {
+            await weatherState.load(regionId: regionId)
+        }
+    }
+```
+
+with:
+
+```swift
+                heroSection
+                dailyStripSection
+                if !topSignals.isEmpty {
+                    topPicksSection
+                }
+            }
+            .padding(DesignSystem.spacingLarge)
+        }
+        .mushroomGlassBackground()
+        .task(id: regionId) {
+            await weatherState.load(regionId: regionId)
+        }
+    }
+
+    private var topPicksSection: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
+            Text("Odporúčané dnes")
+                .font(.system(size: DesignSystem.captionSize, weight: .bold))
+                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+            ForEach(Array(topSignals.prefix(3).enumerated()), id: \.element.species.id) { index, signal in
+                HStack(spacing: DesignSystem.spacingSmall) {
+                    Text("\(index + 1)")
+                        .font(.system(size: DesignSystem.captionSize, weight: .bold))
+                        .foregroundStyle(DesignSystem.Colors.cloud)
+                        .frame(width: 22, height: 22)
+                        .background(Circle().fill(DesignSystem.Colors.mossAccent.opacity(0.3)))
+                    VStack(alignment: .leading, spacing: DesignSystem.spacingTight / 2) {
+                        Text(signal.species.commonNameSk)
+                            .font(.system(size: DesignSystem.bodySize, weight: .semibold))
+                            .foregroundStyle(DesignSystem.Colors.cloud)
+                        Text(signal.species.latinName)
+                            .font(.system(size: DesignSystem.captionSize).italic())
+                            .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+                    }
+                    Spacer()
+                    ScoreDotsView(score: signal.score, color: DesignSystem.Colors.mossAccent, dotSize: DesignSystem.captionSize)
+                }
+                .padding(DesignSystem.spacingSmall)
+            }
+        }
+    }
+```
+
+`ScoreDotsView` already exists (`MushroomSignal/Views/ScoreDotsView.swift`, extracted in the map-markers pass) — this reuses it directly rather than re-inlining the `●●●○` glyph a third time.
+
+- [ ] **Step 2: Build**
+
+Run: `xcodegen generate && xcodebuild -scheme MushroomSignal -configuration Debug -derivedDataPath DerivedData build`
+Expected: `** BUILD SUCCEEDED **` — adding a new required stored property to a struct with no existing call sites is a pure additive change; nothing else in the codebase references `PredpovedView` yet, so nothing can be broken by it.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add MushroomSignal/Views/PredpovedView.swift
+git commit -m "feat: show top-3 daily picks in Predpoveď, reusing AppState's ranked signals"
+```
+
+(Not visually checkable yet — `PredpovedView` isn't wired into a tab until Task 5. The manual visual check for this section happens as part of Task 5's Step 4.)
+
+---
+
+### Task 4: Season calendar section
 
 **Files:**
 - Modify: `MushroomSignalCore/Sources/MushroomSignalCore/Signal/SignalAlgorithm.swift`
@@ -254,7 +363,7 @@ git commit -m "feat: add PredpovedView weather dashboard (not yet wired into a t
 
 **Interfaces:**
 - Consumes: `SignalAlgorithm.calendarFit(species:month:) -> Double` (widened to `public`), `SpeciesDatabase.loadAll() -> [Species]` (existing), `Species.regionalAffinity: Set<String>` (existing).
-- Produces: nothing further consumed by other tasks — this is additive UI in the same file Task 2 created.
+- Produces: nothing further consumed by other tasks — this is additive UI in the same file Tasks 2 and 3 already touched.
 
 - [ ] **Step 1: Make `calendarFit` public**
 
@@ -282,6 +391,7 @@ Edit `MushroomSignal/Views/PredpovedView.swift`, replace:
 ```swift
 struct PredpovedView: View {
     let regionId: String
+    let topSignals: [SpeciesSignal]
     @StateObject private var weatherState = RegionWeatherState()
 
     private var todayEntry: DailyWeather? {
@@ -295,6 +405,7 @@ with:
 ```swift
 struct PredpovedView: View {
     let regionId: String
+    let topSignals: [SpeciesSignal]
     @StateObject private var weatherState = RegionWeatherState()
     @State private var allSpecies: [Species] = []
 
@@ -317,6 +428,9 @@ Then replace:
 ```swift
                 heroSection
                 dailyStripSection
+                if !topSignals.isEmpty {
+                    topPicksSection
+                }
             }
             .padding(DesignSystem.spacingLarge)
         }
@@ -332,6 +446,9 @@ with:
 ```swift
                 heroSection
                 dailyStripSection
+                if !topSignals.isEmpty {
+                    topPicksSection
+                }
                 seasonCalendarSection
             }
             .padding(DesignSystem.spacingLarge)
@@ -384,13 +501,13 @@ git commit -m "feat: add season-calendar section to PredpovedView"
 
 ---
 
-### Task 4: Wire the tab into `ContentView`
+### Task 5: Wire the tab into `ContentView`
 
 **Files:**
 - Modify: `MushroomSignal/ContentView.swift`
 
 **Interfaces:**
-- Consumes: `PredpovedView(regionId:)` (Task 2/3), `appState.selectedRegion.id` (existing).
+- Consumes: `PredpovedView(regionId:topSignals:)` (Tasks 2/3/4), `appState.selectedRegion.id` and `appState.signals` (both existing, `@Published`).
 - Produces: nothing further — leaf of this plan.
 
 This step assumes `ContentView.swift` already has the `species-trend-sparkline` and
@@ -437,7 +554,7 @@ with:
                     .tabItem { Label("Mapa", systemImage: "map") }
                     .tag(Tab.map)
 
-                PredpovedView(regionId: appState.selectedRegion.id)
+                PredpovedView(regionId: appState.selectedRegion.id, topSignals: appState.signals)
                     .tabItem { Label("Predpoveď", systemImage: "cloud.sun") }
                     .tag(Tab.forecast)
             }
@@ -458,8 +575,10 @@ Expected: `** TEST SUCCEEDED **`
 Launch the app. Confirm three tabs (Zoznam, Mapa, Predpoveď). Open Predpoveď: confirm real
 Open-Meteo data renders (spot-check a temperature value against a real weather source),
 the daily strip shows a visible min→max range bar per day with forecast days visually
-lighter, and the season-calendar section lists species with real Slovak names. Switch the
-shared region picker (toolbar) and confirm Predpoveď's content reloads for the new region.
+lighter, the "Odporúčané dnes" section shows up to 3 species matching Zoznam's own top 3
+for the same region (same names, same order, same score dots), and the season-calendar
+section lists species with real Slovak names. Switch the shared region picker (toolbar) and
+confirm Predpoveď's content — including the top-3 picks — reloads for the new region.
 
 - [ ] **Step 5: Commit**
 
