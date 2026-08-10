@@ -56,27 +56,30 @@ final class SpeciesTrendCalculatorTests: XCTestCase {
     }
 
     func testFlushTriggerAppliesToTheOldestDisplayedPointNotJustLaterOnes() {
-        // The oldest displayed point is -9 days from today. Put a qualifying flush day at
+        // Baseline: every day (including the would-be flush day) has zero precipitation, so
+        // the rolling 10-day sum never crosses a rainfall-fit threshold on its own — any
+        // score difference below is attributable ONLY to the flush-trigger boolean, not to
+        // the injected day also contributing to the rolling precipitation sum (a real risk
+        // since the flush lookback window is a subset of the rolling-sum window for every
+        // point, not just the oldest one — an injected flush day unavoidably counts toward
+        // both).
+        let baseline = nineteenDayHistory(precipitationMm: 0)
+
+        // The oldest displayed point is -9 days from today. Inject a qualifying flush day at
         // -16 (7 days before -9, the very edge of that point's 2-7-day lookback window) —
         // only reachable if the fetch window includes lookback days before the display
         // window, which is exactly the left-edge-truncation bug this fix addresses.
-        //
-        // Baseline precipitation is 0.5mm/day, not 1mm/day: at 1mm/day the 10-day rolling
-        // sum (10mm) alone already lands high-sensitivity rainfall in its 0.5 band, which
-        // combined with the other three dimensions at 1.0 each totals 3.5 — and Swift's
-        // `.rounded()` rounds 3.5 UP to 4, the same ceiling score the trigger case produces
-        // (rainScore is capped at min(1.0, ...)). Both branches would silently round to the
-        // same integer score and the assertion would falsely fail. At 0.5mm/day the baseline
-        // rolling sum (5mm) stays under the 8mm band entirely, so the trigger's effect is
-        // visible in the final integer score (3 -> 4) instead of being masked by rounding.
-        var days = nineteenDayHistory(precipitationMm: 0.5)
-        days[days.count - 1 - 16] = day(daysFromReference: -16, reference: today, maxTempC: 30, precipitationMm: 10)
+        // precipitationMm is exactly FlushTriggerDetector's own 5mm qualifying minimum, kept
+        // deliberately low so it cannot independently cross a rainfall-fit SUM threshold
+        // (8mm for high sensitivity) — isolating the assertion to the trigger boolean alone.
+        var daysWithFlush = baseline
+        daysWithFlush[daysWithFlush.count - 1 - 16] = day(daysFromReference: -16, reference: today, maxTempC: 30, precipitationMm: 5)
+
         let highSensitivity = species(rainfallSensitivity: .high)
+        let pointsWithFlush = SpeciesTrendCalculator.trend(species: highSensitivity, dailyWeather: daysWithFlush, regionId: "zilinsky", today: today)
+        let pointsWithoutFlush = SpeciesTrendCalculator.trend(species: highSensitivity, dailyWeather: baseline, regionId: "zilinsky", today: today)
 
-        let pointsWithTrigger = SpeciesTrendCalculator.trend(species: highSensitivity, dailyWeather: days, regionId: "zilinsky", today: today)
-        let pointsWithoutTrigger = SpeciesTrendCalculator.trend(species: highSensitivity, dailyWeather: nineteenDayHistory(precipitationMm: 0.5), regionId: "zilinsky", today: today)
-
-        XCTAssertGreaterThan(pointsWithTrigger.first?.score ?? 0, pointsWithoutTrigger.first?.score ?? 0, "the oldest displayed point (-9 days) must still see a flush day 7 days before it")
+        XCTAssertGreaterThan(pointsWithFlush.first?.score ?? 0, pointsWithoutFlush.first?.score ?? 0, "the oldest displayed point (-9 days) must still see a flush day 7 days before it, via the un-truncated array passed to FlushTriggerDetector")
     }
 
     func testDayAfterTodayIsMarkedAsForecast() {
