@@ -60,6 +60,11 @@ struct SpeciesCardView: View {
             }
             .padding(DesignSystem.spacingSmall)
         }
+        // Explicit total-card height, not just the photo's — without this the ZStack's height
+        // was inferred from its children, giving the grid an ambiguous answer to "how tall is
+        // this cell?" that drifted between layout and hit-testing, misplacing tap regions
+        // (confirmed present in both LazyVGrid and non-lazy Grid, so the grid wasn't the cause).
+        .frame(height: DesignSystem.speciesCardPhotoHeight)
         .background(DesignSystem.Colors.forestMid)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 2))
         .overlay(

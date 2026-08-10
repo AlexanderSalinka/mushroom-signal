@@ -150,7 +150,28 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   directly) deleted along with its dedicated test file. `InteractiveMapView` now renders a fixed
   screen-size `Annotation` marker (deliberately not `MapCircle`, whose geographic radius scaling
   is what made an earlier grid-overlay attempt look "very very crazy") at each grid point with a
-  resolved non-nil signal, colored via the existing legend palette.
+  resolved non-nil signal, colored via the existing legend palette. **Live-verified by Alexander
+  2026-08-10**: confirmed working, specifically liked seeing higher-confidence regions (e.g.
+  Trenčiansky) show a visibly bigger marker probability than lower-data regions (e.g. Košice) —
+  the intended effect of real per-region weather variance driving the map, not a color bug.
+
+## Fixed (2026-08-10 card misclick bug)
+
+- **Clicking the bottom half of a species card could select or open a different card** —
+  reported by Alexander, reproducible on fresh launch (no resize needed), present in both
+  Zoznam and Mapa's card grids. Root cause: `SpeciesCardView`'s outer `ZStack` had no explicit
+  total height — only its inner photo did — so the grid's row-height computation had to infer
+  the card's height from its children, and that inferred answer could disagree between the
+  layout pass (which sets tap regions) and the paint pass (what's drawn), letting a tap region
+  drift away from the visible card. Confirmed the grid container itself wasn't the cause: the
+  same misclick reproduced under both `LazyVGrid` and a non-lazy `Grid` (briefly tried as a
+  fix, reverted — it also broke the adaptive column reflow on window resize, which Alexander
+  explicitly wanted kept). Fixed by giving `SpeciesCardView`'s outer `ZStack` an explicit
+  `.frame(height: DesignSystem.speciesCardPhotoHeight)`, removing the ambiguity at its source.
+  Also swapped `.onTapGesture` for a real `Button` on each card in `ShortlistView.swift` and
+  `SpeciesLibraryView.swift` — didn't fix the bug by itself (an intermediate diagnostic step
+  that proved the tap region itself was wrong, not the gesture-recognizer type) but is a more
+  robust interaction pattern kept alongside the real fix. Live-verified by Alexander 2026-08-10.
 
 ## Open Issues
 - **Dataset common names need a native-speaker pass** — the v1 final review flagged a few
@@ -196,10 +217,3 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
 - **`RegionBoundaries`' hand-approximated kraj polygon coordinates render jagged ("broken
   glass") borders** — deferred follow-up from the 2026-08-09 map-markers spec, confirmed
   real by Alexander. Redrawing them for smoother edges is a future pass, not blocking.
-- **Map markers from the 2026-08-10 pass were not visually confirmed in a live app run** — build
-  and the full test suite (including `dominantSignal`'s nil/non-nil logic) pass, and Zoznam's
-  cards were visually confirmed still rendering `ScoreDotsView` correctly, but attempts to
-  toggle a species active and screenshot the map itself were inconclusive (native-app UI
-  automation in this environment has no reliable click tool, and repeated clicks may have
-  toggled the same species back off). Needs a real look from Alexander before this is trusted
-  as fully verified end-to-end.

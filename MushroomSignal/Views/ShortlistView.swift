@@ -17,8 +17,12 @@ struct ShortlistView: View {
 
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: DesignSystem.speciesCardMinWidth), spacing: DesignSystem.spacingSmall)], spacing: DesignSystem.spacingSmall) {
                     ForEach(appState.signals, id: \.species.id) { signal in
-                        SpeciesCardView(species: signal.species, photo: photosBySpeciesID[signal.species.id]?.first, signal: signal, isActiveOnMap: nil)
-                            .onTapGesture { detailSpecies = signal.species }
+                        Button {
+                            detailSpecies = signal.species
+                        } label: {
+                            SpeciesCardView(species: signal.species, photo: photosBySpeciesID[signal.species.id]?.first, signal: signal, isActiveOnMap: nil)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
 

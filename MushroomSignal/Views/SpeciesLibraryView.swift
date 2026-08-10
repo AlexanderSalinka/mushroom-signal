@@ -27,18 +27,22 @@ struct SpeciesLibraryView: View {
         let active = mapState.isActive(species.id)
         let photo = mapState.photosBySpeciesID[species.id]?.first
 
-        return SpeciesCardView(species: species, photo: photo, signal: nil, isActiveOnMap: active)
-            .overlay(alignment: .topTrailing) {
-                Button {
-                    detailSpecies = species
-                } label: {
-                    Image(systemName: "info.circle.fill")
-                        .foregroundStyle(DesignSystem.Colors.cloud)
-                        .background(Circle().fill(DesignSystem.Colors.forestDeep.opacity(0.7)))
+        return Button {
+            mapState.toggleSpecies(species.id)
+        } label: {
+            SpeciesCardView(species: species, photo: photo, signal: nil, isActiveOnMap: active)
+                .overlay(alignment: .topTrailing) {
+                    Button {
+                        detailSpecies = species
+                    } label: {
+                        Image(systemName: "info.circle.fill")
+                            .foregroundStyle(DesignSystem.Colors.cloud)
+                            .background(Circle().fill(DesignSystem.Colors.forestDeep.opacity(0.7)))
+                    }
+                    .buttonStyle(.plain)
+                    .padding(DesignSystem.iconButtonPadding)
                 }
-                .buttonStyle(.plain)
-                .padding(DesignSystem.iconButtonPadding)
-            }
-            .onTapGesture { mapState.toggleSpecies(species.id) }
+        }
+        .buttonStyle(.plain)
     }
 }
