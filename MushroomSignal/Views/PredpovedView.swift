@@ -5,6 +5,7 @@ import MushroomSignalCore
 
 struct PredpovedView: View {
     let regionId: String
+    let topSignals: [SpeciesSignal]
     @StateObject private var weatherState = RegionWeatherState()
 
     private var todayEntry: DailyWeather? {
@@ -23,12 +24,43 @@ struct PredpovedView: View {
 
                 heroSection
                 dailyStripSection
+                if !topSignals.isEmpty {
+                    topPicksSection
+                }
             }
             .padding(DesignSystem.spacingLarge)
         }
         .mushroomGlassBackground()
         .task(id: regionId) {
             await weatherState.load(regionId: regionId)
+        }
+    }
+
+    private var topPicksSection: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
+            Text("Odporúčané dnes")
+                .font(.system(size: DesignSystem.captionSize, weight: .bold))
+                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+            ForEach(Array(topSignals.prefix(3).enumerated()), id: \.element.species.id) { index, signal in
+                HStack(spacing: DesignSystem.spacingSmall) {
+                    Text("\(index + 1)")
+                        .font(.system(size: DesignSystem.captionSize, weight: .bold))
+                        .foregroundStyle(DesignSystem.Colors.cloud)
+                        .frame(width: 22, height: 22)
+                        .background(Circle().fill(DesignSystem.Colors.mossAccent.opacity(0.3)))
+                    VStack(alignment: .leading, spacing: DesignSystem.spacingTight / 2) {
+                        Text(signal.species.commonNameSk)
+                            .font(.system(size: DesignSystem.bodySize, weight: .semibold))
+                            .foregroundStyle(DesignSystem.Colors.cloud)
+                        Text(signal.species.latinName)
+                            .font(.system(size: DesignSystem.captionSize).italic())
+                            .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+                    }
+                    Spacer()
+                    ScoreDotsView(score: signal.score, color: DesignSystem.Colors.mossAccent, dotSize: DesignSystem.captionSize)
+                }
+                .padding(DesignSystem.spacingSmall)
+            }
         }
     }
 
