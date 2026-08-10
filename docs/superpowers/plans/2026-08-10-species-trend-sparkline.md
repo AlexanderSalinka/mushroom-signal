@@ -10,6 +10,8 @@
 
 **Depends on:** `docs/superpowers/plans/2026-08-10-weather-client-extension.md` must be merged first — this plan calls `fetchDailyBreakdown(for:pastDays:forecastDays:)` and uses `DailyWeather.humidityPercent`/`minTempC`, both introduced there.
 
+**Build order note:** this plan, `2026-08-10-proactive-notifications.md`, and `2026-08-10-predpoved-tab.md` all edit `MushroomSignal/ContentView.swift`. Their edits don't overlap textually (this plan only touches the `MapScreenView(...)` tab line), so build order relative to the notifications plan doesn't matter — but the Predpoveď-tab plan's `ContentView.swift` edit is written assuming this plan and the notifications plan have both already landed. Recommended overall order: weather-client-extension → this plan → proactive-notifications → predpoved-tab.
+
 ## Global Constraints
 
 - All new UI styling routes through `DesignSystem` — no hardcoded colors/sizes/spacing.

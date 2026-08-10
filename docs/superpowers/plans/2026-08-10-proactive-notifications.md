@@ -8,7 +8,9 @@
 
 **Tech Stack:** Swift, Foundation, `UserNotifications`, SwiftUI, XCTest, App Group `UserDefaults`.
 
-**Depends on:** nothing — fully independent of the weather-client-extension and trend-sparkline plans. Can be built and merged in either order relative to those.
+**Depends on:** nothing — fully independent of the weather-client-extension and trend-sparkline plans.
+
+**Build order note:** this plan, `2026-08-10-species-trend-sparkline.md`, and `2026-08-10-predpoved-tab.md` all edit `MushroomSignal/ContentView.swift`. This plan's edit (Task 4 Step 6) doesn't overlap textually with the trend-sparkline plan's edit, so order relative to that plan doesn't matter — but the Predpoveď-tab plan's `ContentView.swift` edit is written assuming this plan and the trend-sparkline plan have both already landed. Recommended overall order: weather-client-extension → species-trend-sparkline → this plan → predpoved-tab.
 
 ## Global Constraints
 
