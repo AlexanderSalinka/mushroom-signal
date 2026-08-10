@@ -10,12 +10,12 @@ final class WatchedAlertEvaluatorTests: XCTestCase {
             guard let snapshot = snapshots[region.id] else { throw StubError() }
             return snapshot
         }
-        func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] { [:] }
+        func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] { snapshots }
         func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] { [] }
     }
 
-    private func species(id: String) -> Species {
-        Species(id: id, commonNameSk: id, latinName: id, edibility: .edible, fruitingMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], idealTempMinC: 0, idealTempMaxC: 40, idealHumidityMinPercent: 0, idealHumidityMaxPercent: 100, rainfallSensitivity: .low, habitat: "test", regionalAffinity: [])
+    private func species(id: String, regionalAffinity: Set<String> = ["zilinsky", "kosicky"]) -> Species {
+        Species(id: id, commonNameSk: id, latinName: id, edibility: .edible, fruitingMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], idealTempMinC: 0, idealTempMaxC: 40, idealHumidityMinPercent: 0, idealHumidityMaxPercent: 100, rainfallSensitivity: .low, habitat: "test", regionalAffinity: regionalAffinity)
     }
 
     private func snapshot(regionId: String) -> WeatherSnapshot {
@@ -65,5 +65,15 @@ final class WatchedAlertEvaluatorTests: XCTestCase {
         let client = StubClient(snapshots: [:])
         let updates = await WatchedAlertEvaluator.evaluate(alerts: [], species: [], weatherClient: client, month: 7)
         XCTAssertTrue(updates.isEmpty)
+    }
+
+    func testSkipsAlertWhenSpeciesHasNoAffinityForWatchedRegion() async {
+        let alert = WatchedAlert(speciesId: "a", regionId: "zilinsky", threshold: 2)
+        let client = StubClient(snapshots: ["zilinsky": snapshot(regionId: "zilinsky")])
+        let outOfRegionSpecies = species(id: "a", regionalAffinity: ["kosicky"])
+
+        let updates = await WatchedAlertEvaluator.evaluate(alerts: [alert], species: [outOfRegionSpecies], weatherClient: client, month: 7)
+
+        XCTAssertTrue(updates.isEmpty, "species without affinity for the watched region should never be scored or notified")
     }
 }
