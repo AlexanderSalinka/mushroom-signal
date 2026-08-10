@@ -58,6 +58,11 @@ public enum DesignSystem {
     /// Height of the trend/weather charts (SpeciesDetailView's score trend, Predpoveď's daily
     /// weather strip) — shared so both charts read as one visual family.
     public static let trendChartHeight: Double = 120
+    /// Predpoveď's numbered rank badge (top-3 picks) — sized with headroom for a bold caption-size
+    /// digit inside a circle, not just the digit's own bounding box.
+    public static let rankBadgeSize: Double = 26
+    /// Corner radius for Predpoveď's daily weather bar chart marks.
+    public static let chartBarCornerRadius: Double = 7
 
     public enum Colors {
         public static let forestDeep = Color(red: 0.11, green: 0.16, blue: 0.11)

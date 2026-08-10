@@ -2,10 +2,13 @@
 import SwiftUI
 import Charts
 import MushroomSignalCore
+import os
+
+private let predpovedLogger = Logger(subsystem: "com.alexandersalinka.MushroomSignal", category: "PredpovedView")
 
 struct PredpovedView: View {
     let regionId: String
-    let topSignals: [SpeciesSignal]
+    @ObservedObject var appState: AppState
     @StateObject private var weatherState = RegionWeatherState()
     @State private var allSpecies: [Species] = []
 
@@ -19,12 +22,21 @@ struct PredpovedView: View {
         return allSpecies
             .filter { $0.regionalAffinity.contains(regionId) }
             .filter { SignalAlgorithm.calendarFit(species: $0, month: month) > 0 }
-            .sorted { $0.commonNameSk < $1.commonNameSk }
+            .sorted { $0.commonNameSk.localizedStandardCompare($1.commonNameSk) == .orderedAscending }
+    }
+
+    private var visibleTopSignals: [SpeciesSignal] {
+        Array(appState.signals.filter { $0.score > 0 }.prefix(3))
     }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.spacingMedium) {
+                if let error = appState.errorMessage {
+                    Text(error)
+                        .font(.system(size: DesignSystem.captionSize))
+                        .foregroundStyle(appState.isShowingStaleData ? DesignSystem.Colors.caution : DesignSystem.Colors.danger)
+                }
                 if let error = weatherState.errorMessage {
                     Text(error)
                         .font(.system(size: DesignSystem.captionSize))
@@ -33,10 +45,11 @@ struct PredpovedView: View {
 
                 heroSection
                 dailyStripSection
-                if !topSignals.isEmpty {
+                if !visibleTopSignals.isEmpty {
                     topPicksSection
                 }
                 seasonCalendarSection
+                disclaimer
             }
             .padding(DesignSystem.spacingLarge)
         }
@@ -45,7 +58,11 @@ struct PredpovedView: View {
             await weatherState.load(regionId: regionId)
         }
         .task {
-            allSpecies = (try? SpeciesDatabase.loadAll()) ?? []
+            do {
+                allSpecies = try SpeciesDatabase.loadAll()
+            } catch {
+                predpovedLogger.error("Failed to load species dataset: \(String(describing: error), privacy: .public)")
+            }
         }
     }
 
@@ -54,12 +71,12 @@ struct PredpovedView: View {
             Text("Odporúčané dnes")
                 .font(.system(size: DesignSystem.captionSize, weight: .bold))
                 .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-            ForEach(Array(topSignals.prefix(3).enumerated()), id: \.element.species.id) { index, signal in
+            ForEach(Array(visibleTopSignals.enumerated()), id: \.element.species.id) { index, signal in
                 HStack(spacing: DesignSystem.spacingSmall) {
                     Text("\(index + 1)")
                         .font(.system(size: DesignSystem.captionSize, weight: .bold))
                         .foregroundStyle(DesignSystem.Colors.cloud)
-                        .frame(width: 22, height: 22)
+                        .frame(width: DesignSystem.rankBadgeSize, height: DesignSystem.rankBadgeSize)
                         .background(Circle().fill(DesignSystem.Colors.mossAccent.opacity(0.3)))
                     VStack(alignment: .leading, spacing: DesignSystem.spacingTight / 2) {
                         Text(signal.species.commonNameSk)
@@ -68,6 +85,11 @@ struct PredpovedView: View {
                         Text(signal.species.latinName)
                             .font(.system(size: DesignSystem.captionSize).italic())
                             .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+                        if let warning = DesignSystem.warningLabelSk(for: signal.species.edibility) {
+                            Text(warning)
+                                .font(.system(size: DesignSystem.captionSize, weight: .bold))
+                                .foregroundStyle(DesignSystem.warningColor(for: signal.species.edibility))
+                        }
                     }
                     Spacer()
                     ScoreDotsView(score: signal.score, color: DesignSystem.Colors.mossAccent, dotSize: DesignSystem.captionSize)
@@ -86,8 +108,12 @@ struct PredpovedView: View {
                 Text("Vlhkosť \(Int(today.humidityPercent.rounded()))% · Zrážky \(String(format: "%.1f", today.precipitationMm)) mm")
                     .font(.system(size: DesignSystem.bodySize))
                     .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.7))
-            } else {
+            } else if weatherState.isLoading {
                 Text("Načítavam počasie…")
+                    .font(.system(size: DesignSystem.bodySize))
+                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+            } else if weatherState.errorMessage == nil {
+                Text("Žiadne údaje o počasí pre dnešný deň.")
                     .font(.system(size: DesignSystem.bodySize))
                     .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
             }
@@ -112,7 +138,7 @@ struct PredpovedView: View {
                     LinearGradient(colors: [DesignSystem.Colors.caution, DesignSystem.Colors.water], startPoint: .top, endPoint: .bottom)
                         .opacity(isForecastDay(day) ? 0.5 : 1.0)
                 )
-                .cornerRadius(7)
+                .cornerRadius(DesignSystem.chartBarCornerRadius)
             }
             .frame(height: DesignSystem.trendChartHeight)
         }
@@ -134,11 +160,25 @@ struct PredpovedView: View {
                     .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
             } else {
                 ForEach(inSeasonSpecies) { species in
-                    Text(species.commonNameSk)
-                        .font(.system(size: DesignSystem.bodySize))
-                        .foregroundStyle(DesignSystem.Colors.cloud)
+                    HStack(spacing: DesignSystem.spacingSmall) {
+                        Text(species.commonNameSk)
+                            .font(.system(size: DesignSystem.bodySize))
+                            .foregroundStyle(DesignSystem.Colors.cloud)
+                        if let warning = DesignSystem.warningLabelSk(for: species.edibility) {
+                            Text(warning)
+                                .font(.system(size: DesignSystem.captionSize, weight: .bold))
+                                .foregroundStyle(DesignSystem.warningColor(for: species.edibility))
+                        }
+                    }
                 }
             }
         }
+    }
+
+    private var disclaimer: some View {
+        Text("Tento zoznam je len orientačný odhad na základe počasia a sezóny. Pred zberom a konzumáciou húb si nález vždy overte s odborníkom alebo v spoľahlivom atlase húb.")
+            .font(.system(size: DesignSystem.captionSize))
+            .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
+            .padding(.top, DesignSystem.spacingMedium)
     }
 }
