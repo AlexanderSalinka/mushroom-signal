@@ -214,13 +214,18 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   personally rather than delegating it to research.
 - **Species dataset (temp/humidity/season/rainfall-sensitivity) needs Alexander's review** —
   see the 2026-08-07 scoring intelligence pass above for the specific species flagged.
-- **`FlushTriggerDetector` has a narrow UTC/local day-boundary skew** — `fetchDailyBreakdown`
-  requests `timezone=auto` (region-local dates), but day-counting normalizes to UTC. During a
+- **`FlushTriggerDetector` has a narrow UTC/local day-boundary skew, and the same root cause
+  affects `PredpovedView`'s date logic too** — `fetchDailyBreakdown` requests `timezone=auto`
+  (region-local dates), but `OpenMeteoClient` parses the returned day strings with a
+  UTC-pinned `DateFormatter`, while day-counting elsewhere normalizes to UTC too. During a
   ~2 hour local-midnight window (in CEST, roughly 00:00-02:00), the "days ago" count can shift
-  by one. Low real-world impact (the widget refreshes twice daily, so there's a modest chance
-  one refresh lands in the window) but a fully correct fix needs the region's actual timezone
-  threaded through `DailyWeather`/`FlushTriggerDetector`, not just picking a different single
-  calendar — deliberately deferred rather than rushed into the pass that found it.
+  by one. `PredpovedView`'s `todayEntry`/`isForecastDay` (2026-08-10 predpoved-tab plan) then
+  read those UTC-parsed instants with `Calendar.current` (device-local) — correct for a device
+  in CET/CEST (the UTC midnight lands at 01:00/02:00 local, same day), but a permanent
+  off-by-one for any device west of UTC. Low real-world impact today (Alexander's own device is
+  CEST) but a fully correct fix needs the region's actual timezone threaded through
+  `DailyWeather` end-to-end, not just picking a different single calendar — deliberately
+  deferred rather than rushed into either pass that found an instance of it.
 - **No test asserts `OpenMeteoClient`'s outgoing query parameters** — `MockURLProtocol` ignores
   the request URL entirely, so a typo in a parameter name (e.g. `relative_humidity_2m_mean`)
   would pass all 82 core tests while silently breaking in production.
@@ -261,3 +266,18 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   by whichever write lands last. Both windows are small in practice (the settings sheet only
   holds its own in-memory copy while open) but this is a real architectural gap, not just a
   hypothetical.
+- **`PredpovedView` triggers a second, near-duplicate weather fetch on top of `AppState`'s own
+  refresh** — `RegionWeatherState.load` fetches `fetchDailyBreakdown(pastDays: 10, forecastDays: 5)`
+  for the selected region; `AppState.refresh()` already fetched `fetchDailyBreakdown(pastDays: 10)`
+  for the same region moments earlier to compute the shortlist. Opening the Predpoveď tab (and
+  each time `.task(id: regionId)` re-fires, including possibly on every tab switch depending on
+  `TabView`'s teardown behavior) re-issues a near-identical network request. A proper fix would
+  hoist the daily breakdown into `AppState` itself and have `PredpovedView` consume it from
+  there — deliberately deferred as a larger refactor rather than folded into the fix wave that
+  found it (2026-08-10 predpoved-tab final review).
+- **Predpoveď's daily-strip bar gradient (cold-to-hot per bar) is fixed, not data-driven across
+  days** — every bar uses the same `caution`-to-`water` gradient regardless of that day's actual
+  temperature range, so a 3°C day and a 31°C day render with visually identical colors (only
+  the bar's own min→max direction is encoded). Matches the approved mockup as designed, per the
+  2026-08-10 predpoved-tab plan — flagged here in case this reads as unintentional later, not
+  because it's confirmed wrong; worth confirming with Alexander if it comes up again.
