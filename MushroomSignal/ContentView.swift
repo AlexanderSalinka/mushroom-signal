@@ -23,7 +23,7 @@ struct ContentView: View {
                     .tabItem { Label("Mapa", systemImage: "map") }
                     .tag(Tab.map)
 
-                PredpovedView(regionId: appState.selectedRegion.id, topSignals: appState.signals)
+                PredpovedView(regionId: appState.selectedRegion.id, appState: appState)
                     .tabItem { Label("Predpoveď", systemImage: "cloud.sun") }
                     .tag(Tab.forecast)
             }
