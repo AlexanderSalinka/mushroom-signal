@@ -250,3 +250,14 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
 - **`RegionBoundaries`' hand-approximated kraj polygon coordinates render jagged ("broken
   glass") borders** — deferred follow-up from the 2026-08-09 map-markers spec, confirmed
   real by Alexander. Redrawing them for smoother edges is a future pass, not blocking.
+- **`WatchedAlertEvaluator` always evaluates with `flushTriggered: false`** — a watched
+  species can score visibly lower via the notification path than the widget's own shortlist
+  shows for the same region/day right after a real flush-triggering rain event. Evaluating
+  the flush trigger per watched region would need a second, batched daily-breakdown fetch —
+  deliberately deferred, same simplification the map's `DominantSpeciesResolver`-era code used.
+- **`NotificationPoster` (widget) and `NotificationSettingsState` (app) both do a full-replace
+  write of the watched-alerts list, with no reconciliation** — a watch added/removed in the
+  settings sheet during the same window the widget is mid-refresh can be silently overwritten
+  by whichever write lands last. Both windows are small in practice (the settings sheet only
+  holds its own in-memory copy while open) but this is a real architectural gap, not just a
+  hypothetical.
