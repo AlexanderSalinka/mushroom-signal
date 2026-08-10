@@ -159,18 +159,29 @@ struct PredpovedView: View {
                     .font(.system(size: DesignSystem.bodySize))
                     .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
             } else {
-                ForEach(inSeasonSpecies) { species in
-                    HStack(spacing: DesignSystem.spacingSmall) {
-                        Text(species.commonNameSk)
-                            .font(.system(size: DesignSystem.bodySize))
-                            .foregroundStyle(DesignSystem.Colors.cloud)
-                        if let warning = DesignSystem.warningLabelSk(for: species.edibility) {
-                            Text(warning)
-                                .font(.system(size: DesignSystem.captionSize, weight: .bold))
-                                .foregroundStyle(DesignSystem.warningColor(for: species.edibility))
+                // Wrap species in a flex-like container using LazyVGrid for multi-line wrapping
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 120), spacing: DesignSystem.spacingSmall)], spacing: DesignSystem.spacingSmall, content: {
+                    ForEach(inSeasonSpecies) { species in
+                        HStack(spacing: 7) {
+                            // Circular dot indicator
+                            Circle()
+                                .fill(DesignSystem.Colors.mossAccent)
+                                .frame(width: 8, height: 8)
+
+                            // Species name
+                            Text(species.commonNameSk)
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundStyle(DesignSystem.Colors.cloud)
+                                .lineLimit(1)
+
+                            Spacer(minLength: 0)
                         }
+                        .padding(EdgeInsets(top: 7, leading: 10, bottom: 7, trailing: 14))
+                        .background(DesignSystem.Colors.mossAccent.opacity(0.2))
+                        .border(DesignSystem.Colors.mossAccent.opacity(0.45), width: 1)
+                        .cornerRadius(100)
                     }
-                }
+                })
             }
         }
     }
