@@ -342,11 +342,10 @@ No separate commit here; continue directly to Task 3, then commit both together.
 - Create: `MushroomSignal/SpeciesTrendState.swift`
 - Modify: `MushroomSignal/Views/SpeciesDetailView.swift`
 - Modify: `MushroomSignalCore/Sources/MushroomSignalCore/DesignSystem/DesignSystem.swift`
-- Modify: `MushroomSignalTests/StubWeatherClient.swift`
 - Create: `MushroomSignalTests/SpeciesTrendStateTests.swift`
 
 **Interfaces:**
-- Consumes: `SpeciesTrendCalculator.trend(...)` and `TrendPoint` (Task 1), `WeatherClient.fetchDailyBreakdown(for:pastDays:forecastDays:)` (weather-client-extension plan), `RegionDatabase.find(id:) -> Region?` (existing).
+- Consumes: `SpeciesTrendCalculator.trend(...)` and `TrendPoint` (Task 1), `WeatherClient.fetchDailyBreakdown(for:pastDays:forecastDays:)` and `StubWeatherClient(snapshots:dailyWeather:dailyShouldThrow:)` (both from the weather-client-extension plan), `RegionDatabase.find(id:) -> Region?` (existing).
 - Produces: `SpeciesTrendState` — no other task depends on it (leaf of this plan).
 
 - [ ] **Step 1: Add a `trendChartHeight` design token**
@@ -372,68 +371,12 @@ with:
     public static let trendChartHeight: Double = 120
 ```
 
-- [ ] **Step 2: Extend `StubWeatherClient` with injectable daily weather**
+- [ ] **Step 2: Write the failing `SpeciesTrendState` tests**
 
-Read `MushroomSignalTests/StubWeatherClient.swift` (already updated by the weather-client-extension
-plan to the 3-arg `fetchDailyBreakdown` signature, returning `[]` unconditionally). Replace:
-
-```swift
-actor StubWeatherClient: WeatherClient {
-    struct StubError: Error, Sendable {}
-
-    private var snapshots: [WeatherSnapshot?]
-    private var callIndex = 0
-    private let gridSnapshots: [String: WeatherSnapshot]
-    private let gridShouldThrow: Bool
-
-    init(snapshots: [WeatherSnapshot?], gridSnapshots: [String: WeatherSnapshot] = [:], gridShouldThrow: Bool = false) {
-        self.snapshots = snapshots
-        self.gridSnapshots = gridSnapshots
-        self.gridShouldThrow = gridShouldThrow
-    }
-```
-
-with:
-
-```swift
-actor StubWeatherClient: WeatherClient {
-    struct StubError: Error, Sendable {}
-
-    private var snapshots: [WeatherSnapshot?]
-    private var callIndex = 0
-    private let gridSnapshots: [String: WeatherSnapshot]
-    private let gridShouldThrow: Bool
-    private let dailyWeather: [DailyWeather]
-    private let dailyShouldThrow: Bool
-
-    init(snapshots: [WeatherSnapshot?], gridSnapshots: [String: WeatherSnapshot] = [:], gridShouldThrow: Bool = false, dailyWeather: [DailyWeather] = [], dailyShouldThrow: Bool = false) {
-        self.snapshots = snapshots
-        self.gridSnapshots = gridSnapshots
-        self.gridShouldThrow = gridShouldThrow
-        self.dailyWeather = dailyWeather
-        self.dailyShouldThrow = dailyShouldThrow
-    }
-```
-
-Then replace:
-
-```swift
-    func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] {
-        []
-    }
-```
-
-(the version inside `StubWeatherClient` only — leave `DelayedWeatherClient`'s copy of this
-method unchanged) with:
-
-```swift
-    func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] {
-        if dailyShouldThrow { throw StubError() }
-        return dailyWeather
-    }
-```
-
-- [ ] **Step 3: Write the failing `SpeciesTrendState` tests**
+`StubWeatherClient` already has the injectable `dailyWeather`/`dailyShouldThrow` parameters
+this step's tests need — added once, in the weather-client-extension plan's Task 1 Step 9,
+specifically so this plan and the Predpoveď-tab plan don't each add it independently. No
+changes to `StubWeatherClient.swift` in this plan.
 
 Create `MushroomSignalTests/SpeciesTrendStateTests.swift`:
 
@@ -480,12 +423,12 @@ final class SpeciesTrendStateTests: XCTestCase {
 }
 ```
 
-- [ ] **Step 4: Run the tests to verify they fail**
+- [ ] **Step 3: Run the tests to verify they fail**
 
 Run: `xcodebuild test -scheme MushroomSignal -destination 'platform=macOS' -derivedDataPath DerivedData -only-testing:MushroomSignalTests/SpeciesTrendStateTests`
 Expected: `** BUILD FAILED **` — `SpeciesTrendState` doesn't exist yet.
 
-- [ ] **Step 5: Create `SpeciesTrendState`**
+- [ ] **Step 4: Create `SpeciesTrendState`**
 
 Create `MushroomSignal/SpeciesTrendState.swift`:
 
@@ -521,12 +464,12 @@ final class SpeciesTrendState: ObservableObject {
 }
 ```
 
-- [ ] **Step 6: Regenerate the Xcode project (new file) and run the tests**
+- [ ] **Step 5: Regenerate the Xcode project (new file) and run the tests**
 
 Run: `xcodegen generate && xcodebuild test -scheme MushroomSignal -destination 'platform=macOS' -derivedDataPath DerivedData -only-testing:MushroomSignalTests/SpeciesTrendStateTests`
 Expected: `** TEST SUCCEEDED **`, all 3 tests pass.
 
-- [ ] **Step 7: Add the `regionId` parameter and chart section to `SpeciesDetailView`**
+- [ ] **Step 6: Add the `regionId` parameter and chart section to `SpeciesDetailView`**
 
 Edit `MushroomSignal/Views/SpeciesDetailView.swift`, replace:
 
@@ -628,27 +571,27 @@ with:
     private func detailRow(title: String, value: String) -> some View {
 ```
 
-- [ ] **Step 8: Build**
+- [ ] **Step 7: Build**
 
 Run: `xcodegen generate && xcodebuild -scheme MushroomSignal -configuration Debug -derivedDataPath DerivedData build`
 Expected: `** BUILD SUCCEEDED **` — this also resolves Task 2's expected build failure, since `SpeciesDetailView` now accepts `regionId`.
 
-- [ ] **Step 9: Full test suite**
+- [ ] **Step 8: Full test suite**
 
 Run: `xcodebuild test -scheme MushroomSignal -destination 'platform=macOS' -derivedDataPath DerivedData`
 Expected: `** TEST SUCCEEDED **`
 
-- [ ] **Step 10: Manual visual check — this is the real verification for the chart**
+- [ ] **Step 9: Manual visual check — this is the real verification for the chart**
 
 Launch the app. Open a species detail sheet from both Zoznam and Mapa. Confirm: a "Trend" section
 appears with a line/point chart, past points are solid, forecast points are lighter, the Y axis
 stays readable at the 0-4 score range, and opening the sheet from either tab works (confirms the
 `regionId` plumbing from Task 2 reaches both paths).
 
-- [ ] **Step 11: Commit (Tasks 2 and 3 together — Task 2 alone did not compile)**
+- [ ] **Step 10: Commit (Tasks 2 and 3 together — Task 2 alone did not compile)**
 
 ```bash
-git add MushroomSignal/ContentView.swift MushroomSignal/Views/MapScreenView.swift MushroomSignal/Views/SpeciesLibraryView.swift MushroomSignal/Views/ShortlistView.swift MushroomSignal/Views/SpeciesDetailView.swift MushroomSignal/SpeciesTrendState.swift MushroomSignalCore/Sources/MushroomSignalCore/DesignSystem/DesignSystem.swift MushroomSignalTests/StubWeatherClient.swift MushroomSignalTests/SpeciesTrendStateTests.swift MushroomSignal.xcodeproj
+git add MushroomSignal/ContentView.swift MushroomSignal/Views/MapScreenView.swift MushroomSignal/Views/SpeciesLibraryView.swift MushroomSignal/Views/ShortlistView.swift MushroomSignal/Views/SpeciesDetailView.swift MushroomSignal/SpeciesTrendState.swift MushroomSignalCore/Sources/MushroomSignalCore/DesignSystem/DesignSystem.swift MushroomSignalTests/SpeciesTrendStateTests.swift MushroomSignal.xcodeproj
 git commit -m "feat: show a per-species score trend chart in SpeciesDetailView"
 ```
 

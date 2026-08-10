@@ -30,7 +30,7 @@
 
 **Interfaces:**
 - Consumes: nothing new.
-- Produces: `DailyWeather` gains `minTempC: Double` and `humidityPercent: Double` (both required in `init`, positioned after `maxTempC` and after `precipitationMm` respectively — exact order below). `WeatherClient.fetchDailyBreakdown(for:pastDays:forecastDays:)` is the new protocol requirement; `fetchDailyBreakdown(for:pastDays:)` remains callable via a protocol-extension default. Both the trend-sparkline plan and the Predpoveď-tab plan call `fetchDailyBreakdown(for:pastDays:forecastDays:)` directly.
+- Produces: `DailyWeather` gains `minTempC: Double` and `humidityPercent: Double` (both required in `init`, positioned after `maxTempC` and after `precipitationMm` respectively — exact order below). `WeatherClient.fetchDailyBreakdown(for:pastDays:forecastDays:)` is the new protocol requirement; `fetchDailyBreakdown(for:pastDays:)` remains callable via a protocol-extension default. Both the trend-sparkline plan and the Predpoveď-tab plan call `fetchDailyBreakdown(for:pastDays:forecastDays:)` directly. `StubWeatherClient(snapshots:gridSnapshots:gridShouldThrow:dailyWeather:dailyShouldThrow:)` — the extra two parameters (Step 9) are test infrastructure both of those plans' own tests construct directly; neither plan touches `StubWeatherClient.swift` again.
 
 - [ ] **Step 1: Update `OpenMeteoClientTests.swift`'s daily-breakdown tests first (TDD red)**
 
@@ -430,7 +430,89 @@ Expected: PASS, no missing-symbol errors, no leftover 4-arg `DailyWeather(...)` 
 
 - [ ] **Step 9: Fix `MushroomSignalTests/StubWeatherClient.swift`'s two conformances**
 
-Read the current file. Replace:
+Read the current file. This step does two things at once: bumps both conformances to the new
+3-arg signature, and gives `StubWeatherClient` specifically an injectable `dailyWeather`/
+`dailyShouldThrow` — test infrastructure that both the trend-sparkline plan and the
+Predpoveď-tab plan need for their own `StubWeatherClient`-based tests, so it belongs here in
+the shared foundation rather than being added twice independently.
+
+Replace:
+
+```swift
+actor StubWeatherClient: WeatherClient {
+    struct StubError: Error, Sendable {}
+
+    private var snapshots: [WeatherSnapshot?]
+    private var callIndex = 0
+    private let gridSnapshots: [String: WeatherSnapshot]
+    private let gridShouldThrow: Bool
+
+    init(snapshots: [WeatherSnapshot?], gridSnapshots: [String: WeatherSnapshot] = [:], gridShouldThrow: Bool = false) {
+        self.snapshots = snapshots
+        self.gridSnapshots = gridSnapshots
+        self.gridShouldThrow = gridShouldThrow
+    }
+
+    func fetchSnapshot(for region: Region) async throws -> WeatherSnapshot {
+        let index = min(callIndex, snapshots.count - 1)
+        callIndex += 1
+        guard let snapshot = snapshots[index] else { throw StubError() }
+        return snapshot
+    }
+
+    func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] {
+        if gridShouldThrow { throw StubError() }
+        return gridSnapshots
+    }
+
+    func fetchDailyBreakdown(for region: Region, pastDays: Int) async throws -> [DailyWeather] {
+        []
+    }
+}
+```
+
+with:
+
+```swift
+actor StubWeatherClient: WeatherClient {
+    struct StubError: Error, Sendable {}
+
+    private var snapshots: [WeatherSnapshot?]
+    private var callIndex = 0
+    private let gridSnapshots: [String: WeatherSnapshot]
+    private let gridShouldThrow: Bool
+    private let dailyWeather: [DailyWeather]
+    private let dailyShouldThrow: Bool
+
+    init(snapshots: [WeatherSnapshot?], gridSnapshots: [String: WeatherSnapshot] = [:], gridShouldThrow: Bool = false, dailyWeather: [DailyWeather] = [], dailyShouldThrow: Bool = false) {
+        self.snapshots = snapshots
+        self.gridSnapshots = gridSnapshots
+        self.gridShouldThrow = gridShouldThrow
+        self.dailyWeather = dailyWeather
+        self.dailyShouldThrow = dailyShouldThrow
+    }
+
+    func fetchSnapshot(for region: Region) async throws -> WeatherSnapshot {
+        let index = min(callIndex, snapshots.count - 1)
+        callIndex += 1
+        guard let snapshot = snapshots[index] else { throw StubError() }
+        return snapshot
+    }
+
+    func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] {
+        if gridShouldThrow { throw StubError() }
+        return gridSnapshots
+    }
+
+    func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] {
+        if dailyShouldThrow { throw StubError() }
+        return dailyWeather
+    }
+}
+```
+
+Then, separately, `DelayedWeatherClient`'s own copy of the 2-arg method (a different type in
+the same file, used only for timing/delay tests — no injection needed there) — replace:
 
 ```swift
     func fetchDailyBreakdown(for region: Region, pastDays: Int) async throws -> [DailyWeather] {
@@ -438,7 +520,7 @@ Read the current file. Replace:
     }
 ```
 
-(this exact 3-line body appears twice — once in `StubWeatherClient`, once in `DelayedWeatherClient`) with, in **both** places:
+with:
 
 ```swift
     func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] {
