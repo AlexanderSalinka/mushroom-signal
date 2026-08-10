@@ -91,14 +91,14 @@ public struct OpenMeteoClient: WeatherClient {
         return result
     }
 
-    public func fetchDailyBreakdown(for region: Region, pastDays: Int) async throws -> [DailyWeather] {
+    public func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] {
         var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)!
         components.queryItems = [
             URLQueryItem(name: "latitude", value: String(region.latitude)),
             URLQueryItem(name: "longitude", value: String(region.longitude)),
-            URLQueryItem(name: "daily", value: "temperature_2m_max,temperature_2m_mean,precipitation_sum"),
+            URLQueryItem(name: "daily", value: "temperature_2m_max,temperature_2m_min,temperature_2m_mean,relative_humidity_2m_mean,precipitation_sum"),
             URLQueryItem(name: "past_days", value: String(pastDays)),
-            URLQueryItem(name: "forecast_days", value: "0"),
+            URLQueryItem(name: "forecast_days", value: String(forecastDays)),
             URLQueryItem(name: "timezone", value: "auto")
         ]
 
@@ -115,13 +115,17 @@ public struct OpenMeteoClient: WeatherClient {
         var result: [DailyWeather] = []
         for index in decoded.daily.time.indices {
             guard index < decoded.daily.temperature2mMax.count,
+                  index < decoded.daily.temperature2mMin.count,
                   index < decoded.daily.temperature2mMean.count,
+                  index < decoded.daily.relativeHumidity2mMean.count,
                   index < decoded.daily.precipitationSum.count,
                   let date = dateFormatter.date(from: decoded.daily.time[index]),
                   let maxTemp = decoded.daily.temperature2mMax[index],
+                  let minTemp = decoded.daily.temperature2mMin[index],
                   let meanTemp = decoded.daily.temperature2mMean[index],
+                  let humidity = decoded.daily.relativeHumidity2mMean[index],
                   let precipitation = decoded.daily.precipitationSum[index] else { continue }
-            result.append(DailyWeather(date: date, meanTempC: meanTemp, maxTempC: maxTemp, precipitationMm: precipitation))
+            result.append(DailyWeather(date: date, meanTempC: meanTemp, maxTempC: maxTemp, minTempC: minTemp, precipitationMm: precipitation, humidityPercent: humidity))
         }
         return result
     }
@@ -146,13 +150,17 @@ struct OpenMeteoDailyResponse: Codable {
     struct Daily: Codable {
         let time: [String]
         let temperature2mMax: [Double?]
+        let temperature2mMin: [Double?]
         let temperature2mMean: [Double?]
+        let relativeHumidity2mMean: [Double?]
         let precipitationSum: [Double?]
 
         enum CodingKeys: String, CodingKey {
             case time
             case temperature2mMax = "temperature_2m_max"
+            case temperature2mMin = "temperature_2m_min"
             case temperature2mMean = "temperature_2m_mean"
+            case relativeHumidity2mMean = "relative_humidity_2m_mean"
             case precipitationSum = "precipitation_sum"
         }
     }

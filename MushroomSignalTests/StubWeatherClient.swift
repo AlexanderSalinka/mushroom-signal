@@ -7,11 +7,15 @@ actor StubWeatherClient: WeatherClient {
     private var callIndex = 0
     private let gridSnapshots: [String: WeatherSnapshot]
     private let gridShouldThrow: Bool
+    private let dailyWeather: [DailyWeather]
+    private let dailyShouldThrow: Bool
 
-    init(snapshots: [WeatherSnapshot?], gridSnapshots: [String: WeatherSnapshot] = [:], gridShouldThrow: Bool = false) {
+    init(snapshots: [WeatherSnapshot?], gridSnapshots: [String: WeatherSnapshot] = [:], gridShouldThrow: Bool = false, dailyWeather: [DailyWeather] = [], dailyShouldThrow: Bool = false) {
         self.snapshots = snapshots
         self.gridSnapshots = gridSnapshots
         self.gridShouldThrow = gridShouldThrow
+        self.dailyWeather = dailyWeather
+        self.dailyShouldThrow = dailyShouldThrow
     }
 
     func fetchSnapshot(for region: Region) async throws -> WeatherSnapshot {
@@ -26,8 +30,9 @@ actor StubWeatherClient: WeatherClient {
         return gridSnapshots
     }
 
-    func fetchDailyBreakdown(for region: Region, pastDays: Int) async throws -> [DailyWeather] {
-        []
+    func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] {
+        if dailyShouldThrow { throw StubError() }
+        return dailyWeather
     }
 }
 
@@ -48,7 +53,7 @@ actor DelayedWeatherClient: WeatherClient {
         [:]
     }
 
-    func fetchDailyBreakdown(for region: Region, pastDays: Int) async throws -> [DailyWeather] {
+    func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] {
         []
     }
 }

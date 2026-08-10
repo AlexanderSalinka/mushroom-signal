@@ -163,7 +163,7 @@ final class OpenMeteoClientTests: XCTestCase {
 
     func testFetchDailyBreakdownParsesPerDayValues() async throws {
         let json = """
-        { "daily": { "time": ["2026-08-01", "2026-08-02"], "temperature_2m_max": [28.0, 30.0], "temperature_2m_mean": [22.0, 24.0], "precipitation_sum": [0.0, 5.0] } }
+        { "daily": { "time": ["2026-08-01", "2026-08-02"], "temperature_2m_max": [28.0, 30.0], "temperature_2m_min": [16.0, 18.0], "temperature_2m_mean": [22.0, 24.0], "relative_humidity_2m_mean": [65.0, 70.0], "precipitation_sum": [0.0, 5.0] } }
         """.data(using: .utf8)!
 
         MockURLProtocol.requestHandler = { request in
@@ -171,13 +171,16 @@ final class OpenMeteoClientTests: XCTestCase {
         }
 
         let client = OpenMeteoClient(session: makeMockedSession())
-        let result = try await client.fetchDailyBreakdown(for: region, pastDays: 2)
+        let result = try await client.fetchDailyBreakdown(for: region, pastDays: 2, forecastDays: 0)
 
         XCTAssertEqual(result.count, 2)
         XCTAssertEqual(result[0].maxTempC, 28.0, accuracy: 0.001)
+        XCTAssertEqual(result[0].minTempC, 16.0, accuracy: 0.001)
         XCTAssertEqual(result[0].meanTempC, 22.0, accuracy: 0.001)
+        XCTAssertEqual(result[0].humidityPercent, 65.0, accuracy: 0.001)
         XCTAssertEqual(result[0].precipitationMm, 0.0, accuracy: 0.001)
         XCTAssertEqual(result[1].maxTempC, 30.0, accuracy: 0.001)
+        XCTAssertEqual(result[1].minTempC, 18.0, accuracy: 0.001)
         XCTAssertEqual(result[1].precipitationMm, 5.0, accuracy: 0.001)
 
         var utcCalendar = Calendar(identifier: .gregorian)
@@ -190,7 +193,7 @@ final class OpenMeteoClientTests: XCTestCase {
 
     func testFetchDailyBreakdownSkipsDaysWithNullValues() async throws {
         let json = """
-        { "daily": { "time": ["2026-08-01", "2026-08-02"], "temperature_2m_max": [28.0, null], "temperature_2m_mean": [22.0, 24.0], "precipitation_sum": [0.0, 5.0] } }
+        { "daily": { "time": ["2026-08-01", "2026-08-02"], "temperature_2m_max": [28.0, null], "temperature_2m_min": [16.0, 17.0], "temperature_2m_mean": [22.0, 24.0], "relative_humidity_2m_mean": [65.0, 70.0], "precipitation_sum": [0.0, 5.0] } }
         """.data(using: .utf8)!
 
         MockURLProtocol.requestHandler = { request in
@@ -198,14 +201,14 @@ final class OpenMeteoClientTests: XCTestCase {
         }
 
         let client = OpenMeteoClient(session: makeMockedSession())
-        let result = try await client.fetchDailyBreakdown(for: region, pastDays: 2)
+        let result = try await client.fetchDailyBreakdown(for: region, pastDays: 2, forecastDays: 0)
 
         XCTAssertEqual(result.count, 1, "a day with any null field should be skipped, not crash or default to 0")
     }
 
     func testFetchDailyBreakdownHandlesMismatchedArrayLengths() async throws {
         let json = """
-        { "daily": { "time": ["2026-08-01", "2026-08-02"], "temperature_2m_max": [28.0], "temperature_2m_mean": [22.0, 24.0], "precipitation_sum": [0.0, 5.0] } }
+        { "daily": { "time": ["2026-08-01", "2026-08-02"], "temperature_2m_max": [28.0], "temperature_2m_min": [16.0, 17.0], "temperature_2m_mean": [22.0, 24.0], "relative_humidity_2m_mean": [65.0, 70.0], "precipitation_sum": [0.0, 5.0] } }
         """.data(using: .utf8)!
 
         MockURLProtocol.requestHandler = { request in
@@ -213,9 +216,43 @@ final class OpenMeteoClientTests: XCTestCase {
         }
 
         let client = OpenMeteoClient(session: makeMockedSession())
-        let result = try await client.fetchDailyBreakdown(for: region, pastDays: 2)
+        let result = try await client.fetchDailyBreakdown(for: region, pastDays: 2, forecastDays: 0)
 
         XCTAssertEqual(result.count, 1, "days with out-of-bounds indices should be skipped, not crash")
         XCTAssertEqual(result[0].maxTempC, 28.0, accuracy: 0.001)
+    }
+
+    func testFetchDailyBreakdownSendsForecastDaysQueryParameter() async throws {
+        let json = """
+        { "daily": { "time": ["2026-08-01"], "temperature_2m_max": [28.0], "temperature_2m_min": [16.0], "temperature_2m_mean": [22.0], "relative_humidity_2m_mean": [65.0], "precipitation_sum": [0.0] } }
+        """.data(using: .utf8)!
+
+        var capturedURL: URL?
+        MockURLProtocol.requestHandler = { request in
+            capturedURL = request.url
+            return (HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!, json)
+        }
+
+        let client = OpenMeteoClient(session: makeMockedSession())
+        _ = try await client.fetchDailyBreakdown(for: region, pastDays: 10, forecastDays: 5)
+
+        XCTAssertEqual(capturedURL?.query?.contains("forecast_days=5"), true, "forecastDays must be forwarded to Open-Meteo's forecast_days query parameter")
+    }
+
+    func testFetchDailyBreakdownTwoArgOverloadDefaultsForecastDaysToZero() async throws {
+        let json = """
+        { "daily": { "time": ["2026-08-01"], "temperature_2m_max": [28.0], "temperature_2m_min": [16.0], "temperature_2m_mean": [22.0], "relative_humidity_2m_mean": [65.0], "precipitation_sum": [0.0] } }
+        """.data(using: .utf8)!
+
+        var capturedURL: URL?
+        MockURLProtocol.requestHandler = { request in
+            capturedURL = request.url
+            return (HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!, json)
+        }
+
+        let client: WeatherClient = OpenMeteoClient(session: makeMockedSession())
+        _ = try await client.fetchDailyBreakdown(for: region, pastDays: 10)
+
+        XCTAssertEqual(capturedURL?.query?.contains("forecast_days=0"), true, "the existing 2-arg call site must still request 0 forecast days")
     }
 }

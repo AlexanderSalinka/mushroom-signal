@@ -5,7 +5,7 @@ final class FlushTriggerDetectorTests: XCTestCase {
     private let today = Date(timeIntervalSince1970: 1_754_524_800) // 2026-08-07 00:00:00 UTC
 
     private func daysAgo(_ n: Int, maxTempC: Double, precipitationMm: Double) -> DailyWeather {
-        DailyWeather(date: today.addingTimeInterval(-Double(n) * 86400), meanTempC: maxTempC - 5, maxTempC: maxTempC, precipitationMm: precipitationMm)
+        DailyWeather(date: today.addingTimeInterval(-Double(n) * 86400), meanTempC: maxTempC - 5, maxTempC: maxTempC, minTempC: maxTempC - 10, precipitationMm: precipitationMm, humidityPercent: 70)
     }
 
     func testTriggersOnQualifyingDayTwoDaysAgo() {

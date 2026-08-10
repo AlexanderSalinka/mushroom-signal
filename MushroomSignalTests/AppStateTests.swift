@@ -74,10 +74,10 @@ final class AppStateTests: XCTestCase {
                 WeatherSnapshot(regionId: region.id, averageTempLast10DaysC: 16, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 1, fetchedAt: .now)
             }
             func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] { [:] }
-            func fetchDailyBreakdown(for region: Region, pastDays: Int) async throws -> [DailyWeather] {
+            func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] {
                 // 3 days before the injected "now" so it always lands inside the detector's
                 // 2-7 day lag window, regardless of when the test actually runs.
-                [DailyWeather(date: referenceDate.addingTimeInterval(-3 * 86400), meanTempC: 22, maxTempC: 27, precipitationMm: 5)]
+                [DailyWeather(date: referenceDate.addingTimeInterval(-3 * 86400), meanTempC: 22, maxTempC: 27, minTempC: 17, precipitationMm: 5, humidityPercent: 70)]
             }
         }
 
