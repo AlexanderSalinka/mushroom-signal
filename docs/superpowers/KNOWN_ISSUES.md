@@ -281,12 +281,10 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   the bar's own min→max direction is encoded). Matches the approved mockup as designed, per the
   2026-08-10 predpoved-tab plan — flagged here in case this reads as unintentional later, not
   because it's confirmed wrong; worth confirming with Alexander if it comes up again.
-- **Predpoveď's "Sezóna tento mesiac" list renders plain text rows instead of the approved
-  mockup's chip design** — the mockup (`.chips`/`.chip`/`.chip .swatch` rules) specifies a
-  pill-shaped chip per species (rounded 100px, translucent moss background, a small color-coded
-  swatch dot, a distinct `.chip.caution` variant using the caution color for its swatch/border)
-  laid out in a wrapping flex row. The shipped `seasonCalendarSection` (2026-08-10 predpoved-tab
-  plan, Task 4) instead renders each species as a plain `Text` row, one per line — functionally
-  complete (including the post-final-review warning-label fix) but visually a step down from
-  the approved design. A future pass should extract a small `SpeciesChipView` matching the
-  mockup's CSS and swap it in for both the top-picks and season-calendar rows.
+- **`topPicksSection`'s rows still use plain text/circle-badge styling, not the mockup's chip
+  design** — `seasonCalendarSection` was redone to match the approved mockup's pill/chip
+  component (rounded, translucent moss background, color-coded swatch dot, recolored for
+  caution/poisonous species) on 2026-08-10, but the top-3-picks list above it wasn't — it still
+  uses the original numbered-badge/`VStack` layout from the predpoved-tab plan. Not a defect
+  (that layout is intentional — it needs to show a rank number and score dots the season list
+  doesn't), but worth a visual-consistency pass if the two sections should read as one family.
