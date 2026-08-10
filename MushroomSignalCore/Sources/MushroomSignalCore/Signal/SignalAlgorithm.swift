@@ -20,7 +20,7 @@ public enum SignalAlgorithm {
         return SpeciesSignal(species: species, score: min(4, max(0, score)), reason: reason)
     }
 
-    static func calendarFit(species: Species, month: Int) -> Double {
+    public static func calendarFit(species: Species, month: Int) -> Double {
         if species.fruitingMonths.contains(month) { return 1.0 }
         let previousMonth = month == 1 ? 12 : month - 1
         let nextMonth = month == 12 ? 1 : month + 1

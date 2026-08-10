@@ -7,10 +7,19 @@ struct PredpovedView: View {
     let regionId: String
     let topSignals: [SpeciesSignal]
     @StateObject private var weatherState = RegionWeatherState()
+    @State private var allSpecies: [Species] = []
 
     private var todayEntry: DailyWeather? {
         let calendar = Calendar.current
         return weatherState.dailyWeather.first { calendar.isDateInToday($0.date) }
+    }
+
+    private var inSeasonSpecies: [Species] {
+        let month = Calendar.current.component(.month, from: Date())
+        return allSpecies
+            .filter { $0.regionalAffinity.contains(regionId) }
+            .filter { SignalAlgorithm.calendarFit(species: $0, month: month) > 0 }
+            .sorted { $0.commonNameSk < $1.commonNameSk }
     }
 
     var body: some View {
@@ -27,12 +36,16 @@ struct PredpovedView: View {
                 if !topSignals.isEmpty {
                     topPicksSection
                 }
+                seasonCalendarSection
             }
             .padding(DesignSystem.spacingLarge)
         }
         .mushroomGlassBackground()
         .task(id: regionId) {
             await weatherState.load(regionId: regionId)
+        }
+        .task {
+            allSpecies = (try? SpeciesDatabase.loadAll()) ?? []
         }
     }
 
@@ -108,5 +121,24 @@ struct PredpovedView: View {
     private func isForecastDay(_ day: DailyWeather) -> Bool {
         let calendar = Calendar.current
         return calendar.startOfDay(for: day.date) > calendar.startOfDay(for: Date())
+    }
+
+    private var seasonCalendarSection: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
+            Text("Sezóna tento mesiac")
+                .font(.system(size: DesignSystem.captionSize, weight: .bold))
+                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+            if inSeasonSpecies.isEmpty {
+                Text("Žiadne druhy nie sú aktuálne v sezóne.")
+                    .font(.system(size: DesignSystem.bodySize))
+                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+            } else {
+                ForEach(inSeasonSpecies) { species in
+                    Text(species.commonNameSk)
+                        .font(.system(size: DesignSystem.bodySize))
+                        .foregroundStyle(DesignSystem.Colors.cloud)
+                }
+            }
+        }
     }
 }
