@@ -7,8 +7,8 @@ public enum SlovakiaGrid {
     public static let latitudeRange: ClosedRange<Double> = 47.7...49.6
     public static let longitudeRange: ClosedRange<Double> = 16.8...22.6
 
-    private static let latitudeStep = 0.4
-    private static let longitudeStep = 0.6
+    private static let latitudeStep = 0.8
+    private static let longitudeStep = 1.2
     /// Sum of normalized distance-from-center along each axis must stay within this to be kept —
     /// trims the bounding box's four corners, which fall outside Slovakia's actual silhouette.
     private static let diamondThreshold = 1.4

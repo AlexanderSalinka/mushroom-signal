@@ -4,8 +4,8 @@ import XCTest
 final class SlovakiaGridTests: XCTestCase {
     func testGeneratePointCountLandsInExpectedRange() {
         let points = SlovakiaGrid.generate()
-        XCTAssertGreaterThanOrEqual(points.count, 30)
-        XCTAssertLessThanOrEqual(points.count, 50)
+        XCTAssertGreaterThanOrEqual(points.count, 8)
+        XCTAssertLessThanOrEqual(points.count, 16)
     }
 
     func testEveryPointFallsWithinBoundingBox() {
