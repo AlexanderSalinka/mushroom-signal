@@ -24,6 +24,10 @@ struct ShortlistProvider: TimelineProvider {
         let limit = context.family == .systemLarge ? 4 : 3
         Task {
             let entry = await buildEntry(limit: limit)
+            // Awaited BEFORE completion() — WidgetKit may suspend this extension process
+            // once completion() is called, so posting a notification after that point risks
+            // it silently never happening.
+            await NotificationPoster.checkAndPostWatchedAlerts()
             let nextRefresh = Calendar.current.date(byAdding: .hour, value: 12, to: Date()) ?? Date().addingTimeInterval(12 * 3600)
             completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
         }

@@ -19,6 +19,7 @@
 		43A734B64961434BB158661E /* MapScreenState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B2C7634179D7F2C2F0DAE0 /* MapScreenState.swift */; };
 		4A6A84D5C179D025C3C2B2A8 /* SpyWidgetReloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDC18618DDF39FAA6E66948 /* SpyWidgetReloader.swift */; };
 		4B0915BCA4766B74EC78D523 /* ScoreDotsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D621AB64829FC3E73610130 /* ScoreDotsView.swift */; };
+		4E02707B4CA92BC11550A3C6 /* NotificationPoster.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A73DD10B0C80DC04F1C19E /* NotificationPoster.swift */; };
 		534EE6B719E4EFF861B5CA40 /* MushroomSignalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052C8A78E1FA1937EA12ED61 /* MushroomSignalApp.swift */; };
 		5A1AFB398EF3A754F7242101 /* InteractiveMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */; };
 		8FC572486E6D957D108BA05F /* SpeciesTrendState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F63D66DD01AC73FEAB0332 /* SpeciesTrendState.swift */; };
@@ -106,6 +107,7 @@
 		D921A8D3EAFD9FF2245F208B /* RegionPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionPickerView.swift; sourceTree = "<group>"; };
 		E80F3D521EE5DF973B8230E9 /* ShortlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortlistView.swift; sourceTree = "<group>"; };
 		EB6EFE36C5769E4BD4C6359A /* WidgetReloading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetReloading.swift; sourceTree = "<group>"; };
+		F0A73DD10B0C80DC04F1C19E /* NotificationPoster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPoster.swift; sourceTree = "<group>"; };
 		F760EE22AEDBFFBA81A41414 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -163,6 +165,7 @@
 				774052D1E9A10E6221F64D1D /* MushroomSignalWidget.entitlements */,
 				81841490E6D542F22EC19628 /* MushroomSignalWidget.swift */,
 				7121D9BEBDD981DC5A5A7F87 /* MushroomSignalWidgetBundle.swift */,
+				F0A73DD10B0C80DC04F1C19E /* NotificationPoster.swift */,
 				7C374D590D0DB48C3B165D63 /* ShortlistWidgetView.swift */,
 			);
 			path = MushroomSignalWidget;
@@ -366,6 +369,7 @@
 			files = (
 				B3E45FAFCA78015CBE59470B /* MushroomSignalWidget.swift in Sources */,
 				03E7041F6EA3BB051106A46E /* MushroomSignalWidgetBundle.swift in Sources */,
+				4E02707B4CA92BC11550A3C6 /* NotificationPoster.swift in Sources */,
 				236FFC17F60E79744D2296E3 /* ShortlistWidgetView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
