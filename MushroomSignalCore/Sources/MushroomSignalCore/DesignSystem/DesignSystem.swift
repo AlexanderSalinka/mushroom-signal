@@ -51,6 +51,10 @@ public enum DesignSystem {
     public static let detailPhotoHeight: Double = 160
     /// InteractiveMapView's legend swatch diameter.
     public static let legendDotSize: Double = 8
+    /// Score-dot glyph size inside a map marker — a decorative map-icon scale, matching the
+    /// precedent set by `legendDotSize`. Not subject to the 20pt body-text floor, which governs
+    /// readable text, not small status glyphs.
+    public static let mapMarkerDotSize: Double = 6
 
     public enum Colors {
         public static let forestDeep = Color(red: 0.11, green: 0.16, blue: 0.11)

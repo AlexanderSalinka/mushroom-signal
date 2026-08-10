@@ -29,6 +29,17 @@ struct InteractiveMapView: View {
                             .stroke(DesignSystem.Colors.regionPalette[index % DesignSystem.Colors.regionPalette.count], lineWidth: 1.5)
                     }
                 }
+
+                ForEach(mapState.gridPoints) { point in
+                    if let signal = mapState.dominantSignal(at: point.id), let color = mapState.speciesColors[signal.species.id] {
+                        Annotation(coordinate: CLLocationCoordinate2D(latitude: point.latitude, longitude: point.longitude)) {
+                            ScoreDotsView(score: signal.score, color: color, dotSize: DesignSystem.mapMarkerDotSize)
+                                .padding(.horizontal, DesignSystem.spacingTight)
+                                .padding(.vertical, DesignSystem.spacingTight / 2)
+                                .background(Capsule().fill(DesignSystem.Colors.forestDeep.opacity(0.85)))
+                        } label: { EmptyView() }
+                    }
+                }
             }
             .mapStyle(.standard(elevation: .flat))
 

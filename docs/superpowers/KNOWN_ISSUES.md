@@ -138,6 +138,20 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   cannot show a trigger bonus — the test could never have failed for the right reason. Fixed
   by adding an overridable `rainfallSensitivity` parameter to the helper.
 
+## Fixed (2026-08-10 map-markers pass)
+
+- **`SlovakiaGrid`/`dominantSpecies`/`speciesColors` machinery was live but never drawn on the
+  map** — fixed. `SlovakiaGrid` coarsened from 39 to ~11 points (`latitudeStep`/`longitudeStep`
+  0.4/0.6 → 0.8/1.2). New shared `ScoreDotsView` extracts the `●●○○` glyph out of
+  `SpeciesCardView` so the card and the new map markers render it identically.
+  `MapScreenState.dominantSpecies(at:) -> Species?` replaced with
+  `dominantSignal(at:) -> SpeciesSignal?`, exposing score alongside the winning species;
+  `DominantSpeciesResolver` (a thin wrapper adding no value beyond calling `SignalPipeline`
+  directly) deleted along with its dedicated test file. `InteractiveMapView` now renders a fixed
+  screen-size `Annotation` marker (deliberately not `MapCircle`, whose geographic radius scaling
+  is what made an earlier grid-overlay attempt look "very very crazy") at each grid point with a
+  resolved non-nil signal, colored via the existing legend palette.
+
 ## Open Issues
 - **Dataset common names need a native-speaker pass** — the v1 final review flagged a few
   possibly-off Slovak common names (e.g. `coprinus-comatus` → "Hnojník obyčajný" vs. the
@@ -179,3 +193,13 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   2026-08-08 UI visual redesign, cancelled outright by Alexander on 2026-08-09 (not deferred).
   Widget text still uses its pre-floor sizes. If revisited, re-scope from scratch — see the
   cancelled task's note in `docs/superpowers/plans/2026-08-08-ui-visual-redesign.md`.
+- **`RegionBoundaries`' hand-approximated kraj polygon coordinates render jagged ("broken
+  glass") borders** — deferred follow-up from the 2026-08-09 map-markers spec, confirmed
+  real by Alexander. Redrawing them for smoother edges is a future pass, not blocking.
+- **Map markers from the 2026-08-10 pass were not visually confirmed in a live app run** — build
+  and the full test suite (including `dominantSignal`'s nil/non-nil logic) pass, and Zoznam's
+  cards were visually confirmed still rendering `ScoreDotsView` correctly, but attempts to
+  toggle a species active and screenshot the map itself were inconclusive (native-app UI
+  automation in this environment has no reliable click tool, and repeated clicks may have
+  toggled the same species back off). Needs a real look from Alexander before this is trusted
+  as fully verified end-to-end.
