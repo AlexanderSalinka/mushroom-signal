@@ -9,6 +9,7 @@ import MushroomSignalCore
 struct WeatherRainChartView: View {
     let dailyWeather: [DailyWeather]
     let today: Date
+    @State private var selectedRange: Int = 7
 
     private var visibleDays: [DailyWeather] {
         let calendar = Calendar.current
@@ -16,7 +17,7 @@ struct WeatherRainChartView: View {
         let pastDays = dailyWeather
             .filter { calendar.startOfDay(for: $0.date) <= todayStart }
             .sorted { $0.date < $1.date }
-            .suffix(7)
+            .suffix(selectedRange)
         let forecastDays = dailyWeather
             .filter { calendar.startOfDay(for: $0.date) > todayStart }
             .sorted { $0.date < $1.date }
@@ -25,9 +26,20 @@ struct WeatherRainChartView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
-            Text("Posledných 7 dní + predpoveď")
-                .font(.system(size: DesignSystem.captionSize, weight: .bold))
-                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+            HStack {
+                Text("Posledných \(selectedRange) dní + predpoveď")
+                    .font(.system(size: DesignSystem.captionSize, weight: .bold))
+                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+                Spacer()
+                Picker("Rozsah", selection: $selectedRange) {
+                    Text("7").tag(7)
+                    Text("14").tag(14)
+                    Text("30").tag(30)
+                }
+                .pickerStyle(.segmented)
+                .frame(maxWidth: 160)
+                .labelsHidden()
+            }
 
             VStack(spacing: 0) {
                 Chart(visibleDays, id: \.date) { day in
