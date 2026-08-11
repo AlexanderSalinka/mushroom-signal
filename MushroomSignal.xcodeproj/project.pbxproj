@@ -45,6 +45,7 @@
 		F1BD6093C300D79918F11F17 /* ShortlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F3D521EE5DF973B8230E9 /* ShortlistView.swift */; };
 		FA4AB7A973E9513B20444774 /* MushroomSignalCore in Frameworks */ = {isa = PBXBuildFile; productRef = F0834182CDF6435077BFE5AA /* MushroomSignalCore */; };
 		FB538808A4334D85E46F77DD /* GlassBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */; };
+		7D07F52C1AB8F3A35817F054 /* CanopyLightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE95EF9A44BFF5BFD29F3CC0 /* CanopyLightView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +88,7 @@
 		1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MushroomSignalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveMapView.swift; sourceTree = "<group>"; };
 		2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassBackground.swift; sourceTree = "<group>"; };
+		AE95EF9A44BFF5BFD29F3CC0 /* CanopyLightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanopyLightView.swift; sourceTree = "<group>"; };
 		2CDC18618DDF39FAA6E66948 /* SpyWidgetReloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpyWidgetReloader.swift; sourceTree = "<group>"; };
 		3ED179E8F93BB1C9D3122168 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		406769D67F45636883C7A794 /* MapResizeHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapResizeHandle.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 			isa = PBXGroup;
 			children = (
 				54F80C4161C989E348E7F683 /* CachedAsyncImage.swift */,
+				AE95EF9A44BFF5BFD29F3CC0 /* CanopyLightView.swift */,
 				2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */,
 				254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */,
 				406769D67F45636883C7A794 /* MapResizeHandle.swift */,
@@ -400,6 +403,7 @@
 			files = (
 				32B76617FFC241BA6715EA65 /* AppState.swift in Sources */,
 				2C2C190D6F520DB4BEDEBDB4 /* CachedAsyncImage.swift in Sources */,
+				7D07F52C1AB8F3A35817F054 /* CanopyLightView.swift in Sources */,
 				C1289E25CCE0D11F12F3C2F6 /* ContentView.swift in Sources */,
 				FB538808A4334D85E46F77DD /* GlassBackground.swift in Sources */,
 				5A1AFB398EF3A754F7242101 /* InteractiveMapView.swift in Sources */,

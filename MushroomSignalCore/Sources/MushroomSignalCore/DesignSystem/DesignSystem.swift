@@ -67,6 +67,9 @@ public enum DesignSystem {
     public static let chipDotSize: Double = 8
     /// Predpoveď's season-calendar chip — fully rounded pill shape, matching the approved mockup.
     public static let chipCornerRadius: Double = 100
+    /// Locked opacity multiplier on `CanopyLightView`'s light-blob layer — approved via
+    /// interactive mockup calibration, 2026-08-11. Not user-adjustable in the shipped app.
+    public static let canopyLightIntensity: Double = 0.66
 
     public enum Colors {
         public static let forestDeep = Color(red: 0.11, green: 0.16, blue: 0.11)

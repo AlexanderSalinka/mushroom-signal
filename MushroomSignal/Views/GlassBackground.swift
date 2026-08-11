@@ -46,6 +46,8 @@ extension View {
             ZStack {
                 VisualEffectBackground()
                 DesignSystem.Colors.forestDeep.opacity(0.25)
+                CanopyLightView()
+                    .opacity(DesignSystem.canopyLightIntensity)
             }
         )
     }
