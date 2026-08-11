@@ -30,6 +30,7 @@
 		8C9AB5CBE17B3271E4716C15 /* PredpovedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461BDE4B8F800D9D3ECFEC01 /* PredpovedView.swift */; };
 		8FC572486E6D957D108BA05F /* SpeciesTrendState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F63D66DD01AC73FEAB0332 /* SpeciesTrendState.swift */; };
 		90410647C8266446E776F743 /* MapScreenStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD99729FBB887B89C2D3D43 /* MapScreenStateTests.swift */; };
+		A077CA036F19536E12341817 /* GrainTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3325BED6124585CBBF2E95B6 /* GrainTexture.swift */; };
 		A3FF3637C4ACD5D994391305 /* MushroomSignalCore in Frameworks */ = {isa = PBXBuildFile; productRef = 92DC9F3E451BED501F4B36B6 /* MushroomSignalCore */; };
 		A73E3143F33570B52618AE7D /* SpeciesTrendStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED03FE1A9085BBA24624FA2 /* SpeciesTrendStateTests.swift */; };
 		B3E45FAFCA78015CBE59470B /* MushroomSignalWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81841490E6D542F22EC19628 /* MushroomSignalWidget.swift */; };
@@ -92,6 +93,7 @@
 		254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveMapView.swift; sourceTree = "<group>"; };
 		2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassBackground.swift; sourceTree = "<group>"; };
 		2CDC18618DDF39FAA6E66948 /* SpyWidgetReloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpyWidgetReloader.swift; sourceTree = "<group>"; };
+		3325BED6124585CBBF2E95B6 /* GrainTexture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrainTexture.swift; sourceTree = "<group>"; };
 		3ED179E8F93BB1C9D3122168 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		406769D67F45636883C7A794 /* MapResizeHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapResizeHandle.swift; sourceTree = "<group>"; };
 		43F342E2888340E1136922BC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 				0663AE9DE1E9AEFE66412B2E /* CanopyLightView.swift */,
 				06EF8D1E5F4C3D10D7F82FBB /* ForestIcons.swift */,
 				2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */,
+				3325BED6124585CBBF2E95B6 /* GrainTexture.swift */,
 				254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */,
 				406769D67F45636883C7A794 /* MapResizeHandle.swift */,
 				0E508520517A594C06FD0468 /* MapScreenView.swift */,
@@ -410,6 +413,7 @@
 				C1289E25CCE0D11F12F3C2F6 /* ContentView.swift in Sources */,
 				552C06B7AC1611B6F2553245 /* ForestIcons.swift in Sources */,
 				FB538808A4334D85E46F77DD /* GlassBackground.swift in Sources */,
+				A077CA036F19536E12341817 /* GrainTexture.swift in Sources */,
 				5A1AFB398EF3A754F7242101 /* InteractiveMapView.swift in Sources */,
 				19426F3C206A152A238DE8FC /* MapResizeHandle.swift in Sources */,
 				43A734B64961434BB158661E /* MapScreenState.swift in Sources */,
