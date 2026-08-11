@@ -45,10 +45,18 @@ struct SpeciesCardView: View {
                 if let signal {
                     ScoreDotsView(score: signal.score, color: DesignSystem.Colors.mossAccent, dotSize: DesignSystem.captionSize)
                     if let reason = signal.reason {
-                        Text(reason)
-                            .font(.system(size: DesignSystem.captionSize))
-                            .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-                            .lineLimit(2)
+                        HStack(alignment: .top, spacing: 4) {
+                            if signal.flushTriggered {
+                                SunriseShape()
+                                    .stroke(DesignSystem.Colors.caution, style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
+                                    .frame(width: 12, height: 12)
+                                    .padding(.top, 2)
+                            }
+                            Text(reason)
+                                .font(.system(size: DesignSystem.captionSize))
+                                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+                                .lineLimit(2)
+                        }
                     }
                 }
 
