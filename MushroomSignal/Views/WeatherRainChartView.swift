@@ -141,6 +141,7 @@ struct WeatherRainChartView: View {
                     .cornerRadius(DesignSystem.chartBarCornerRadius * 0.5)
                 }
                 .frame(height: DesignSystem.chartRainPanelHeight)
+                .chartYAxis(.hidden)
                 .chartXAxis {
                     AxisMarks(values: axisMarkDates) { value in
                         AxisValueLabel {
