@@ -5,7 +5,7 @@ public enum SignalAlgorithm {
         let calendarScore = calendarFit(species: species, month: month)
 
         guard calendarScore > 0 else {
-            return SpeciesSignal(species: species, score: 0, reason: "mimo hlavnej sezóny")
+            return SpeciesSignal(species: species, score: 0, reason: "mimo hlavnej sezóny", flushTriggered: flushTriggered)
         }
 
         let tempScore = temperatureFit(species: species, weather: weather)
@@ -17,7 +17,7 @@ public enum SignalAlgorithm {
 
         let reason = reasonText(species: species, tempScore: tempScore, humidityScore: humidityScore, rainScore: rainScore, flushTriggered: flushTriggered)
 
-        return SpeciesSignal(species: species, score: min(4, max(0, score)), reason: reason)
+        return SpeciesSignal(species: species, score: min(4, max(0, score)), reason: reason, flushTriggered: flushTriggered)
     }
 
     public static func calendarFit(species: Species, month: Int) -> Double {

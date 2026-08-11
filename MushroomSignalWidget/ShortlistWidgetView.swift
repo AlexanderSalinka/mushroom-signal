@@ -175,7 +175,8 @@ private func previewSignal(name: String, latin: String, edibility: Edibility, sc
             regionalAffinity: [RegionDatabase.all[4].id]
         ),
         score: score,
-        reason: nil
+        reason: nil,
+        flushTriggered: false
     )
 }
 

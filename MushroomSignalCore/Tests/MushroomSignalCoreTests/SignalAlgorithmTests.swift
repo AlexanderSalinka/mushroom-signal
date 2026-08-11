@@ -221,4 +221,16 @@ final class SignalAlgorithmTests: XCTestCase {
         XCTAssertEqual(withTrigger.score, 4)
         XCTAssertEqual(withTrigger.reason, "nedávno teplo a dážď — čoskoro môže prísť nová vlna")
     }
+
+    func testComputeSignalStoresFlushTriggeredTrue() {
+        let weather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 17, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 25, fetchedAt: Date())
+        let signal = SignalAlgorithm.computeSignal(species: sampleSpecies, weather: weather, month: 9, flushTriggered: true)
+        XCTAssertTrue(signal.flushTriggered)
+    }
+
+    func testComputeSignalStoresFlushTriggeredFalse() {
+        let weather = WeatherSnapshot(regionId: "zilinsky", averageTempLast10DaysC: 17, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 25, fetchedAt: Date())
+        let signal = SignalAlgorithm.computeSignal(species: sampleSpecies, weather: weather, month: 9, flushTriggered: false)
+        XCTAssertFalse(signal.flushTriggered)
+    }
 }
