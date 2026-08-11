@@ -1,5 +1,14 @@
 # Mushroom Signal — Chart Fix, Card Photos, and the Signal Hero
 
+**Superseded — split into two specs after a critique pass surfaced real gaps (missing
+season-word mapping, an unworkable widget layout assumption, an under-specified
+animation lifecycle) and Alexander asked to separate the small pre-approved half from
+the larger one still needing iteration:**
+- `2026-08-12-chart-fix-and-card-photos-design.md` — approved, implementation-ready.
+- `2026-08-12-mushroom-signal-hero-widget-design.md` — first version, still iterating.
+
+Kept here for history; do not implement directly from this version.
+
 ## Relationship to prior specs
 
 Builds directly on `2026-08-11-predpoved-beautify-design.md` (shipped same session,
