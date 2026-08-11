@@ -32,7 +32,8 @@ struct PredpovedView: View {
     private func slovakDayWord(_ count: Int) -> String {
         switch count {
         case 1: return "deň"
-        default: return "dni"
+        case 2...4: return "dni"
+        default: return "dní"
         }
     }
 
