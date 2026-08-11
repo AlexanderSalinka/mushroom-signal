@@ -58,4 +58,15 @@ final class UpcomingRainDetectorTests: XCTestCase {
     func testEmptyArrayReturnsNil() {
         XCTAssertNil(UpcomingRainDetector.nextTriggerEvent(in: [], asOf: today))
     }
+
+    func testQualifiesAtExactThresholds() {
+        let days = [daysFromNow(2, maxTempC: 26.0, precipitationMm: 5.0)]
+        let event = UpcomingRainDetector.nextTriggerEvent(in: days, asOf: today)
+        XCTAssertNotNil(event)
+    }
+
+    func testTodayItselfDoesNotQualifyEvenAtThresholds() {
+        let days = [daysFromNow(0, maxTempC: 26.0, precipitationMm: 5.0)]
+        XCTAssertNil(UpcomingRainDetector.nextTriggerEvent(in: days, asOf: today))
+    }
 }

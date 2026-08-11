@@ -70,6 +70,14 @@ struct PredpovedView: View {
                     RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.55)
                         .stroke(DesignSystem.Colors.water.opacity(0.4), lineWidth: 1)
                 )
+            } else if weatherState.isLoading {
+                Text("Načítavam predpoveď…")
+                    .font(.system(size: DesignSystem.bodySize))
+                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+            } else if weatherState.errorMessage != nil {
+                Text("Predpoveď nie je k dispozícii.")
+                    .font(.system(size: DesignSystem.bodySize))
+                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
             } else {
                 Text("Žiadny výraznejší dážď v predpovedi.")
                     .font(.system(size: DesignSystem.bodySize))
@@ -194,6 +202,8 @@ struct PredpovedView: View {
             }
             .frame(height: DesignSystem.rainHeatChartRowHeight)
             .chartYAxis(.hidden)
+            .chartXAxis(.hidden)
+            .chartLegend(.hidden)
 
             Chart(pastTenDays, id: \.date) { day in
                 BarMark(

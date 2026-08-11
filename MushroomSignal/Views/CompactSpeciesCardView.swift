@@ -5,6 +5,12 @@ import MushroomSignalCore
 /// The forest redesign's new compact "glass button" species card — small, roughly square,
 /// translucent, fixed size regardless of window/grid resize. Distinct from `SpeciesCardView`
 /// (Zoznam/Mapa's larger photo-backed grid cards, unaffected by this redesign).
+///
+/// Deliberate exception to the app-wide 20pt text floor (`DesignSystem.captionSize`, see
+/// DesignSystem.swift ~line 16-21): this card's rank badge, name, latin name, and warning
+/// text all render below 20pt. Its 120×120pt footprint is locked to the approved mockup and
+/// can't fit floor-sized text for all four elements at once. Accepted tradeoff, explicitly
+/// approved by Alexander 2026-08-11 — not an oversight.
 struct CompactSpeciesCardView: View {
     let species: Species
     let signal: SpeciesSignal?
@@ -45,6 +51,12 @@ struct CompactSpeciesCardView: View {
                     .font(.system(size: DesignSystem.captionSize * 0.45).italic())
                     .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.55))
                     .lineLimit(1)
+                if let warning = DesignSystem.warningLabelSk(for: species.edibility) {
+                    Text(warning)
+                        .font(.system(size: DesignSystem.captionSize * 0.5, weight: .bold))
+                        .foregroundStyle(DesignSystem.warningColor(for: species.edibility))
+                        .lineLimit(1)
+                }
                 if let signal {
                     ScoreDotsView(score: signal.score, color: DesignSystem.Colors.mossAccent, dotSize: DesignSystem.captionSize * 0.4)
                         .padding(.top, 2)
@@ -60,7 +72,7 @@ struct CompactSpeciesCardView: View {
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.58))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.58)
-                .stroke(isWarning ? DesignSystem.Colors.caution.opacity(0.4) : DesignSystem.Colors.cloud.opacity(0.16), lineWidth: 1)
+                .stroke(isWarning ? DesignSystem.warningColor(for: species.edibility).opacity(0.4) : DesignSystem.Colors.cloud.opacity(0.16), lineWidth: 1)
         )
     }
 }
