@@ -16,6 +16,7 @@
 		236FFC17F60E79744D2296E3 /* ShortlistWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C374D590D0DB48C3B165D63 /* ShortlistWidgetView.swift */; };
 		2A74A8E81EEBF5310F3F9DF9 /* SpeciesDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41CD56B6EA7546BE828E356 /* SpeciesDetailView.swift */; };
 		2C2C190D6F520DB4BEDEBDB4 /* CachedAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F80C4161C989E348E7F683 /* CachedAsyncImage.swift */; };
+		2F8DB67CA5A51FA41EE1A2DF /* CanopyLightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0663AE9DE1E9AEFE66412B2E /* CanopyLightView.swift */; };
 		32B76617FFC241BA6715EA65 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2D0E1BA2D29697E1EE3ACA0 /* AppState.swift */; };
 		38BF2E5932B7C87CDCC1072A /* WidgetReloading.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6EFE36C5769E4BD4C6359A /* WidgetReloading.swift */; };
 		3BBC21D29B9E82DD1D43011D /* RegionWeatherState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0153180DAA3EEF038D06C43 /* RegionWeatherState.swift */; };
@@ -24,6 +25,7 @@
 		4B0915BCA4766B74EC78D523 /* ScoreDotsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D621AB64829FC3E73610130 /* ScoreDotsView.swift */; };
 		4E02707B4CA92BC11550A3C6 /* NotificationPoster.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A73DD10B0C80DC04F1C19E /* NotificationPoster.swift */; };
 		534EE6B719E4EFF861B5CA40 /* MushroomSignalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052C8A78E1FA1937EA12ED61 /* MushroomSignalApp.swift */; };
+		552C06B7AC1611B6F2553245 /* ForestIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF8D1E5F4C3D10D7F82FBB /* ForestIcons.swift */; };
 		5A1AFB398EF3A754F7242101 /* InteractiveMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */; };
 		8C9AB5CBE17B3271E4716C15 /* PredpovedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461BDE4B8F800D9D3ECFEC01 /* PredpovedView.swift */; };
 		8FC572486E6D957D108BA05F /* SpeciesTrendState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F63D66DD01AC73FEAB0332 /* SpeciesTrendState.swift */; };
@@ -45,7 +47,6 @@
 		F1BD6093C300D79918F11F17 /* ShortlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80F3D521EE5DF973B8230E9 /* ShortlistView.swift */; };
 		FA4AB7A973E9513B20444774 /* MushroomSignalCore in Frameworks */ = {isa = PBXBuildFile; productRef = F0834182CDF6435077BFE5AA /* MushroomSignalCore */; };
 		FB538808A4334D85E46F77DD /* GlassBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */; };
-		7D07F52C1AB8F3A35817F054 /* CanopyLightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE95EF9A44BFF5BFD29F3CC0 /* CanopyLightView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,8 @@
 
 /* Begin PBXFileReference section */
 		052C8A78E1FA1937EA12ED61 /* MushroomSignalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MushroomSignalApp.swift; sourceTree = "<group>"; };
+		0663AE9DE1E9AEFE66412B2E /* CanopyLightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanopyLightView.swift; sourceTree = "<group>"; };
+		06EF8D1E5F4C3D10D7F82FBB /* ForestIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForestIcons.swift; sourceTree = "<group>"; };
 		0A1FB316DE56516A4B21295F /* AppStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
 		0E508520517A594C06FD0468 /* MapScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapScreenView.swift; sourceTree = "<group>"; };
 		110AD9FC35B9B74F20358F50 /* NotificationSettingsStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsStateTests.swift; sourceTree = "<group>"; };
@@ -88,7 +91,6 @@
 		1A7BF72C08EE790691789972 /* MushroomSignalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MushroomSignalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveMapView.swift; sourceTree = "<group>"; };
 		2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassBackground.swift; sourceTree = "<group>"; };
-		AE95EF9A44BFF5BFD29F3CC0 /* CanopyLightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanopyLightView.swift; sourceTree = "<group>"; };
 		2CDC18618DDF39FAA6E66948 /* SpyWidgetReloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpyWidgetReloader.swift; sourceTree = "<group>"; };
 		3ED179E8F93BB1C9D3122168 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		406769D67F45636883C7A794 /* MapResizeHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapResizeHandle.swift; sourceTree = "<group>"; };
@@ -157,7 +159,8 @@
 			isa = PBXGroup;
 			children = (
 				54F80C4161C989E348E7F683 /* CachedAsyncImage.swift */,
-				AE95EF9A44BFF5BFD29F3CC0 /* CanopyLightView.swift */,
+				0663AE9DE1E9AEFE66412B2E /* CanopyLightView.swift */,
+				06EF8D1E5F4C3D10D7F82FBB /* ForestIcons.swift */,
 				2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */,
 				254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */,
 				406769D67F45636883C7A794 /* MapResizeHandle.swift */,
@@ -403,8 +406,9 @@
 			files = (
 				32B76617FFC241BA6715EA65 /* AppState.swift in Sources */,
 				2C2C190D6F520DB4BEDEBDB4 /* CachedAsyncImage.swift in Sources */,
-				7D07F52C1AB8F3A35817F054 /* CanopyLightView.swift in Sources */,
+				2F8DB67CA5A51FA41EE1A2DF /* CanopyLightView.swift in Sources */,
 				C1289E25CCE0D11F12F3C2F6 /* ContentView.swift in Sources */,
+				552C06B7AC1611B6F2553245 /* ForestIcons.swift in Sources */,
 				FB538808A4334D85E46F77DD /* GlassBackground.swift in Sources */,
 				5A1AFB398EF3A754F7242101 /* InteractiveMapView.swift in Sources */,
 				19426F3C206A152A238DE8FC /* MapResizeHandle.swift in Sources */,
