@@ -46,6 +46,22 @@ struct PredpovedView: View {
         UpcomingRainDetector.nextTriggerEvent(in: weatherState.dailyWeather, asOf: Date())
     }
 
+    private var nearMissInsight: NearMissRainInsight.Case? {
+        guard upcomingRainEvent == nil else { return nil }
+        return NearMissRainInsight.describe(in: weatherState.dailyWeather, asOf: Date())
+    }
+
+    private func nearMissText(for insight: NearMissRainInsight.Case) -> String {
+        switch insight {
+        case .rainWithoutHeat(let date, let precipitationMm, _):
+            let daysUntil = max(1, Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: Date()), to: Calendar.current.startOfDay(for: date)).day ?? 1)
+            return "O \(daysUntil) \(slovakDayWord(daysUntil)) mierny dážď (\(String(format: "%.0f", precipitationMm)) mm), ale bez dostatočného tepla na nárast rastu."
+        case .heatWithoutRain(let date, _, let maxTempC):
+            let daysUntil = max(1, Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: Date()), to: Calendar.current.startOfDay(for: date)).day ?? 1)
+            return "O \(daysUntil) \(slovakDayWord(daysUntil)) teplo (\(Int(maxTempC.rounded()))°C), ale bez výraznejšieho dažďa."
+        }
+    }
+
     private var rainIncomingSection: some View {
         VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
             Text("Blíži sa dážď")
@@ -81,6 +97,10 @@ struct PredpovedView: View {
                     .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
             } else if weatherState.errorMessage != nil {
                 Text("Predpoveď nie je k dispozícii.")
+                    .font(.system(size: DesignSystem.bodySize))
+                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+            } else if let nearMiss = nearMissInsight {
+                Text(nearMissText(for: nearMiss))
                     .font(.system(size: DesignSystem.bodySize))
                     .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
             } else {
