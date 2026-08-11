@@ -106,9 +106,10 @@ struct PredpovedView: View {
     private var pastTenDays: [DailyWeather] {
         let calendar = Calendar.current
         let todayStart = calendar.startOfDay(for: Date())
-        return weatherState.dailyWeather
+        return Array(weatherState.dailyWeather
             .filter { calendar.startOfDay(for: $0.date) <= todayStart }
             .sorted { $0.date < $1.date }
+            .suffix(10))
     }
 
     private var dailyStripSection: some View {
