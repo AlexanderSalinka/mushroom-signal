@@ -25,6 +25,11 @@ struct PredpovedView: View {
             .sorted { $0.commonNameSk.localizedStandardCompare($1.commonNameSk) == .orderedAscending }
     }
 
+    private var rankedInSeasonSpecies: [Species] {
+        let scoreById = Dictionary(uniqueKeysWithValues: appState.signals.map { ($0.species.id, $0.score) })
+        return inSeasonSpecies.sorted { (scoreById[$0.id] ?? 0) > (scoreById[$1.id] ?? 0) }
+    }
+
     private var visibleTopSignals: [SpeciesSignal] {
         Array(appState.signals.filter { $0.score > 0 }.prefix(4))
     }
@@ -171,7 +176,7 @@ struct PredpovedView: View {
             Text("Sezóna tento mesiac")
                 .font(.system(size: DesignSystem.captionSize, weight: .bold))
                 .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-            if inSeasonSpecies.isEmpty {
+            if rankedInSeasonSpecies.isEmpty {
                 VStack(spacing: 8) {
                     SporeShape()
                         .fill(DesignSystem.Colors.cloud.opacity(0.4))
@@ -183,9 +188,9 @@ struct PredpovedView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, DesignSystem.spacingSmall)
             } else {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 120), spacing: DesignSystem.spacingSmall)], spacing: DesignSystem.spacingSmall) {
-                    ForEach(inSeasonSpecies) { species in
-                        seasonChip(for: species)
+                VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
+                    ForEach(Array(rankedInSeasonSpecies.enumerated()), id: \.element.id) { index, species in
+                        seasonRow(rank: index + 1, species: species)
                     }
                 }
             }
@@ -197,31 +202,37 @@ struct PredpovedView: View {
     // everywhere else species appear (SpeciesCardView, topPicksSection), plus the same explicit
     // Slovak warning text — a color-only signal isn't sufficient for a foraging app's safety
     // info (colorblind accessibility, and this app never approximates safety-critical content).
-    private func seasonChip(for species: Species) -> some View {
+    // The warning now sits inline on the row's trailing edge instead of stacking below the
+    // name, so caution/poisonous rows are the same height as edible ones — the sign stays,
+    // the extra line doesn't (2026-08-11 predpoved-beautify spec §5).
+    private func seasonRow(rank: Int, species: Species) -> some View {
         let swatchColor = species.edibility == .edible ? DesignSystem.Colors.mossAccent : DesignSystem.warningColor(for: species.edibility)
-        return VStack(alignment: .leading, spacing: DesignSystem.spacingTight / 2) {
-            HStack(spacing: 7) {
-                LeafShape()
-                    .stroke(swatchColor, style: StrokeStyle(lineWidth: 1.4, lineCap: .round, lineJoin: .round))
-                    .frame(width: DesignSystem.chipDotSize + 4, height: DesignSystem.chipDotSize + 4)
-                Text(species.commonNameSk)
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(DesignSystem.Colors.cloud)
-                    .lineLimit(1)
-                Spacer(minLength: 0)
-            }
+        return HStack(spacing: 10) {
+            Text("\(rank)")
+                .font(.system(size: DesignSystem.captionSize * 0.5, weight: .semibold))
+                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.35))
+                .frame(width: 16, alignment: .trailing)
+            LeafShape()
+                .stroke(swatchColor, style: StrokeStyle(lineWidth: 1.4, lineCap: .round, lineJoin: .round))
+                .frame(width: DesignSystem.chipDotSize + 4, height: DesignSystem.chipDotSize + 4)
+            Text(species.commonNameSk)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(DesignSystem.Colors.cloud)
+            Spacer(minLength: 8)
             if let warning = DesignSystem.warningLabelSk(for: species.edibility) {
                 Text(warning)
-                    .font(.system(size: DesignSystem.captionSize, weight: .bold))
+                    .font(.system(size: DesignSystem.captionSize * 0.6, weight: .bold))
                     .foregroundStyle(swatchColor)
+                    .lineLimit(1)
             }
         }
-        .padding(EdgeInsets(top: 7, leading: 10, bottom: 7, trailing: 14))
-        .background(swatchColor.opacity(0.2))
-        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.chipCornerRadius))
+        .padding(EdgeInsets(top: 10, leading: 12, bottom: 10, trailing: 14))
+        .frame(minWidth: DesignSystem.seasonRowMinWidth, alignment: .leading)
+        .background(swatchColor.opacity(0.14))
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.seasonRowCornerRadius))
         .overlay(
-            RoundedRectangle(cornerRadius: DesignSystem.chipCornerRadius)
-                .stroke(swatchColor.opacity(0.45), lineWidth: 1)
+            RoundedRectangle(cornerRadius: DesignSystem.seasonRowCornerRadius)
+                .stroke(swatchColor.opacity(0.35), lineWidth: 1)
         )
     }
 
