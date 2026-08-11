@@ -3,6 +3,19 @@ import SwiftUI
 import Charts
 import MushroomSignalCore
 
+/// Propagates the today-marker's resolved x position (in `WeatherRainChartView.chartCoordinateSpace`)
+/// up from the rain chart's `.chartOverlay` to the two-chart `VStack`'s `.overlay`. A `PreferenceKey`
+/// is used instead of `@State` + `.onAppear`/`.onChange` because the marker's inputs (`ChartProxy`,
+/// `GeometryProxy`) depend on `dailyWeather`, which loads asynchronously — `.onAppear` fires once,
+/// before that load completes, and a value computed then would go stale forever with nothing to
+/// re-trigger it. A preference is recomputed on every body evaluation instead, so it can't go stale.
+private struct TodayMarkerXPreferenceKey: PreferenceKey {
+    static let defaultValue: CGFloat? = nil
+    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
+        if let next = nextValue() { value = next }
+    }
+}
+
 /// Predpoveď's daily weather chart — temperature line above rain bars, each with its own
 /// honest y-axis (never a shared/dual-axis scale — see the 2026-08-11 predpoved-beautify
 /// spec §1 for why: a dual-axis chart invents a correlation that isn't in the data).
@@ -10,6 +23,13 @@ struct WeatherRainChartView: View {
     let dailyWeather: [DailyWeather]
     let today: Date
     @State private var selectedRange: Int = 7
+    @State private var todayMarkerX: CGFloat?
+
+    /// Shared coordinate space for the two-chart `VStack`, so the today-marker's x position
+    /// (resolved from the rain chart's own `ChartProxy`, which owns the visible x-axis) can be
+    /// converted into a coordinate the outer `.overlay` can draw in — letting the marker still
+    /// visually span both panels even though only the rain chart provides the real plot geometry.
+    private static let chartCoordinateSpace = "weatherRainChartStack"
 
     private var visibleDays: [DailyWeather] {
         let calendar = Calendar.current
@@ -43,22 +63,27 @@ struct WeatherRainChartView: View {
         }
     }
 
-    /// Empirical correction for the trailing y-axis label column: `GeometryReader` in the
-    /// overlay below measures the full chart frame, but Swift Charts reserves a fixed-width
-    /// strip on the trailing edge for the y-axis numbers that isn't part of the actual bar
-    /// plot area. Without this correction the marker lands visibly right of "dnes" — confirmed
-    /// by pixel-measuring rendered screenshots at all three range settings (7/14/30 days):
-    /// raw (index+0.5)/count vs. the actual on-screen "dnes" tick fraction gave (0.591, 0.565),
-    /// (0.750, 0.729), (0.868, 0.849) — an almost perfectly linear relationship (slope ~1.0265
-    /// across all three pairs, well within measurement noise), fit here as `rawFraction * scale
-    /// + offset`. Residual error after fitting was under 0.03% of chart width at every range.
-    private static let axisCorrectionScale = 1.0265
-    private static let axisCorrectionOffset = -0.0413
+    /// Today's date within the visible range, if present. Feeds `ChartProxy.position(forX:)`
+    /// in `body`'s `.chartOverlay` — the proxy queries the chart's actual rendered plot-area
+    /// mapping (already accounting for the reserved trailing y-axis label strip), so no
+    /// hand-fit correction constants are needed.
+    private var todayDate: Date? {
+        visibleDays.first(where: { Calendar.current.isDateInToday($0.date) })?.date
+    }
 
-    private var todayFraction: Double? {
-        guard let todayIndex = visibleDays.firstIndex(where: { Calendar.current.isDateInToday($0.date) }) else { return nil }
-        let rawFraction = (Double(todayIndex) + 0.5) / Double(visibleDays.count)
-        return rawFraction * Self.axisCorrectionScale + Self.axisCorrectionOffset
+    /// Resolves the today-marker's x position from the rain chart's `ChartProxy` and its own
+    /// `GeometryReader`, converting the plot-relative x into `chartCoordinateSpace` (the two-chart
+    /// `VStack`'s space) so the `.overlay` below can draw a marker that still spans both panels.
+    /// Pure — no side effects — so it's safe to call on every body evaluation via `.preference`.
+    private func resolvedTodayMarkerX(proxy: ChartProxy, geometry: GeometryProxy) -> CGFloat? {
+        guard let todayDate,
+              let plotRelativeX = proxy.position(forX: todayDate),
+              let plotFrameAnchor = proxy.plotFrame else {
+            return nil
+        }
+        let plotOriginInChart = geometry[plotFrameAnchor].origin
+        let chartFrameInStack = geometry.frame(in: .named(Self.chartCoordinateSpace))
+        return chartFrameInStack.minX + plotOriginInChart.x + plotRelativeX
     }
 
     private var lastRainText: String {
@@ -126,14 +151,25 @@ struct WeatherRainChartView: View {
                         }
                     }
                 }
+                .chartOverlay { proxy in
+                    GeometryReader { geometry in
+                        Color.clear
+                            .preference(
+                                key: TodayMarkerXPreferenceKey.self,
+                                value: resolvedTodayMarkerX(proxy: proxy, geometry: geometry)
+                            )
+                    }
+                }
             }
+            .coordinateSpace(.named(Self.chartCoordinateSpace))
+            .onPreferenceChange(TodayMarkerXPreferenceKey.self) { todayMarkerX = $0 }
             .overlay(alignment: .topLeading) {
-                if let todayFraction {
+                if let todayMarkerX {
                     GeometryReader { geometry in
                         Rectangle()
                             .fill(DesignSystem.Colors.cloud.opacity(0.35))
                             .frame(width: 1.5)
-                            .position(x: geometry.size.width * todayFraction, y: geometry.size.height / 2)
+                            .position(x: todayMarkerX, y: geometry.size.height / 2)
                     }
                     .allowsHitTesting(false)
                 }
