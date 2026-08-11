@@ -136,7 +136,6 @@ struct PredpovedView: View {
             }
             .padding(DesignSystem.spacingLarge)
         }
-        .mushroomGlassBackground()
         .task(id: regionId) {
             await weatherState.load(regionId: regionId)
         }

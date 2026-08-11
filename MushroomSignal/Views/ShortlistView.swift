@@ -30,7 +30,6 @@ struct ShortlistView: View {
             }
             .padding(DesignSystem.spacingLarge)
         }
-        .mushroomGlassBackground()
         .refreshable { await appState.refresh() }
         .task {
             photosBySpeciesID = (try? SpeciesPhotoDatabase.loadAll()).map { Dictionary(grouping: $0, by: \.speciesId) } ?? [:]

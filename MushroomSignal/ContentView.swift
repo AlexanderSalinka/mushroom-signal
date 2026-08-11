@@ -27,6 +27,8 @@ struct ContentView: View {
                     .tabItem { Label("Predpoveď", systemImage: "cloud.sun") }
                     .tag(Tab.forecast)
             }
+            .frame(maxWidth: 1024, maxHeight: 768)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle("Mushroom Signal")
             .toolbarBackground(.ultraThinMaterial, for: .windowToolbar)
             .toolbar {
@@ -52,6 +54,7 @@ struct ContentView: View {
                 }
             }
         }
+        .mushroomGlassBackground()
         .task { await appState.refresh() }
         .frame(minWidth: 420, minHeight: 480)
         .background(WindowTransparencyConfigurator())

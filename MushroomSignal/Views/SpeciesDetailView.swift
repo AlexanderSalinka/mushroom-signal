@@ -61,7 +61,6 @@ struct SpeciesDetailView: View {
                 }
                 .padding(DesignSystem.spacingLarge)
             }
-            .mushroomGlassBackground()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Zavrieť") { dismiss() }
