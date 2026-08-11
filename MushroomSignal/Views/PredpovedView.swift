@@ -11,6 +11,7 @@ struct PredpovedView: View {
     @ObservedObject var appState: AppState
     @StateObject private var weatherState = RegionWeatherState()
     @State private var allSpecies: [Species] = []
+    @State private var photosBySpeciesID: [String: [SpeciesPhoto]] = [:]
 
     private var todayEntry: DailyWeather? {
         let calendar = Calendar.current
@@ -146,6 +147,9 @@ struct PredpovedView: View {
                 predpovedLogger.error("Failed to load species dataset: \(String(describing: error), privacy: .public)")
             }
         }
+        .task {
+            photosBySpeciesID = (try? SpeciesPhotoDatabase.loadAll()).map { Dictionary(grouping: $0, by: \.speciesId) } ?? [:]
+        }
     }
 
     private var topPicksSection: some View {
@@ -158,7 +162,7 @@ struct PredpovedView: View {
                 spacing: DesignSystem.spacingSmall
             ) {
                 ForEach(Array(visibleTopSignals.enumerated()), id: \.element.species.id) { index, signal in
-                    CompactSpeciesCardView(species: signal.species, signal: signal, rank: index + 1, photo: nil)
+                    CompactSpeciesCardView(species: signal.species, signal: signal, rank: index + 1, photo: photosBySpeciesID[signal.species.id]?.first)
                 }
             }
         }

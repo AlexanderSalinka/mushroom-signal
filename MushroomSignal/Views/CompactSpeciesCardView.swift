@@ -2,8 +2,8 @@
 import SwiftUI
 import MushroomSignalCore
 
-/// The forest redesign's new compact "glass button" species card — small, roughly square,
-/// translucent, fixed size regardless of window/grid resize. Distinct from `SpeciesCardView`
+/// The forest redesign's compact "glass button" species card — small, roughly square,
+/// fixed size regardless of window/grid resize. Distinct from `SpeciesCardView`
 /// (Zoznam/Mapa's larger photo-backed grid cards, unaffected by this redesign).
 ///
 /// Deliberate exception to the app-wide 20pt text floor (`DesignSystem.captionSize`, see
@@ -23,52 +23,70 @@ struct CompactSpeciesCardView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .top) {
-                if let rank {
-                    Text("\(rank)")
-                        .font(.system(size: DesignSystem.captionSize * 0.6, weight: .bold))
-                        .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.7))
-                        .frame(width: DesignSystem.compactCardBadgeSize, height: DesignSystem.compactCardBadgeSize)
-                        .background(Circle().fill(accentColor.opacity(0.28)))
-                }
-                Spacer()
-                if signal?.flushTriggered == true {
-                    SunriseShape()
-                        .stroke(DesignSystem.Colors.caution, style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
-                        .frame(width: 11, height: 11)
-                        .frame(width: DesignSystem.compactCardBadgeSize, height: DesignSystem.compactCardBadgeSize)
-                        .background(Circle().fill(DesignSystem.Colors.caution.opacity(0.22)))
+        ZStack(alignment: .topLeading) {
+            CachedAsyncImage(url: photo?.imageURL) { image in
+                image.resizable().aspectRatio(contentMode: .fill)
+            } placeholder: {
+                ZStack {
+                    DesignSystem.Colors.bark
+                    Image(systemName: "photo")
+                        .font(.system(size: DesignSystem.compactCardSize * 0.28))
+                        .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
                 }
             }
-            Spacer(minLength: 4)
-            VStack(alignment: .leading, spacing: 1) {
-                Text(species.commonNameSk)
-                    .font(.system(size: DesignSystem.captionSize * 0.55, weight: .semibold))
-                    .foregroundStyle(DesignSystem.Colors.cloud)
-                    .lineLimit(2)
-                Text(species.latinName)
-                    .font(.system(size: DesignSystem.captionSize * 0.45).italic())
-                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.55))
-                    .lineLimit(1)
-                if let warning = DesignSystem.warningLabelSk(for: species.edibility) {
-                    Text(warning)
-                        .font(.system(size: DesignSystem.captionSize * 0.5, weight: .bold))
-                        .foregroundStyle(DesignSystem.warningColor(for: species.edibility))
+            .frame(width: DesignSystem.compactCardSize, height: DesignSystem.compactCardSize)
+            .clipped()
+
+            LinearGradient(
+                colors: [.clear, DesignSystem.Colors.forestDeep.opacity(0.95)],
+                startPoint: .center,
+                endPoint: .bottom
+            )
+            .frame(width: DesignSystem.compactCardSize, height: DesignSystem.compactCardSize)
+
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(alignment: .top) {
+                    if let rank {
+                        Text("\(rank)")
+                            .font(.system(size: DesignSystem.captionSize * 0.6, weight: .bold))
+                            .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.7))
+                            .frame(width: DesignSystem.compactCardBadgeSize, height: DesignSystem.compactCardBadgeSize)
+                            .background(Circle().fill(accentColor.opacity(0.28)))
+                    }
+                    Spacer()
+                    if signal?.flushTriggered == true {
+                        SunriseShape()
+                            .stroke(DesignSystem.Colors.caution, style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
+                            .frame(width: 11, height: 11)
+                            .frame(width: DesignSystem.compactCardBadgeSize, height: DesignSystem.compactCardBadgeSize)
+                            .background(Circle().fill(DesignSystem.Colors.caution.opacity(0.22)))
+                    }
+                }
+                Spacer(minLength: 4)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(species.commonNameSk)
+                        .font(.system(size: DesignSystem.captionSize * 0.55, weight: .semibold))
+                        .foregroundStyle(DesignSystem.Colors.cloud)
+                        .lineLimit(2)
+                    Text(species.latinName)
+                        .font(.system(size: DesignSystem.captionSize * 0.45).italic())
+                        .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.55))
                         .lineLimit(1)
-                }
-                if let signal {
-                    ScoreDotsView(score: signal.score, color: DesignSystem.Colors.mossAccent, dotSize: DesignSystem.captionSize * 0.4)
-                        .padding(.top, 2)
+                    if let warning = DesignSystem.warningLabelSk(for: species.edibility) {
+                        Text(warning)
+                            .font(.system(size: DesignSystem.captionSize * 0.5, weight: .bold))
+                            .foregroundStyle(DesignSystem.warningColor(for: species.edibility))
+                            .lineLimit(1)
+                    }
+                    if let signal {
+                        ScoreDotsView(score: signal.score, color: DesignSystem.Colors.mossAccent, dotSize: DesignSystem.captionSize * 0.4)
+                            .padding(.top, 2)
+                    }
                 }
             }
+            .padding(8)
         }
-        .padding(8)
         .frame(width: DesignSystem.compactCardSize, height: DesignSystem.compactCardSize)
-        .background(
-            LinearGradient(colors: [DesignSystem.Colors.cloud.opacity(0.10), DesignSystem.Colors.cloud.opacity(0.02)], startPoint: .top, endPoint: .bottom)
-        )
-        .background(DesignSystem.Colors.forestMid.grainTexture())
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.58))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.58)
