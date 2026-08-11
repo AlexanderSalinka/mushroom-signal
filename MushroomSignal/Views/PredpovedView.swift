@@ -29,6 +29,54 @@ struct PredpovedView: View {
         Array(appState.signals.filter { $0.score > 0 }.prefix(4))
     }
 
+    private func slovakDayWord(_ count: Int) -> String {
+        switch count {
+        case 1: return "deň"
+        default: return "dni"
+        }
+    }
+
+    private var upcomingRainEvent: RainEvent? {
+        UpcomingRainDetector.nextTriggerEvent(in: weatherState.dailyWeather, asOf: Date())
+    }
+
+    private var rainIncomingSection: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
+            Text("Blíži sa dážď")
+                .font(.system(size: DesignSystem.captionSize, weight: .bold))
+                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+            if let event = upcomingRainEvent {
+                let daysUntil = max(1, Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: Date()), to: Calendar.current.startOfDay(for: event.date)).day ?? 1)
+                HStack(spacing: 11) {
+                    DropletShape()
+                        .stroke(DesignSystem.Colors.water, style: StrokeStyle(lineWidth: 1.8, lineCap: .round, lineJoin: .round))
+                        .frame(width: 15, height: 15)
+                        .frame(width: 30, height: 30)
+                        .background(Circle().fill(DesignSystem.Colors.water.opacity(0.22)))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("O \(daysUntil) \(slovakDayWord(daysUntil)) · \(String(format: "%.0f", event.precipitationMm)) mm dažďa a \(Int(event.maxTempC.rounded()))°C")
+                            .font(.system(size: DesignSystem.captionSize * 0.65, weight: .bold))
+                            .foregroundStyle(DesignSystem.Colors.cloud)
+                        Text("Dážď aj teplo spolu — sleduj skóre o 4–9 dní")
+                            .font(.system(size: DesignSystem.captionSize * 0.55))
+                            .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.65))
+                    }
+                }
+                .padding(11)
+                .background(DesignSystem.Colors.water.opacity(0.16))
+                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.55))
+                .overlay(
+                    RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.55)
+                        .stroke(DesignSystem.Colors.water.opacity(0.4), lineWidth: 1)
+                )
+            } else {
+                Text("Žiadny výraznejší dážď v predpovedi.")
+                    .font(.system(size: DesignSystem.bodySize))
+                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+            }
+        }
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.spacingMedium) {
