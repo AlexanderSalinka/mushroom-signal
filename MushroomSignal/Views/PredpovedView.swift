@@ -26,7 +26,7 @@ struct PredpovedView: View {
     }
 
     private var visibleTopSignals: [SpeciesSignal] {
-        Array(appState.signals.filter { $0.score > 0 }.prefix(3))
+        Array(appState.signals.filter { $0.score > 0 }.prefix(4))
     }
 
     var body: some View {
@@ -71,30 +71,13 @@ struct PredpovedView: View {
             Text("Odporúčané dnes")
                 .font(.system(size: DesignSystem.captionSize, weight: .bold))
                 .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-            ForEach(Array(visibleTopSignals.enumerated()), id: \.element.species.id) { index, signal in
-                HStack(spacing: DesignSystem.spacingSmall) {
-                    Text("\(index + 1)")
-                        .font(.system(size: DesignSystem.captionSize, weight: .bold))
-                        .foregroundStyle(DesignSystem.Colors.cloud)
-                        .frame(width: DesignSystem.rankBadgeSize, height: DesignSystem.rankBadgeSize)
-                        .background(Circle().fill(DesignSystem.Colors.mossAccent.opacity(0.3)))
-                    VStack(alignment: .leading, spacing: DesignSystem.spacingTight / 2) {
-                        Text(signal.species.commonNameSk)
-                            .font(.system(size: DesignSystem.bodySize, weight: .semibold))
-                            .foregroundStyle(DesignSystem.Colors.cloud)
-                        Text(signal.species.latinName)
-                            .font(.system(size: DesignSystem.captionSize).italic())
-                            .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-                        if let warning = DesignSystem.warningLabelSk(for: signal.species.edibility) {
-                            Text(warning)
-                                .font(.system(size: DesignSystem.captionSize, weight: .bold))
-                                .foregroundStyle(DesignSystem.warningColor(for: signal.species.edibility))
-                        }
-                    }
-                    Spacer()
-                    ScoreDotsView(score: signal.score, color: DesignSystem.Colors.mossAccent, dotSize: DesignSystem.captionSize)
+            LazyVGrid(
+                columns: [GridItem(.adaptive(minimum: DesignSystem.compactCardSize, maximum: DesignSystem.compactCardSize), spacing: DesignSystem.spacingSmall)],
+                spacing: DesignSystem.spacingSmall
+            ) {
+                ForEach(Array(visibleTopSignals.enumerated()), id: \.element.species.id) { index, signal in
+                    CompactSpeciesCardView(species: signal.species, signal: signal, rank: index + 1, photo: nil)
                 }
-                .padding(DesignSystem.spacingSmall)
             }
         }
     }
