@@ -81,6 +81,8 @@ public enum DesignSystem {
     public static let compactCardSize: Double = 120
     /// `CompactSpeciesCardView`'s rank-badge / sunrise-badge circle diameter.
     public static let compactCardBadgeSize: Double = 18
+    /// Height of each row (heat, rain) in Predpoveď's simplified two-row daily chart.
+    public static let rainHeatChartRowHeight: Double = 56
 
     public enum Colors {
         public static let forestDeep = Color(red: 0.11, green: 0.16, blue: 0.11)

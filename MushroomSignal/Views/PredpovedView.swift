@@ -103,33 +103,49 @@ struct PredpovedView: View {
         }
     }
 
-    private var dailyStripSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
-            Text("Denný prehľad")
-                .font(.system(size: DesignSystem.captionSize, weight: .bold))
-                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-            Chart(weatherState.dailyWeather, id: \.date) { day in
-                BarMark(
-                    x: .value("Deň", day.date, unit: .day),
-                    yStart: .value("Min", day.minTempC),
-                    yEnd: .value("Max", day.maxTempC)
-                )
-                // Cold-to-hot gradient per bar (caution at the top/max end, water at the
-                // bottom/min end) — matches the approved mockup and gives `water` its first
-                // real use anywhere in the app (previously defined, never consumed).
-                .foregroundStyle(
-                    LinearGradient(colors: [DesignSystem.Colors.caution, DesignSystem.Colors.water], startPoint: .top, endPoint: .bottom)
-                        .opacity(isForecastDay(day) ? 0.5 : 1.0)
-                )
-                .cornerRadius(DesignSystem.chartBarCornerRadius)
-            }
-            .frame(height: DesignSystem.trendChartHeight)
-        }
+    private var pastTenDays: [DailyWeather] {
+        let calendar = Calendar.current
+        let todayStart = calendar.startOfDay(for: Date())
+        return weatherState.dailyWeather
+            .filter { calendar.startOfDay(for: $0.date) <= todayStart }
+            .sorted { $0.date < $1.date }
     }
 
-    private func isForecastDay(_ day: DailyWeather) -> Bool {
-        let calendar = Calendar.current
-        return calendar.startOfDay(for: day.date) > calendar.startOfDay(for: Date())
+    private var dailyStripSection: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
+            Text("Posledných 10 dní")
+                .font(.system(size: DesignSystem.captionSize, weight: .bold))
+                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+            HStack(spacing: 12) {
+                Text("teplo")
+                    .font(.system(size: DesignSystem.captionSize * 0.6))
+                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
+                Text("dážď")
+                    .font(.system(size: DesignSystem.captionSize * 0.6))
+                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
+            }
+            Chart(pastTenDays, id: \.date) { day in
+                BarMark(
+                    x: .value("Deň", day.date, unit: .day),
+                    y: .value("Teplo", day.maxTempC)
+                )
+                .foregroundStyle(DesignSystem.Colors.caution)
+                .cornerRadius(DesignSystem.chartBarCornerRadius * 0.5)
+            }
+            .frame(height: DesignSystem.rainHeatChartRowHeight)
+            .chartYAxis(.hidden)
+
+            Chart(pastTenDays, id: \.date) { day in
+                BarMark(
+                    x: .value("Deň", day.date, unit: .day),
+                    y: .value("Dážď", day.precipitationMm)
+                )
+                .foregroundStyle(DesignSystem.Colors.water)
+                .cornerRadius(DesignSystem.chartBarCornerRadius * 0.5)
+            }
+            .frame(height: DesignSystem.rainHeatChartRowHeight)
+            .chartYAxis(.hidden)
+        }
     }
 
     private var seasonCalendarSection: some View {
