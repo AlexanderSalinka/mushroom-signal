@@ -1,0 +1,60 @@
+<h2>Which container treatment for each section?</h2>
+<p class="subtitle">Right now sections (Posledných 10 dní, Odporúčané dnes, Blíži sa dážď, Sezóna) just float on the background, separated by thin dividers. Which of these "actual containers" feels right?</p>
+
+<style>
+  .contmock { background:radial-gradient(ellipse at top,#26331f,#141c11); border-radius:16px; padding:22px; font-family:-apple-system,sans-serif; color:#e8e6df; }
+  .sec { border-radius:14px; padding:14px 16px; margin-bottom:14px; }
+  .sec h4 { margin:0 0 8px; font-size:12px; font-weight:700; opacity:.85; letter-spacing:.2px; }
+  .sec .body { font-size:11px; opacity:.6; }
+  .pillrow { display:flex; gap:8px; margin-top:6px; }
+  .pill { flex:1; height:36px; border-radius:8px; background:rgba(255,255,255,.06); }
+
+  .style1 .sec { background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.015)); border:1px solid rgba(255,255,255,.09); box-shadow:inset 0 0 40px rgba(0,0,0,.15); }
+  .style2 .sec { background:transparent; border:1px solid rgba(255,255,255,.14); }
+  .style3 .sec { background:rgba(20,28,16,.55); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,.06); box-shadow:0 6px 18px rgba(0,0,0,.35); }
+</style>
+
+<div class="cards">
+
+  <div class="card" data-choice="1" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="contmock style1">
+        <div class="sec"><h4>POSLEDNÝCH 10 DNÍ</h4><div class="pillrow"><div class="pill"></div><div class="pill"></div><div class="pill"></div></div></div>
+        <div class="sec"><h4>ODPORÚČANÉ DNES</h4><div class="pillrow"><div class="pill"></div><div class="pill"></div></div></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>1 — Rovnaký "glass button" materiál ako karty</h3>
+      <p>Rovnaký gradient + zrnitá textúra aký už majú CompactSpeciesCardView/SpeciesCardView. Najviac konzistentné s existujúcim jazykom appky — sekcie vyzerajú ako "veľké karty".</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="2" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="contmock style2">
+        <div class="sec"><h4>POSLEDNÝCH 10 DNÍ</h4><div class="pillrow"><div class="pill"></div><div class="pill"></div><div class="pill"></div></div></div>
+        <div class="sec"><h4>ODPORÚČANÉ DNES</h4><div class="pillrow"><div class="pill"></div><div class="pill"></div></div></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>2 — Tenký obrys, žiadna výplň</h3>
+      <p>Len jemný orámovaný obrys, pozadie zostáva priehľadné (vidieť lesný grain pod celou stránkou). Najľahšie, najminimalistickejšie, menej "boxy" pocit.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="3" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="contmock style3">
+        <div class="sec"><h4>POSLEDNÝCH 10 DNÍ</h4><div class="pillrow"><div class="pill"></div><div class="pill"></div><div class="pill"></div></div></div>
+        <div class="sec"><h4>ODPORÚČANÉ DNES</h4><div class="pillrow"><div class="pill"></div><div class="pill"></div></div></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>3 — Matné sklo s tieňom (macOS panel)</h3>
+      <p>Tmavšie poloopaque pozadie + blur + jemný tieň, podobné panelom v macOS System Settings. Najviac "vznáša sa nad pozadím", najsilnejšia hĺbka/oddelenie.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px">Rovnaký kontajner by sa použil pre všetky 4 sekcie (10 dní, odporúčané, blíži sa dážď, sezóna) — konzistentný rytmus po celej karte namiesto súčasných tenkých deličov.</p>
