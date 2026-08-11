@@ -204,9 +204,16 @@ struct PredpovedView: View {
                 .font(.system(size: DesignSystem.captionSize, weight: .bold))
                 .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
             if inSeasonSpecies.isEmpty {
-                Text("Žiadne druhy nie sú aktuálne v sezóne.")
-                    .font(.system(size: DesignSystem.bodySize))
-                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+                VStack(spacing: 8) {
+                    SporeShape()
+                        .fill(DesignSystem.Colors.cloud.opacity(0.4))
+                        .frame(width: 26, height: 26)
+                    Text("Žiadne druhy nie sú aktuálne v sezóne.")
+                        .font(.system(size: DesignSystem.bodySize))
+                        .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, DesignSystem.spacingSmall)
             } else {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 120), spacing: DesignSystem.spacingSmall)], spacing: DesignSystem.spacingSmall) {
                     ForEach(inSeasonSpecies) { species in
@@ -226,9 +233,9 @@ struct PredpovedView: View {
         let swatchColor = species.edibility == .edible ? DesignSystem.Colors.mossAccent : DesignSystem.warningColor(for: species.edibility)
         return VStack(alignment: .leading, spacing: DesignSystem.spacingTight / 2) {
             HStack(spacing: 7) {
-                Circle()
-                    .fill(swatchColor)
-                    .frame(width: DesignSystem.chipDotSize, height: DesignSystem.chipDotSize)
+                LeafShape()
+                    .stroke(swatchColor, style: StrokeStyle(lineWidth: 1.4, lineCap: .round, lineJoin: .round))
+                    .frame(width: DesignSystem.chipDotSize + 4, height: DesignSystem.chipDotSize + 4)
                 Text(species.commonNameSk)
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(DesignSystem.Colors.cloud)
