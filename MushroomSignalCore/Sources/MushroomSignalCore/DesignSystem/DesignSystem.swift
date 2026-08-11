@@ -83,6 +83,31 @@ public enum DesignSystem {
     public static let compactCardBadgeSize: Double = 18
     /// Height of each row (heat, rain) in Predpoveď's simplified two-row daily chart.
     public static let rainHeatChartRowHeight: Double = 56
+    /// `ForestPanel`'s corner radius — the frosted-glass section container wrapping each
+    /// Predpoveď section (chart, top picks, rain alert, season calendar).
+    public static let panelCornerRadius: Double = 18
+    /// `ForestPanel`'s translucent fill opacity, over `Colors.forestDeep`.
+    public static let panelFillOpacity: Double = 0.55
+    /// `ForestPanel`'s hairline border opacity, over `Colors.cloud`.
+    public static let panelBorderOpacity: Double = 0.08
+    /// `ForestPanel`'s drop shadow radius, giving it depth against the page background.
+    public static let panelShadowRadius: Double = 12
+    /// `WeatherRainChartView`'s temperature panel height (line chart, y-axis only, no x-axis —
+    /// the rain panel below carries the shared date axis for both).
+    public static let chartTempPanelHeight: Double = 90
+    /// `WeatherRainChartView`'s rain panel height — includes its own y-axis and the shared
+    /// x-axis band for both panels (the full chart-plus-axis height, not just the bar area).
+    public static let chartRainPanelHeight: Double = 72
+    /// `WeatherRainChartView`'s x-axis day-of-month tick label size. Chart chrome, not running
+    /// body text — not subject to the 20pt text floor, same precedent as `mapMarkerDotSize`'s
+    /// documented exception above.
+    public static let chartAxisLabelSize: Double = 9
+    /// Minimum width of each full-width season-calendar row (`seasonRow`) — mobile-phone width
+    /// at minimum, so a species' full common name is never truncated.
+    public static let seasonRowMinWidth: Double = 375
+    /// Corner radius for the full-width season-calendar rows (replaces the old pill-shaped
+    /// `chipCornerRadius` chips, which were too small to fit full names).
+    public static let seasonRowCornerRadius: Double = 12
 
     public enum Colors {
         public static let forestDeep = Color(red: 0.11, green: 0.16, blue: 0.11)

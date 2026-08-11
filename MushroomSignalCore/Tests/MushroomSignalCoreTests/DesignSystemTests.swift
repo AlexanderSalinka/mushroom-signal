@@ -43,4 +43,15 @@ final class DesignSystemTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(DesignSystem.titleSize, 20)
         XCTAssertGreaterThanOrEqual(DesignSystem.heroSize, 20)
     }
+
+    func testPanelOpacitiesAreValidRange() {
+        XCTAssertGreaterThan(DesignSystem.panelFillOpacity, 0)
+        XCTAssertLessThanOrEqual(DesignSystem.panelFillOpacity, 1)
+        XCTAssertGreaterThan(DesignSystem.panelBorderOpacity, 0)
+        XCTAssertLessThanOrEqual(DesignSystem.panelBorderOpacity, 1)
+    }
+
+    func testSeasonRowMinWidthMeetsMobileWidthFloor() {
+        XCTAssertGreaterThanOrEqual(DesignSystem.seasonRowMinWidth, 375)
+    }
 }
