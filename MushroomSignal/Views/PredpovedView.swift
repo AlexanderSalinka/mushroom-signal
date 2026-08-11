@@ -101,16 +101,12 @@ struct PredpovedView: View {
                 }
 
                 heroSection
-                ForestDivider()
-                dailyStripSection
-                ForestDivider()
+                ForestPanel { dailyStripSection }
                 if !visibleTopSignals.isEmpty {
-                    topPicksSection
-                    ForestDivider()
+                    ForestPanel { topPicksSection }
                 }
-                rainIncomingSection
-                ForestDivider()
-                seasonCalendarSection
+                ForestPanel { rainIncomingSection }
+                ForestPanel { seasonCalendarSection }
                 disclaimer
             }
             .padding(DesignSystem.spacingLarge)
