@@ -31,6 +31,7 @@
 		8C9AB5CBE17B3271E4716C15 /* PredpovedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461BDE4B8F800D9D3ECFEC01 /* PredpovedView.swift */; };
 		8FC572486E6D957D108BA05F /* SpeciesTrendState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F63D66DD01AC73FEAB0332 /* SpeciesTrendState.swift */; };
 		90410647C8266446E776F743 /* MapScreenStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD99729FBB887B89C2D3D43 /* MapScreenStateTests.swift */; };
+		96E7631C25E789C9C16F2CC0 /* WeatherRainChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9073E159ADEB9895195E4C3 /* WeatherRainChartView.swift */; };
 		9EFD2075FC090FC7141C0A92 /* CompactSpeciesCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB63E46C4F16078C8B1F5E8 /* CompactSpeciesCardView.swift */; };
 		A077CA036F19536E12341817 /* GrainTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3325BED6124585CBBF2E95B6 /* GrainTexture.swift */; };
 		A3FF3637C4ACD5D994391305 /* MushroomSignalCore in Frameworks */ = {isa = PBXBuildFile; productRef = 92DC9F3E451BED501F4B36B6 /* MushroomSignalCore */; };
@@ -124,6 +125,7 @@
 		C06442830610580CEB0AF161 /* PhotoCreditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCreditsView.swift; sourceTree = "<group>"; };
 		C6B2C7634179D7F2C2F0DAE0 /* MapScreenState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapScreenState.swift; sourceTree = "<group>"; };
 		C6C6A5C08DAA943049EC5EEB /* SpeciesLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeciesLibraryView.swift; sourceTree = "<group>"; };
+		C9073E159ADEB9895195E4C3 /* WeatherRainChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherRainChartView.swift; sourceTree = "<group>"; };
 		CED03FE1A9085BBA24624FA2 /* SpeciesTrendStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeciesTrendStateTests.swift; sourceTree = "<group>"; };
 		D0153180DAA3EEF038D06C43 /* RegionWeatherState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionWeatherState.swift; sourceTree = "<group>"; };
 		D2D0E1BA2D29697E1EE3ACA0 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 				1914F91EBAA6F0E2CCC49638 /* SpeciesCardView.swift */,
 				B41CD56B6EA7546BE828E356 /* SpeciesDetailView.swift */,
 				C6C6A5C08DAA943049EC5EEB /* SpeciesLibraryView.swift */,
+				C9073E159ADEB9895195E4C3 /* WeatherRainChartView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -443,6 +446,7 @@
 				2A74A8E81EEBF5310F3F9DF9 /* SpeciesDetailView.swift in Sources */,
 				CDDAF2974DFCE3BA68B2C332 /* SpeciesLibraryView.swift in Sources */,
 				8FC572486E6D957D108BA05F /* SpeciesTrendState.swift in Sources */,
+				96E7631C25E789C9C16F2CC0 /* WeatherRainChartView.swift in Sources */,
 				38BF2E5932B7C87CDCC1072A /* WidgetReloading.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

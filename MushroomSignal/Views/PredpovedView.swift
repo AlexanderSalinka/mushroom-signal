@@ -101,7 +101,7 @@ struct PredpovedView: View {
                 }
 
                 heroSection
-                ForestPanel { dailyStripSection }
+                ForestPanel { WeatherRainChartView(dailyWeather: weatherState.dailyWeather, today: Date()) }
                 if !visibleTopSignals.isEmpty {
                     ForestPanel { topPicksSection }
                 }
@@ -163,54 +163,6 @@ struct PredpovedView: View {
                     .font(.system(size: DesignSystem.bodySize))
                     .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
             }
-        }
-    }
-
-    private var pastTenDays: [DailyWeather] {
-        let calendar = Calendar.current
-        let todayStart = calendar.startOfDay(for: Date())
-        return Array(weatherState.dailyWeather
-            .filter { calendar.startOfDay(for: $0.date) <= todayStart }
-            .sorted { $0.date < $1.date }
-            .suffix(10))
-    }
-
-    private var dailyStripSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
-            Text("Posledných 10 dní")
-                .font(.system(size: DesignSystem.captionSize, weight: .bold))
-                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-            HStack(spacing: 12) {
-                Text("teplo")
-                    .font(.system(size: DesignSystem.captionSize * 0.6))
-                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
-                Text("dážď")
-                    .font(.system(size: DesignSystem.captionSize * 0.6))
-                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
-            }
-            Chart(pastTenDays, id: \.date) { day in
-                BarMark(
-                    x: .value("Deň", day.date, unit: .day),
-                    y: .value("Teplo", day.maxTempC)
-                )
-                .foregroundStyle(DesignSystem.Colors.caution)
-                .cornerRadius(DesignSystem.chartBarCornerRadius * 0.5)
-            }
-            .frame(height: DesignSystem.rainHeatChartRowHeight)
-            .chartYAxis(.hidden)
-            .chartXAxis(.hidden)
-            .chartLegend(.hidden)
-
-            Chart(pastTenDays, id: \.date) { day in
-                BarMark(
-                    x: .value("Deň", day.date, unit: .day),
-                    y: .value("Dážď", day.precipitationMm)
-                )
-                .foregroundStyle(DesignSystem.Colors.water)
-                .cornerRadius(DesignSystem.chartBarCornerRadius * 0.5)
-            }
-            .frame(height: DesignSystem.rainHeatChartRowHeight)
-            .chartYAxis(.hidden)
         }
     }
 
