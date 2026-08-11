@@ -31,6 +31,7 @@
 		8C9AB5CBE17B3271E4716C15 /* PredpovedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461BDE4B8F800D9D3ECFEC01 /* PredpovedView.swift */; };
 		8FC572486E6D957D108BA05F /* SpeciesTrendState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F63D66DD01AC73FEAB0332 /* SpeciesTrendState.swift */; };
 		90410647C8266446E776F743 /* MapScreenStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD99729FBB887B89C2D3D43 /* MapScreenStateTests.swift */; };
+		9EFD2075FC090FC7141C0A92 /* CompactSpeciesCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB63E46C4F16078C8B1F5E8 /* CompactSpeciesCardView.swift */; };
 		A077CA036F19536E12341817 /* GrainTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3325BED6124585CBBF2E95B6 /* GrainTexture.swift */; };
 		A3FF3637C4ACD5D994391305 /* MushroomSignalCore in Frameworks */ = {isa = PBXBuildFile; productRef = 92DC9F3E451BED501F4B36B6 /* MushroomSignalCore */; };
 		A73E3143F33570B52618AE7D /* SpeciesTrendStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED03FE1A9085BBA24624FA2 /* SpeciesTrendStateTests.swift */; };
@@ -99,6 +100,7 @@
 		406769D67F45636883C7A794 /* MapResizeHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapResizeHandle.swift; sourceTree = "<group>"; };
 		43F342E2888340E1136922BC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		461BDE4B8F800D9D3ECFEC01 /* PredpovedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredpovedView.swift; sourceTree = "<group>"; };
+		4FB63E46C4F16078C8B1F5E8 /* CompactSpeciesCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactSpeciesCardView.swift; sourceTree = "<group>"; };
 		54F80C4161C989E348E7F683 /* CachedAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedAsyncImage.swift; sourceTree = "<group>"; };
 		5CED92FB89921C454532799B /* StubWeatherClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StubWeatherClient.swift; sourceTree = "<group>"; };
 		5E4A501888FDE6C76A8CC972 /* MushroomSignalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MushroomSignalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -164,6 +166,7 @@
 			children = (
 				54F80C4161C989E348E7F683 /* CachedAsyncImage.swift */,
 				0663AE9DE1E9AEFE66412B2E /* CanopyLightView.swift */,
+				4FB63E46C4F16078C8B1F5E8 /* CompactSpeciesCardView.swift */,
 				927D746B48AFA1D460B8B176 /* ForestDivider.swift */,
 				06EF8D1E5F4C3D10D7F82FBB /* ForestIcons.swift */,
 				2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */,
@@ -413,6 +416,7 @@
 				32B76617FFC241BA6715EA65 /* AppState.swift in Sources */,
 				2C2C190D6F520DB4BEDEBDB4 /* CachedAsyncImage.swift in Sources */,
 				2F8DB67CA5A51FA41EE1A2DF /* CanopyLightView.swift in Sources */,
+				9EFD2075FC090FC7141C0A92 /* CompactSpeciesCardView.swift in Sources */,
 				C1289E25CCE0D11F12F3C2F6 /* ContentView.swift in Sources */,
 				7BE5D899F205D99113B3E3A5 /* ForestDivider.swift in Sources */,
 				552C06B7AC1611B6F2553245 /* ForestIcons.swift in Sources */,

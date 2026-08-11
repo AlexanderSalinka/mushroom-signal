@@ -75,6 +75,12 @@ public enum DesignSystem {
     public static let grainOpacity: Double = 0.05
     /// Opacity of `ForestDivider`'s bark-toned gradient line.
     public static let forestDividerOpacity: Double = 0.7
+    /// Fixed size (both dimensions) of `CompactSpeciesCardView` — deliberately NOT part of
+    /// an adaptive grid; the grid's column *count* reflows on window resize, this size does
+    /// not. Picked from the mockup's ~110-130pt range.
+    public static let compactCardSize: Double = 120
+    /// `CompactSpeciesCardView`'s rank-badge / sunrise-badge circle diameter.
+    public static let compactCardBadgeSize: Double = 18
 
     public enum Colors {
         public static let forestDeep = Color(red: 0.11, green: 0.16, blue: 0.11)
