@@ -28,7 +28,7 @@ final class RegionWeatherState: ObservableObject {
             }
         }
         do {
-            let result = try await weatherClient.fetchDailyBreakdown(for: region, pastDays: 10, forecastDays: 5)
+            let result = try await weatherClient.fetchDailyBreakdown(for: region, pastDays: 30, forecastDays: 5)
             guard currentLoadID == loadID else { return }
             dailyWeather = result
         } catch {

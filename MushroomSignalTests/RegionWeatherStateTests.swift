@@ -27,6 +27,21 @@ private actor OrderedRegionStub: WeatherClient {
     }
 }
 
+private actor RecordingWeatherClient: WeatherClient {
+    struct StubError: Error, Sendable {}
+    private(set) var lastPastDays: Int?
+    private(set) var lastForecastDays: Int?
+
+    func fetchSnapshot(for region: Region) async throws -> WeatherSnapshot { throw StubError() }
+    func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] { [:] }
+
+    func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] {
+        lastPastDays = pastDays
+        lastForecastDays = forecastDays
+        return []
+    }
+}
+
 @MainActor
 final class RegionWeatherStateTests: XCTestCase {
     func testLoadPopulatesDailyWeatherOnSuccess() async {
@@ -94,5 +109,17 @@ final class RegionWeatherStateTests: XCTestCase {
 
         await state.load(regionId: "kosicky")
         XCTAssertEqual(state.dailyWeather.count, 1, "still one day from the same stub client — proves load() replaces rather than appends")
+    }
+
+    func testLoadRequestsThirtyDaysOfHistoryAndFiveDayForecast() async {
+        let client = RecordingWeatherClient()
+        let state = RegionWeatherState(weatherClient: client)
+
+        await state.load(regionId: "zilinsky")
+
+        let pastDays = await client.lastPastDays
+        let forecastDays = await client.lastForecastDays
+        XCTAssertEqual(pastDays, 30, "the 7/14/30-day range toggle needs a 30-day superset fetched once, not re-fetched per toggle")
+        XCTAssertEqual(forecastDays, 5)
     }
 }
