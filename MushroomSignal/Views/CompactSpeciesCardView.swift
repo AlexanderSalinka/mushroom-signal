@@ -56,8 +56,7 @@ struct CompactSpeciesCardView: View {
         .background(
             LinearGradient(colors: [DesignSystem.Colors.cloud.opacity(0.10), DesignSystem.Colors.cloud.opacity(0.02)], startPoint: .top, endPoint: .bottom)
         )
-        .background(DesignSystem.Colors.forestMid)
-        .grainTexture()
+        .background(DesignSystem.Colors.forestMid.grainTexture())
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.58))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.58)
