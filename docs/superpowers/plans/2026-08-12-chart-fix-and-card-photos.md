@@ -30,6 +30,13 @@ for `SpeciesCardView`.
   similar. Every task still ends with the full existing suite green (regression check).
 - Never hand-edit `MushroomSignal.xcodeproj` — this plan touches no `project.yml`
   targets and adds no new files, so `xcodegen generate` is not needed for either task.
+- **Every `xcodebuild build`/`xcodebuild test` invocation mutates `MushroomSignal/Info.plist`
+  and `MushroomSignalWidget/Info.plist`**, overwriting their `$(MARKETING_VERSION)`/
+  `$(CURRENT_PROJECT_VERSION)` build-variable references with hardcoded literal values
+  (e.g. `1.0`/`1`) — a pre-existing build-configuration quirk, unrelated to this plan's
+  tasks. Before every `git add`/`git commit` in both tasks, run
+  `git checkout -- MushroomSignal/Info.plist MushroomSignalWidget/Info.plist` first if
+  `git status` shows them modified, so this noise never lands in a task commit.
 
 ---
 
