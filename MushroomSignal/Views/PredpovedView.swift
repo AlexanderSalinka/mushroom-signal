@@ -93,10 +93,15 @@ struct PredpovedView: View {
                 }
 
                 heroSection
+                ForestDivider()
                 dailyStripSection
+                ForestDivider()
                 if !visibleTopSignals.isEmpty {
                     topPicksSection
+                    ForestDivider()
                 }
+                rainIncomingSection
+                ForestDivider()
                 seasonCalendarSection
                 disclaimer
             }
@@ -137,9 +142,14 @@ struct PredpovedView: View {
                 Text("\(Int(today.minTempC.rounded()))° / \(Int(today.maxTempC.rounded()))°")
                     .font(.system(size: DesignSystem.heroSize, weight: .bold))
                     .foregroundStyle(DesignSystem.Colors.cloud)
-                Text("Vlhkosť \(Int(today.humidityPercent.rounded()))% · Zrážky \(String(format: "%.1f", today.precipitationMm)) mm")
-                    .font(.system(size: DesignSystem.bodySize))
-                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.7))
+                HStack(spacing: 5) {
+                    DropletShape()
+                        .stroke(DesignSystem.Colors.water, style: StrokeStyle(lineWidth: 1.8, lineCap: .round, lineJoin: .round))
+                        .frame(width: 12, height: 12)
+                    Text("Vlhkosť \(Int(today.humidityPercent.rounded()))% · Zrážky \(String(format: "%.1f", today.precipitationMm)) mm")
+                        .font(.system(size: DesignSystem.bodySize))
+                        .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.7))
+                }
             } else if weatherState.isLoading {
                 Text("Načítavam počasie…")
                     .font(.system(size: DesignSystem.bodySize))

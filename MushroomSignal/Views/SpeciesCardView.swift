@@ -74,6 +74,7 @@ struct SpeciesCardView: View {
         // (confirmed present in both LazyVGrid and non-lazy Grid, so the grid wasn't the cause).
         .frame(height: DesignSystem.speciesCardPhotoHeight)
         .background(DesignSystem.Colors.forestMid)
+        .grainTexture()
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 2))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius / 2)
