@@ -73,6 +73,8 @@ public enum DesignSystem {
     /// Opacity of the procedural grain texture applied to `forestMid`/`forestDeep` card
     /// fills — a whisper of bark/leaf texture, never behind running text or chart marks.
     public static let grainOpacity: Double = 0.05
+    /// Opacity of `ForestDivider`'s bark-toned gradient line.
+    public static let forestDividerOpacity: Double = 0.7
 
     public enum Colors {
         public static let forestDeep = Color(red: 0.11, green: 0.16, blue: 0.11)

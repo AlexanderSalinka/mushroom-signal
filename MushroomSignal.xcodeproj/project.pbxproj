@@ -27,6 +27,7 @@
 		534EE6B719E4EFF861B5CA40 /* MushroomSignalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052C8A78E1FA1937EA12ED61 /* MushroomSignalApp.swift */; };
 		552C06B7AC1611B6F2553245 /* ForestIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EF8D1E5F4C3D10D7F82FBB /* ForestIcons.swift */; };
 		5A1AFB398EF3A754F7242101 /* InteractiveMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */; };
+		7BE5D899F205D99113B3E3A5 /* ForestDivider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 927D746B48AFA1D460B8B176 /* ForestDivider.swift */; };
 		8C9AB5CBE17B3271E4716C15 /* PredpovedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461BDE4B8F800D9D3ECFEC01 /* PredpovedView.swift */; };
 		8FC572486E6D957D108BA05F /* SpeciesTrendState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F63D66DD01AC73FEAB0332 /* SpeciesTrendState.swift */; };
 		90410647C8266446E776F743 /* MapScreenStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD99729FBB887B89C2D3D43 /* MapScreenStateTests.swift */; };
@@ -107,6 +108,7 @@
 		7C374D590D0DB48C3B165D63 /* ShortlistWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortlistWidgetView.swift; sourceTree = "<group>"; };
 		81841490E6D542F22EC19628 /* MushroomSignalWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MushroomSignalWidget.swift; sourceTree = "<group>"; };
 		923689C21202B5775F500EE7 /* RegionWeatherStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionWeatherStateTests.swift; sourceTree = "<group>"; };
+		927D746B48AFA1D460B8B176 /* ForestDivider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForestDivider.swift; sourceTree = "<group>"; };
 		94F63D66DD01AC73FEAB0332 /* SpeciesTrendState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeciesTrendState.swift; sourceTree = "<group>"; };
 		9799B53210927467F62E21E0 /* MushroomSignal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MushroomSignal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D621AB64829FC3E73610130 /* ScoreDotsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreDotsView.swift; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 			children = (
 				54F80C4161C989E348E7F683 /* CachedAsyncImage.swift */,
 				0663AE9DE1E9AEFE66412B2E /* CanopyLightView.swift */,
+				927D746B48AFA1D460B8B176 /* ForestDivider.swift */,
 				06EF8D1E5F4C3D10D7F82FBB /* ForestIcons.swift */,
 				2658ADF6E43AD9BFB3C99662 /* GlassBackground.swift */,
 				3325BED6124585CBBF2E95B6 /* GrainTexture.swift */,
@@ -411,6 +414,7 @@
 				2C2C190D6F520DB4BEDEBDB4 /* CachedAsyncImage.swift in Sources */,
 				2F8DB67CA5A51FA41EE1A2DF /* CanopyLightView.swift in Sources */,
 				C1289E25CCE0D11F12F3C2F6 /* ContentView.swift in Sources */,
+				7BE5D899F205D99113B3E3A5 /* ForestDivider.swift in Sources */,
 				552C06B7AC1611B6F2553245 /* ForestIcons.swift in Sources */,
 				FB538808A4334D85E46F77DD /* GlassBackground.swift in Sources */,
 				A077CA036F19536E12341817 /* GrainTexture.swift in Sources */,
