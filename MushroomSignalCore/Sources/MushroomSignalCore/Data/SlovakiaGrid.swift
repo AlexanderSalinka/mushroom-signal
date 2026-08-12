@@ -4,7 +4,13 @@ import Foundation
 /// diamond-shaped filter approximating the country's silhouette. Not survey-grade — these points
 /// only drive a heat-map visualization, not an authoritative boundary claim (see v2 spec, Out of Scope).
 public enum SlovakiaGrid {
-    public static let latitudeRange: ClosedRange<Double> = 47.7...49.6
+    /// Upper bound widened from 49.6 to 49.65 on 2026-08-12 when RegionBoundaries switched
+    /// to real ZBGIS government boundary data — Slovakia's true northernmost extent
+    /// (~49.6137, in Žilinský kraj) sits just past the old hand-approximated data's range.
+    /// Confirmed this doesn't change generate()'s actual grid points: the 0.8° latitudeStep
+    /// still lands its last row at 49.3 either way (49.3 + 0.8 = 50.1, past both the old and
+    /// new upper bound) — only the declared range constant changes, not the heat-map grid.
+    public static let latitudeRange: ClosedRange<Double> = 47.7...49.65
     public static let longitudeRange: ClosedRange<Double> = 16.8...22.6
 
     private static let latitudeStep = 0.8

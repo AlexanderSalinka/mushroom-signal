@@ -10,7 +10,7 @@ let package = Package(
     targets: [
         .target(
             name: "MushroomSignalCore",
-            resources: [.process("Data/species.json"), .process("Data/species-photos.json")]
+            resources: [.process("Data/species.json"), .process("Data/species-photos.json"), .process("Data/region-boundaries.json")]
         ),
         .testTarget(
             name: "MushroomSignalCoreTests",
