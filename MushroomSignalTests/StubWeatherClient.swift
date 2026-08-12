@@ -9,13 +9,16 @@ actor StubWeatherClient: WeatherClient {
     private let gridShouldThrow: Bool
     private let dailyWeather: [DailyWeather]
     private let dailyShouldThrow: Bool
+    private var dailyWeatherSequence: [[DailyWeather]?]?
+    private var dailyCallIndex = 0
 
-    init(snapshots: [WeatherSnapshot?], gridSnapshots: [String: WeatherSnapshot] = [:], gridShouldThrow: Bool = false, dailyWeather: [DailyWeather] = [], dailyShouldThrow: Bool = false) {
+    init(snapshots: [WeatherSnapshot?], gridSnapshots: [String: WeatherSnapshot] = [:], gridShouldThrow: Bool = false, dailyWeather: [DailyWeather] = [], dailyShouldThrow: Bool = false, dailyWeatherSequence: [[DailyWeather]?]? = nil) {
         self.snapshots = snapshots
         self.gridSnapshots = gridSnapshots
         self.gridShouldThrow = gridShouldThrow
         self.dailyWeather = dailyWeather
         self.dailyShouldThrow = dailyShouldThrow
+        self.dailyWeatherSequence = dailyWeatherSequence
     }
 
     func fetchSnapshot(for region: Region) async throws -> WeatherSnapshot {
@@ -31,6 +34,12 @@ actor StubWeatherClient: WeatherClient {
     }
 
     func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] {
+        if let sequence = dailyWeatherSequence {
+            let index = min(dailyCallIndex, sequence.count - 1)
+            dailyCallIndex += 1
+            guard let result = sequence[index] else { throw StubError() }
+            return result
+        }
         if dailyShouldThrow { throw StubError() }
         return dailyWeather
     }
@@ -41,12 +50,7 @@ actor DelayedWeatherClient: WeatherClient {
     private var callCount = 0
 
     func fetchSnapshot(for region: Region) async throws -> WeatherSnapshot {
-        callCount += 1
-        if callCount == 1 {
-            try? await Task.sleep(for: .milliseconds(200))
-            throw StubError()
-        }
-        return WeatherSnapshot(regionId: region.id, averageTempLast10DaysC: 15, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 20, fetchedAt: .now)
+        throw StubError()
     }
 
     func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] {
@@ -54,6 +58,11 @@ actor DelayedWeatherClient: WeatherClient {
     }
 
     func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] {
-        []
+        callCount += 1
+        if callCount == 1 {
+            try? await Task.sleep(for: .milliseconds(200))
+            throw StubError()
+        }
+        return [DailyWeather(date: .now, meanTempC: 15, maxTempC: 20, minTempC: 10, precipitationMm: 2, humidityPercent: 75)]
     }
 }
