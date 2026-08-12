@@ -9,7 +9,6 @@ private let predpovedLogger = Logger(subsystem: "com.alexandersalinka.MushroomSi
 struct PredpovedView: View {
     let regionId: String
     @ObservedObject var appState: AppState
-    @StateObject private var weatherState = RegionWeatherState()
     @State private var allSpecies: [Species] = []
     @State private var photosBySpeciesID: [String: [SpeciesPhoto]] = [:]
 
@@ -19,7 +18,7 @@ struct PredpovedView: View {
 
     private var todayEntry: DailyWeather? {
         let calendar = Calendar.current
-        return weatherState.dailyWeather.first { calendar.isDateInToday($0.date) }
+        return appState.dailyWeather.first { calendar.isDateInToday($0.date) }
     }
 
     private var inSeasonSpecies: [Species] {
@@ -47,37 +46,29 @@ struct PredpovedView: View {
                         .font(.system(size: DesignSystem.captionSize))
                         .foregroundStyle(appState.isShowingStaleData ? DesignSystem.Colors.caution : DesignSystem.Colors.danger)
                 }
-                if let error = weatherState.errorMessage {
-                    Text(error)
-                        .font(.system(size: DesignSystem.captionSize))
-                        .foregroundStyle(DesignSystem.Colors.danger)
-                }
 
                 heroSection
-                ForestPanel { WeatherRainChartView(dailyWeather: weatherState.dailyWeather, today: Date()) }
+                ForestPanel { WeatherRainChartView(dailyWeather: appState.dailyWeather, today: Date()) }
                 if !visibleTopSignals.isEmpty {
                     ForestPanel { topPicksSection }
                 }
                 ForestPanel {
-                    if weatherState.isLoading && weatherState.dailyWeather.isEmpty {
+                    if appState.isLoading && appState.dailyWeather.isEmpty {
                         Text("Načítavam predpoveď…")
                             .font(.system(size: DesignSystem.bodySize))
                             .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-                    } else if weatherState.errorMessage != nil {
+                    } else if appState.errorMessage != nil && !appState.isShowingStaleData {
                         Text("Predpoveď nie je k dispozícii.")
                             .font(.system(size: DesignSystem.bodySize))
                             .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
                     } else {
-                        MushroomSignalHeroView(signals: appState.signals, dailyWeather: weatherState.dailyWeather, region: region, today: Date())
+                        MushroomSignalHeroView(signals: appState.signals, dailyWeather: appState.dailyWeather, region: region, today: Date())
                     }
                 }
                 ForestPanel { seasonCalendarSection }
                 disclaimer
             }
             .padding(DesignSystem.spacingMedium)
-        }
-        .task(id: regionId) {
-            await weatherState.load(regionId: regionId)
         }
         .task {
             do {
@@ -125,11 +116,11 @@ struct PredpovedView: View {
                         .font(.system(size: DesignSystem.bodySize))
                         .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.7))
                 }
-            } else if weatherState.isLoading {
+            } else if appState.isLoading {
                 Text("Načítavam počasie…")
                     .font(.system(size: DesignSystem.bodySize))
                     .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-            } else if weatherState.errorMessage == nil {
+            } else if appState.errorMessage == nil {
                 Text("Žiadne údaje o počasí pre dnešný deň.")
                     .font(.system(size: DesignSystem.bodySize))
                     .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
