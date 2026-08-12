@@ -22,7 +22,7 @@ private struct TodayMarkerXPreferenceKey: PreferenceKey {
 struct WeatherRainChartView: View {
     let dailyWeather: [DailyWeather]
     let today: Date
-    @State private var selectedRange: Int = 7
+    @SceneStorage("weatherRainChartView.selectedRange") private var selectedRange: Int = 7
     @State private var todayMarkerX: CGFloat?
 
     /// Shared coordinate space for the two-chart `VStack`, so the today-marker's x position
