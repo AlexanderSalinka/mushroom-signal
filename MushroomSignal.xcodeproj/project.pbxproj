@@ -31,6 +31,7 @@
 		8C9AB5CBE17B3271E4716C15 /* PredpovedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461BDE4B8F800D9D3ECFEC01 /* PredpovedView.swift */; };
 		8FC572486E6D957D108BA05F /* SpeciesTrendState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F63D66DD01AC73FEAB0332 /* SpeciesTrendState.swift */; };
 		90410647C8266446E776F743 /* MapScreenStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAD99729FBB887B89C2D3D43 /* MapScreenStateTests.swift */; };
+		92DA8D91ED83F72AC9844687 /* MushroomSignalHeroMiniChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2873607D9B184A734EFDF44 /* MushroomSignalHeroMiniChart.swift */; };
 		96E7631C25E789C9C16F2CC0 /* WeatherRainChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9073E159ADEB9895195E4C3 /* WeatherRainChartView.swift */; };
 		9EFD2075FC090FC7141C0A92 /* CompactSpeciesCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB63E46C4F16078C8B1F5E8 /* CompactSpeciesCardView.swift */; };
 		A077CA036F19536E12341817 /* GrainTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3325BED6124585CBBF2E95B6 /* GrainTexture.swift */; };
@@ -128,6 +129,7 @@
 		C9073E159ADEB9895195E4C3 /* WeatherRainChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherRainChartView.swift; sourceTree = "<group>"; };
 		CED03FE1A9085BBA24624FA2 /* SpeciesTrendStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeciesTrendStateTests.swift; sourceTree = "<group>"; };
 		D0153180DAA3EEF038D06C43 /* RegionWeatherState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionWeatherState.swift; sourceTree = "<group>"; };
+		D2873607D9B184A734EFDF44 /* MushroomSignalHeroMiniChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MushroomSignalHeroMiniChart.swift; sourceTree = "<group>"; };
 		D2D0E1BA2D29697E1EE3ACA0 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		D921A8D3EAFD9FF2245F208B /* RegionPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionPickerView.swift; sourceTree = "<group>"; };
 		DD306E3B17FFEF1E874435FC /* NotificationSettingsState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsState.swift; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 				254BA84FC5D0A897D3720F4E /* InteractiveMapView.swift */,
 				406769D67F45636883C7A794 /* MapResizeHandle.swift */,
 				0E508520517A594C06FD0468 /* MapScreenView.swift */,
+				D2873607D9B184A734EFDF44 /* MushroomSignalHeroMiniChart.swift */,
 				A000427DD51C4A972F4FED1D /* NotificationSettingsView.swift */,
 				C06442830610580CEB0AF161 /* PhotoCreditsView.swift */,
 				461BDE4B8F800D9D3ECFEC01 /* PredpovedView.swift */,
@@ -434,6 +437,7 @@
 				43A734B64961434BB158661E /* MapScreenState.swift in Sources */,
 				16E3AAA1E68A9D8C55B22B38 /* MapScreenView.swift in Sources */,
 				534EE6B719E4EFF861B5CA40 /* MushroomSignalApp.swift in Sources */,
+				92DA8D91ED83F72AC9844687 /* MushroomSignalHeroMiniChart.swift in Sources */,
 				0DDA9573388B544E8983F1DD /* NotificationSettingsState.swift in Sources */,
 				C1196A67D5D55F63E294C062 /* NotificationSettingsView.swift in Sources */,
 				0FAF8DADEDA96F713383337F /* PhotoCreditsView.swift in Sources */,
