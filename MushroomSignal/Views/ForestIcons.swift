@@ -105,3 +105,69 @@ struct SporeShape: Shape {
         return path
     }
 }
+
+/// A single mushroom-cap dome on a short stem — the flush-happening motif's repeating
+/// unit. `MushroomSignalHeroView` composes three positioned instances of this, each
+/// animated independently, for the spec's staggered entrance.
+struct MushroomCapShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        let w = rect.width, h = rect.height, x = rect.minX, y = rect.minY
+        var path = Path()
+        path.move(to: CGPoint(x: x, y: y + h * 0.55))
+        path.addCurve(
+            to: CGPoint(x: x + w, y: y + h * 0.55),
+            control1: CGPoint(x: x, y: y),
+            control2: CGPoint(x: x + w, y: y)
+        )
+        path.move(to: CGPoint(x: x + w * 0.5, y: y + h * 0.55))
+        path.addLine(to: CGPoint(x: x + w * 0.5, y: y + h))
+        return path
+    }
+}
+
+/// Faint radiating growth lines beneath the mushroom caps — reuses `SunriseShape`'s
+/// rays-from-a-baseline language for the flush-happening motif's ground layer.
+struct GrowthRaysShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        let w = rect.width, h = rect.height, x = rect.minX, y = rect.minY
+        var path = Path()
+        path.move(to: CGPoint(x: x, y: y + h * 0.15))
+        path.addLine(to: CGPoint(x: x + w, y: y + h * 0.15))
+        for rayX: CGFloat in [0.2, 0.5, 0.8] {
+            path.move(to: CGPoint(x: x + w * rayX, y: y + h * 0.35))
+            path.addLine(to: CGPoint(x: x + w * rayX, y: y + h))
+        }
+        return path
+    }
+}
+
+/// A plain flat outline cloud — the no-rain motif, muted and undecorated (no droplet).
+struct CloudOutlineShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        let w = rect.width, h = rect.height, x = rect.minX, y = rect.minY
+        var path = Path()
+        path.move(to: CGPoint(x: x + w * 0.22, y: y + h * 0.68))
+        path.addCurve(
+            to: CGPoint(x: x + w * 0.22, y: y + h * 0.4),
+            control1: CGPoint(x: x + w * 0.02, y: y + h * 0.62),
+            control2: CGPoint(x: x + w * 0.04, y: y + h * 0.4)
+        )
+        path.addCurve(
+            to: CGPoint(x: x + w * 0.55, y: y + h * 0.22),
+            control1: CGPoint(x: x + w * 0.28, y: y + h * 0.22),
+            control2: CGPoint(x: x + w * 0.42, y: y + h * 0.16)
+        )
+        path.addCurve(
+            to: CGPoint(x: x + w * 0.85, y: y + h * 0.42),
+            control1: CGPoint(x: x + w * 0.68, y: y + h * 0.28),
+            control2: CGPoint(x: x + w * 0.82, y: y + h * 0.3)
+        )
+        path.addCurve(
+            to: CGPoint(x: x + w * 0.78, y: y + h * 0.68),
+            control1: CGPoint(x: x + w * 0.98, y: y + h * 0.48),
+            control2: CGPoint(x: x + w * 0.96, y: y + h * 0.68)
+        )
+        path.addLine(to: CGPoint(x: x + w * 0.22, y: y + h * 0.68))
+        return path
+    }
+}
