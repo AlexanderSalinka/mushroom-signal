@@ -286,10 +286,10 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   the bar's own min→max direction is encoded). Matches the approved mockup as designed, per the
   2026-08-10 predpoved-tab plan — flagged here in case this reads as unintentional later, not
   because it's confirmed wrong; worth confirming with Alexander if it comes up again.
-- **`topPicksSection`'s rows still use plain text/circle-badge styling, not the mockup's chip
-  design** — `seasonCalendarSection` was redone to match the approved mockup's pill/chip
-  component (rounded, translucent moss background, color-coded swatch dot, recolored for
-  caution/poisonous species) on 2026-08-10, but the top-3-picks list above it wasn't — it still
-  uses the original numbered-badge/`VStack` layout from the predpoved-tab plan. Not a defect
-  (that layout is intentional — it needs to show a rank number and score dots the season list
-  doesn't), but worth a visual-consistency pass if the two sections should read as one family.
+- ~~`topPicksSection`'s rows still use plain text/circle-badge styling, not the mockup's chip
+  design`~~ — **Resolved, no longer applies (confirmed with Alexander 2026-08-12).** This note
+  predated the 2026-08-11 forest-glass-visual-redesign and chart-fix-and-card-photos passes,
+  which replaced `topPicksSection`'s row list entirely with a `LazyVGrid` of photo-backed
+  `CompactSpeciesCardView` cards. It's no longer comparable to `seasonCalendarSection`'s
+  pill/chip rows — a photo-card grid and a full-width row list are two different layouts by
+  design, not a one-got-redesigned-the-other-didn't gap.
