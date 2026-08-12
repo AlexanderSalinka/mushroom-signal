@@ -6,12 +6,13 @@ import MushroomSignalCore
 final class AppStateTests: XCTestCase {
     func testRefreshFallsBackToCachedWeatherOnFailureAfterASuccessfulLoad() async {
         let region = RegionDatabase.all[0]
-        let snapshot = WeatherSnapshot(regionId: region.id, averageTempLast10DaysC: 15, averageHumidityLast10DaysPercent: 75, totalPrecipitationLast10DaysMm: 20, fetchedAt: .now)
-        let client = StubWeatherClient(snapshots: [snapshot, nil])
+        let day = DailyWeather(date: .now, meanTempC: 15, maxTempC: 20, minTempC: 10, precipitationMm: 5, humidityPercent: 75)
+        let client = StubWeatherClient(snapshots: [nil], dailyWeatherSequence: [[day], nil])
         let suiteName = "test.suite.\(UUID().uuidString)"
-        let cache = WeatherSnapshotCache(appGroupId: suiteName)!
+        let weatherCache = WeatherSnapshotCache(appGroupId: suiteName)!
+        let dailyCache = DailyWeatherCache(appGroupId: suiteName)!
         defer { UserDefaults(suiteName: suiteName)?.removePersistentDomain(forName: suiteName) }
-        let appState = AppState(store: nil, weatherCache: cache, weatherClient: client)
+        let appState = AppState(store: nil, weatherCache: weatherCache, dailyWeatherCache: dailyCache, weatherClient: client)
 
         await appState.refresh()
         XCTAssertFalse(appState.signals.isEmpty, "precondition: first refresh should have loaded signals")
@@ -19,20 +20,23 @@ final class AppStateTests: XCTestCase {
         await appState.refresh()
 
         XCTAssertFalse(appState.signals.isEmpty, "a failed refresh must fall back to the cached snapshot instead of blanking the list")
+        XCTAssertFalse(appState.dailyWeather.isEmpty, "the daily array must also fall back to its cache, not just signals")
         XCTAssertTrue(appState.isShowingStaleData, "the fallback must be flagged as stale so the UI can indicate it, not present it as fresh")
         XCTAssertNotNil(appState.errorMessage)
     }
 
     func testRefreshClearsSignalsOnFailureWhenNoCachedSnapshotExists() async {
-        let client = StubWeatherClient(snapshots: [nil])
+        let client = StubWeatherClient(snapshots: [nil], dailyWeatherSequence: [nil])
         let suiteName = "test.suite.\(UUID().uuidString)"
-        let cache = WeatherSnapshotCache(appGroupId: suiteName)!
+        let weatherCache = WeatherSnapshotCache(appGroupId: suiteName)!
+        let dailyCache = DailyWeatherCache(appGroupId: suiteName)!
         defer { UserDefaults(suiteName: suiteName)?.removePersistentDomain(forName: suiteName) }
-        let appState = AppState(store: nil, weatherCache: cache, weatherClient: client)
+        let appState = AppState(store: nil, weatherCache: weatherCache, dailyWeatherCache: dailyCache, weatherClient: client)
 
         await appState.refresh()
 
         XCTAssertTrue(appState.signals.isEmpty, "with nothing cached yet, a failed refresh has nothing to fall back to")
+        XCTAssertTrue(appState.dailyWeather.isEmpty)
         XCTAssertFalse(appState.isShowingStaleData)
         XCTAssertNotNil(appState.errorMessage)
     }

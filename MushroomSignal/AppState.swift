@@ -6,12 +6,14 @@ import MushroomSignalCore
 final class AppState: ObservableObject {
     @Published var selectedRegion: Region
     @Published var signals: [SpeciesSignal] = []
+    @Published var dailyWeather: [DailyWeather] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var isShowingStaleData = false
 
     private let store: RegionStore?
     private let weatherCache: WeatherSnapshotCache?
+    private let dailyWeatherCache: DailyWeatherCache?
     private let weatherClient: WeatherClient
     private let widgetReloader: WidgetReloading
     private let now: () -> Date
@@ -28,12 +30,14 @@ final class AppState: ObservableObject {
     init(
         store: RegionStore? = RegionStore(),
         weatherCache: WeatherSnapshotCache? = WeatherSnapshotCache(),
+        dailyWeatherCache: DailyWeatherCache? = DailyWeatherCache(),
         weatherClient: WeatherClient = OpenMeteoClient(),
         widgetReloader: WidgetReloading = SystemWidgetCenter(),
         now: @escaping () -> Date = Date.init
     ) {
         self.store = store
         self.weatherCache = weatherCache
+        self.dailyWeatherCache = dailyWeatherCache
         self.weatherClient = weatherClient
         self.widgetReloader = widgetReloader
         self.now = now
@@ -65,31 +69,33 @@ final class AppState: ObservableObject {
 
         let region = selectedRegion
         do {
-            let weather = try await weatherClient.fetchSnapshot(for: region)
-            weatherCache?.store(weather)
-            let dailyWeather: [DailyWeather]
-            do {
-                dailyWeather = try await weatherClient.fetchDailyBreakdown(for: region, pastDays: 10)
-            } catch {
-                dailyWeather = []
-                logger.error("Daily breakdown fetch failed for region \(region.id, privacy: .public): \(String(describing: error), privacy: .public)")
+            let daily = try await weatherClient.fetchDailyBreakdown(for: region, pastDays: 30, forecastDays: 5)
+            guard let weather = WeatherSnapshot.derive(regionId: region.id, from: daily, asOf: now()) else {
+                throw WeatherClientError.emptyDailyData
             }
-            let flushTriggered = FlushTriggerDetector.triggered(in: dailyWeather, asOf: now())
+            weatherCache?.store(weather)
+            dailyWeatherCache?.store(daily, for: region.id)
+            let flushTriggered = FlushTriggerDetector.triggered(in: daily, asOf: now())
             let allSpecies = try SpeciesDatabase.loadAll()
             let month = Calendar.current.component(.month, from: now())
             let ranked = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: weather, month: month, flushTriggered: flushTriggered)
             guard currentRefreshID == refreshID else { return }
             signals = ranked
+            dailyWeather = daily
             isShowingStaleData = false
         } catch {
             guard currentRefreshID == refreshID else { return }
-            if let cached = weatherCache?.snapshot(for: region.id), let allSpecies = try? SpeciesDatabase.loadAll() {
+            if let cachedSnapshot = weatherCache?.snapshot(for: region.id),
+               let cachedDaily = dailyWeatherCache?.dailyWeather(for: region.id),
+               let allSpecies = try? SpeciesDatabase.loadAll() {
                 let month = Calendar.current.component(.month, from: now())
-                signals = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: cached, month: month, flushTriggered: false)
+                signals = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: cachedSnapshot, month: month, flushTriggered: false)
+                dailyWeather = cachedDaily
                 isShowingStaleData = true
-                errorMessage = "Zobrazujú sa staršie údaje z \(Self.staleTimeFormatter.string(from: cached.fetchedAt))."
+                errorMessage = "Zobrazujú sa staršie údaje z \(Self.staleTimeFormatter.string(from: cachedSnapshot.fetchedAt))."
             } else {
                 signals = []
+                dailyWeather = []
                 isShowingStaleData = false
                 errorMessage = "Nepodarilo sa načítať údaje o počasí. Skúste to znova."
             }
