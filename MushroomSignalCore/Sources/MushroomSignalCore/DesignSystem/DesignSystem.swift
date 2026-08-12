@@ -108,6 +108,27 @@ public enum DesignSystem {
     /// Corner radius for the full-width season-calendar rows (replaces the old pill-shaped
     /// `chipCornerRadius` chips, which were too small to fit full names).
     public static let seasonRowCornerRadius: Double = 12
+    /// `MushroomSignalHeroView`'s icon badge diameter for loud states (flush-happening,
+    /// rain-incoming) — a real focal point, ~2x the icon badge `rainIncomingSection` used
+    /// before this view replaced it.
+    public static let heroIconBadgeSize: Double = 64
+    /// `MushroomSignalHeroView`'s icon glyph size inside `heroIconBadgeSize`, loud states —
+    /// ~53% of the badge, matching the glyph-to-badge ratio the replaced view already used
+    /// (15pt glyph inside a 30pt badge).
+    public static let heroIconGlyphSize: Double = 34
+    /// `MushroomSignalHeroView`'s icon badge diameter for quiet states (near-miss, no-rain) —
+    /// deliberately smaller than the loud badge, but still well above the 20pt text floor so
+    /// "quiet" never reads as an unfinished/omitted state.
+    public static let heroIconBadgeSizeQuiet: Double = 40
+    /// `MushroomSignalHeroView`'s icon glyph size inside `heroIconBadgeSizeQuiet`, quiet
+    /// states — same ~53% ratio as the loud badge/glyph pair.
+    public static let heroIconGlyphSizeQuiet: Double = 21
+    /// `MushroomSignalHeroView`'s mini temp-line panel height (loud states only) — ~40% of
+    /// `chartTempPanelHeight`, condensed for a hero-panel preview, not a full chart.
+    public static let heroSparklineTempHeight: Double = 36
+    /// `MushroomSignalHeroView`'s mini rain-bars panel height (loud states only) — ~40% of
+    /// `chartRainPanelHeight`, same condensation ratio as `heroSparklineTempHeight`.
+    public static let heroSparklineRainHeight: Double = 28
 
     public enum Colors {
         public static let forestDeep = Color(red: 0.11, green: 0.16, blue: 0.11)

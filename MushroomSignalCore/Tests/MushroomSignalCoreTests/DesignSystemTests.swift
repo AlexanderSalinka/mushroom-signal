@@ -54,4 +54,19 @@ final class DesignSystemTests: XCTestCase {
     func testSeasonRowMinWidthMeetsMobileWidthFloor() {
         XCTAssertGreaterThanOrEqual(DesignSystem.seasonRowMinWidth, 375)
     }
+
+    func testHeroIconBadgeSizesAreDistinctByLoudness() {
+        XCTAssertGreaterThan(DesignSystem.heroIconBadgeSize, DesignSystem.heroIconBadgeSizeQuiet)
+        XCTAssertGreaterThan(DesignSystem.heroIconGlyphSize, DesignSystem.heroIconGlyphSizeQuiet)
+    }
+
+    func testHeroIconGlyphSizesFitInsideTheirBadges() {
+        XCTAssertLessThan(DesignSystem.heroIconGlyphSize, DesignSystem.heroIconBadgeSize)
+        XCTAssertLessThan(DesignSystem.heroIconGlyphSizeQuiet, DesignSystem.heroIconBadgeSizeQuiet)
+    }
+
+    func testHeroSparklinePanelsAreSmallerThanTheFullChart() {
+        XCTAssertLessThan(DesignSystem.heroSparklineTempHeight, DesignSystem.chartTempPanelHeight)
+        XCTAssertLessThan(DesignSystem.heroSparklineRainHeight, DesignSystem.chartRainPanelHeight)
+    }
 }
