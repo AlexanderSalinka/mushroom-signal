@@ -41,7 +41,7 @@ struct PredpovedView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: DesignSystem.spacingMedium) {
+            LazyVStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
                 if let error = appState.errorMessage {
                     Text(error)
                         .font(.system(size: DesignSystem.captionSize))
@@ -74,7 +74,7 @@ struct PredpovedView: View {
                 ForestPanel { seasonCalendarSection }
                 disclaimer
             }
-            .padding(DesignSystem.spacingLarge)
+            .padding(DesignSystem.spacingMedium)
         }
         .task(id: regionId) {
             await weatherState.load(regionId: regionId)

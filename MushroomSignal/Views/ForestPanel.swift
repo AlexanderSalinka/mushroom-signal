@@ -12,7 +12,7 @@ struct ForestPanel<Content: View>: View {
 
     var body: some View {
         content()
-            .padding(DesignSystem.spacingMedium)
+            .padding(DesignSystem.spacingSmall)
             .background(DesignSystem.Colors.forestDeep.opacity(DesignSystem.panelFillOpacity))
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.panelCornerRadius))
