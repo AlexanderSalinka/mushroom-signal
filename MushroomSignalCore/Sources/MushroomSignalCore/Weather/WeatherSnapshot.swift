@@ -34,4 +34,31 @@ public extension WeatherSnapshot {
             fetchedAt: day.date
         )
     }
+
+    /// Derives a WeatherSnapshot from an already-fetched daily array — replaces the old
+    /// dedicated fetchSnapshot network call (see the weather-fetch-consolidation design,
+    /// 2026-08-12). Averages/sums the most recent `windowDays` calendar days up to and
+    /// including `asOf` (never forecast days), matching the same past-day filtering
+    /// RecentWeatherWindow and WeatherRainChartView.visibleDays already use elsewhere in
+    /// this codebase. Returns nil if no historical data is available.
+    static func derive(regionId: String, from dailyWeather: [DailyWeather], windowDays: Int = 10, asOf today: Date, calendar: Calendar = .current) -> WeatherSnapshot? {
+        let todayStart = calendar.startOfDay(for: today)
+        let window = dailyWeather
+            .filter { calendar.startOfDay(for: $0.date) <= todayStart }
+            .sorted { $0.date < $1.date }
+            .suffix(windowDays)
+        guard !window.isEmpty else { return nil }
+
+        let temps = window.map(\.meanTempC)
+        let humidity = window.map(\.humidityPercent)
+        let precipitation = window.map(\.precipitationMm)
+
+        return WeatherSnapshot(
+            regionId: regionId,
+            averageTempLast10DaysC: temps.reduce(0, +) / Double(temps.count),
+            averageHumidityLast10DaysPercent: humidity.reduce(0, +) / Double(humidity.count),
+            totalPrecipitationLast10DaysMm: precipitation.reduce(0, +),
+            fetchedAt: today
+        )
+    }
 }
