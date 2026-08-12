@@ -157,27 +157,33 @@ private struct FlushHappeningBadge: View {
                 .opacity(isBreathing ? 0.85 : 0.5)
                 .animation(reduceMotion ? nil : .easeInOut(duration: 3.4).repeatForever(autoreverses: true), value: isBreathing)
 
-            ForEach(Array(caps.enumerated()), id: \.offset) { index, cap in
-                MushroomCapShape()
-                    .stroke(DesignSystem.Colors.mossAccent, style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
-                    .frame(width: DesignSystem.heroIconGlyphSize * cap.size, height: DesignSystem.heroIconGlyphSize * cap.size)
-                    .scaleEffect(x: 1.0, y: hasEntered ? 1.0 : 0.15, anchor: .bottom)
-                    .scaleEffect(breathingScale, anchor: .bottom)
-                    .position(x: DesignSystem.heroIconGlyphSize * cap.x, y: DesignSystem.heroIconGlyphSize * cap.y)
-                    .animation(
-                        reduceMotion ? nil : .spring(response: 0.75, dampingFraction: 0.62).delay(cap.delay),
-                        value: hasEntered
-                    )
-                    .animation(
-                        reduceMotion ? nil : .easeInOut(duration: 3.4).repeatForever(autoreverses: true),
-                        value: isBreathing
-                    )
+            ZStack {
+                ForEach(Array(caps.enumerated()), id: \.offset) { index, cap in
+                    MushroomCapShape()
+                        .stroke(DesignSystem.Colors.mossAccent, style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
+                        .frame(width: DesignSystem.heroIconGlyphSize * cap.size, height: DesignSystem.heroIconGlyphSize * cap.size)
+                        .scaleEffect(x: 1.0, y: hasEntered ? 1.0 : 0.15, anchor: .bottom)
+                        .scaleEffect(breathingScale, anchor: .bottom)
+                        .position(x: DesignSystem.heroIconGlyphSize * cap.x, y: DesignSystem.heroIconGlyphSize * cap.y)
+                        .animation(
+                            reduceMotion ? nil : .spring(response: 0.75, dampingFraction: 0.62).delay(cap.delay),
+                            value: hasEntered
+                        )
+                        .animation(
+                            reduceMotion ? nil : .easeInOut(duration: 3.4).repeatForever(autoreverses: true),
+                            value: isBreathing
+                        )
+                }
             }
+            .frame(width: DesignSystem.heroIconGlyphSize, height: DesignSystem.heroIconGlyphSize)
         }
         .frame(width: DesignSystem.heroIconBadgeSize, height: DesignSystem.heroIconBadgeSize)
         .onAppear {
             hasEntered = true
+        }
+        .task {
             guard !reduceMotion else { return }
+            try? await Task.sleep(for: .seconds(1.07))
             isBreathing = true
         }
         .onDisappear {
