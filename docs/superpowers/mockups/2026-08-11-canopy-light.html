@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Canopy Light — Predpoveď glass mockup</title>
+<style>
+  :root {
+    --forest-deep: #1C291C;
+    --forest-mid: #2E4029;
+    --bark: #4A3321;
+    --water: #4D7A85;
+    --cloud: #F0EBDE;
+    --moss: #6B8F4D;
+    --caution: #D99921;
+    --studio-ground: #100E0A;
+    --studio-panel: #17140F;
+    --studio-line: rgba(240,235,222,0.10);
+    --studio-text: #E9E3D6;
+    --studio-text-dim: rgba(233,227,214,0.56);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--studio-ground);
+    color: var(--studio-text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    min-height: 100vh;
+    padding: 56px 24px 80px;
+  }
+
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--moss);
+  }
+
+  h1 {
+    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.15;
+    margin: 10px 0 12px;
+    text-wrap: balance;
+    color: var(--studio-text);
+  }
+
+  .lede {
+    max-width: 62ch;
+    color: var(--studio-text-dim);
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0 0 48px;
+  }
+
+  .stage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  @media (max-width: 780px) {
+    .stage { grid-template-columns: 1fr; }
+  }
+
+  .column-label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .column-label .name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--studio-text);
+  }
+
+  .column-label .tag {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--studio-text-dim);
+  }
+
+  .desktop {
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    aspect-ratio: 3 / 4;
+    background: var(--studio-panel);
+    border: 1px solid var(--studio-line);
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.7);
+  }
+
+  /* Stand-in "desktop wallpaper" — blurred organic color field standing in for
+     whatever the user's real desktop shows through the behind-window glass.
+     GlassBackground.swift's NSVisualEffectView reads this at runtime; a static
+     page can only approximate the blur, not the live passthrough. */
+  .wallpaper {
+    position: absolute;
+    inset: -15%;
+    background:
+      radial-gradient(circle at 20% 25%, rgba(107,143,77,0.55), transparent 45%),
+      radial-gradient(circle at 80% 15%, rgba(77,122,133,0.45), transparent 50%),
+      radial-gradient(circle at 60% 80%, rgba(74,51,33,0.55), transparent 50%),
+      radial-gradient(circle at 15% 85%, rgba(46,64,41,0.65), transparent 45%),
+      linear-gradient(160deg, #23301f, #14200f 60%, #0d1610);
+    filter: blur(38px) saturate(115%);
+  }
+
+  .window {
+    position: absolute;
+    inset: 7%;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 40px -18px rgba(0,0,0,0.6);
+  }
+
+  .titlebar {
+    height: 34px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 12px;
+    background: rgba(20,26,17,0.35);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #EC6A5E; }
+  .dot.y { background: #F4BF4F; }
+  .dot.g { background: #61C454; }
+
+  .titlebar .label {
+    margin-left: auto;
+    margin-right: auto;
+    transform: translateX(-15px);
+    font-size: 11px;
+    color: rgba(240,235,222,0.55);
+    font-weight: 500;
+  }
+
+  .glass {
+    position: relative;
+    flex: 1;
+    -webkit-backdrop-filter: blur(34px) saturate(120%);
+    backdrop-filter: blur(34px) saturate(120%);
+    overflow: hidden;
+  }
+
+  .tint {
+    position: absolute;
+    inset: 0;
+    background: var(--forest-deep);
+    opacity: 0.25;
+  }
+
+  /* --- signature move: dappled canopy light --------------------------- */
+  .canopy { position: absolute; inset: 0; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; }
+  .desktop.proposed .canopy { opacity: var(--canopy-intensity, 0.6); }
+
+  .blob {
+    position: absolute;
+    filter: blur(26px);
+    mix-blend-mode: soft-light;
+    background: radial-gradient(circle at 35% 30%, rgba(240,235,222,0.95), rgba(217,153,33,0.35) 55%, transparent 75%);
+  }
+  .blob.one {
+    width: 58%; height: 40%;
+    top: -6%; left: 8%;
+    border-radius: 62% 38% 55% 45% / 55% 40% 60% 45%;
+    animation: driftA 26s ease-in-out infinite alternate;
+  }
+  .blob.two {
+    width: 42%; height: 34%;
+    bottom: 6%; right: -8%;
+    border-radius: 45% 55% 40% 60% / 50% 60% 40% 50%;
+    animation: driftB 32s ease-in-out infinite alternate;
+    opacity: 0.75;
+  }
+  .blob.three {
+    width: 30%; height: 22%;
+    top: 42%; left: -6%;
+    border-radius: 50% 50% 60% 40% / 45% 55% 45% 55%;
+    animation: driftC 22s ease-in-out infinite alternate;
+    opacity: 0.55;
+  }
+
+  @keyframes driftA { from { transform: translate(0,0) rotate(0deg); } to { transform: translate(4%, 3%) rotate(4deg); } }
+  @keyframes driftB { from { transform: translate(0,0) rotate(0deg); } to { transform: translate(-3%, -4%) rotate(-3deg); } }
+  @keyframes driftC { from { transform: translate(0,0) rotate(0deg); } to { transform: translate(3%, -2%) rotate(3deg); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blob { animation: none !important; }
+  }
+
+  /* --- sample content, mirrors PredpovedView ---------------------------- */
+  .content {
+    position: relative;
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+  }
+
+  .hero-temp {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--cloud);
+  }
+
+  .hero-sub {
+    font-size: 13px;
+    color: rgba(240,235,222,0.7);
+    margin-top: -8px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: rgba(240,235,222,0.6);
+    text-transform: none;
+    margin-top: 4px;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px 7px 9px;
+    border-radius: 100px;
+    background: rgba(107,143,77,0.2);
+    border: 1px solid rgba(107,143,77,0.45);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--cloud);
+  }
+
+  .chip .swatch {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--moss);
+    flex: none;
+  }
+
+  .card {
+    margin-top: auto;
+    border-radius: 12px;
+    background: rgba(46,64,41,0.55);
+    border: 1px solid rgba(240,235,222,0.08);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .card .name { font-size: 13px; font-weight: 600; color: var(--cloud); }
+  .card .latin { font-size: 11px; font-style: italic; color: rgba(240,235,222,0.6); }
+
+  .controls {
+    margin-top: 44px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 420px;
+  }
+
+  .controls label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--studio-text-dim);
+    letter-spacing: 0.02em;
+  }
+
+  .controls input[type="range"] {
+    width: 100%;
+    accent-color: var(--moss);
+  }
+
+  .note {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--studio-line);
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--studio-text-dim);
+    max-width: 68ch;
+  }
+
+  .note strong { color: var(--studio-text); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Design mockup · Predpoveď glass</div>
+  <h1>What canopy light does to the glass</h1>
+  <p class="lede">
+    Same <code>NSVisualEffectView</code> vibrancy, same <code>forestDeep</code> tint underneath.
+    The right panel adds three soft, irregular light blobs instead of a flat overlay — like
+    sunlight breaking through leaves rather than a green pane of glass. Drag the slider to
+    calibrate how strong it should read.
+  </p>
+
+  <div class="stage">
+    <div>
+      <div class="column-label">
+        <span class="name">Current</span>
+        <span class="tag">flat tint</span>
+      </div>
+      <div class="desktop current">
+        <div class="wallpaper"></div>
+        <div class="window">
+          <div class="titlebar">
+            <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+            <span class="label">Predpoveď</span>
+          </div>
+          <div class="glass">
+            <div class="tint"></div>
+            <div class="content">
+              <div>
+                <div class="hero-temp">18° / 24°</div>
+                <div class="hero-sub">Vlhkosť 72% · Zrážky 3.2 mm</div>
+              </div>
+              <div class="section-label">Sezóna tento mesiac</div>
+              <div class="chips">
+                <div class="chip"><span class="swatch"></span>Hríb dubový</div>
+                <div class="chip"><span class="swatch"></span>Kuriatko jedlé</div>
+                <div class="chip"><span class="swatch" style="background:var(--caution)"></span>Muchotrávka</div>
+              </div>
+              <div class="card">
+                <div class="name">Hríb smrekový</div>
+                <div class="latin">Boletus edulis</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="column-label">
+        <span class="name">Proposed</span>
+        <span class="tag">canopy light</span>
+      </div>
+      <div class="desktop proposed" id="proposedDesktop">
+        <div class="wallpaper"></div>
+        <div class="window">
+          <div class="titlebar">
+            <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+            <span class="label">Predpoveď</span>
+          </div>
+          <div class="glass">
+            <div class="tint"></div>
+            <div class="canopy">
+              <div class="blob one"></div>
+              <div class="blob two"></div>
+              <div class="blob three"></div>
+            </div>
+            <div class="content">
+              <div>
+                <div class="hero-temp">18° / 24°</div>
+                <div class="hero-sub">Vlhkosť 72% · Zrážky 3.2 mm</div>
+              </div>
+              <div class="section-label">Sezóna tento mesiac</div>
+              <div class="chips">
+                <div class="chip"><span class="swatch"></span>Hríb dubový</div>
+                <div class="chip"><span class="swatch"></span>Kuriatko jedlé</div>
+                <div class="chip"><span class="swatch" style="background:var(--caution)"></span>Muchotrávka</div>
+              </div>
+              <div class="card">
+                <div class="name">Hríb smrekový</div>
+                <div class="latin">Boletus edulis</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label for="intensity"><span>Canopy light intensity</span><span id="intensityValue">60%</span></label>
+    <input type="range" id="intensity" min="0" max="100" value="60" />
+  </div>
+
+  <p class="note">
+    <strong>What's real vs. approximated:</strong> the glass panel's blur, the <code>forestDeep</code>
+    tint, and every color/type token here come straight from <code>DesignSystem.swift</code> and
+    <code>GlassBackground.swift</code>. What this page can't reproduce is the actual desktop
+    passthrough — <code>NSVisualEffectView</code>'s <code>.behindWindow</code> blending shows your
+    real wallpaper, not this stand-in gradient. The light-blob treatment (shape, color, opacity,
+    drift) is what would carry over into a real <code>.canopyLight()</code> modifier layered inside
+    <code>mushroomGlassBackground()</code>.
+  </p>
+</div>
+
+<script>
+  var slider = document.getElementById('intensity');
+  var out = document.getElementById('intensityValue');
+  var desktop = document.getElementById('proposedDesktop');
+  slider.addEventListener('input', function () {
+    var v = slider.value;
+    out.textContent = v + '%';
+    desktop.style.setProperty('--canopy-intensity', v / 100);
+  });
+</script>
+
+</body></html>

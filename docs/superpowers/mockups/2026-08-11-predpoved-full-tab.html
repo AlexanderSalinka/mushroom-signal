@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Predpoveď — full tab mockup</title>
+<style>
+  :root {
+    --forest-deep: #1C291C; --forest-mid: #2E4029; --bark: #4A3321; --water: #4D7A85;
+    --cloud: #F0EBDE; --moss: #6B8F4D; --caution: #D99921; --danger: #B83D33;
+    --studio-ground: #100E0A; --studio-panel: #17140F; --studio-line: rgba(240,235,222,0.10);
+    --studio-text: #E9E3D6; --studio-text-dim: rgba(233,227,214,0.56);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--studio-ground); color: var(--studio-text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    min-height: 100vh; padding: 56px 24px 100px;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--moss); }
+  h1 { font-family: Georgia, serif; font-weight: 500; font-style: italic; font-size: clamp(26px,4vw,36px); line-height: 1.15; margin: 10px 0 16px; text-wrap: balance; }
+  .lede { max-width: 68ch; color: var(--studio-text-dim); font-size: 14.5px; line-height: 1.6; margin: 0 0 24px; }
+
+  .flag {
+    max-width: 68ch; font-size: 13px; line-height: 1.6; padding: 12px 16px; border-radius: 10px;
+    background: rgba(217,153,33,0.12); border: 1px solid rgba(217,153,33,0.4); color: var(--studio-text);
+    margin: 0 0 14px;
+  }
+  .flag strong { color: var(--caution); }
+  .flag.info { background: rgba(77,122,133,0.14); border-color: rgba(77,122,133,0.45); }
+  .flag.info strong { color: var(--water); }
+
+  .stage { display: flex; justify-content: center; margin-top: 36px; }
+
+  .desktop {
+    position: relative; border-radius: 18px; overflow: hidden; width: 420px;
+    background: var(--studio-panel); border: 1px solid var(--studio-line);
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.7);
+  }
+  .titlebar { height: 32px; display: flex; align-items: center; gap: 7px; padding: 0 12px; background: rgba(20,26,17,0.4); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .dot.r { background: #EC6A5E; } .dot.y { background: #F4BF4F; } .dot.g { background: #61C454; }
+  .titlebar .w-label { margin: 0 auto; transform: translateX(-15px); font-size: 11px; color: rgba(240,235,222,0.55); font-weight: 500; }
+
+  .glass-panel {
+    position: relative;
+    background:
+      radial-gradient(ellipse 60% 35% at 12% 6%, rgba(240,235,222,0.16), transparent 68%),
+      radial-gradient(ellipse 40% 30% at 92% 40%, rgba(217,153,33,0.10), transparent 65%),
+      radial-gradient(ellipse 45% 30% at 15% 92%, rgba(74,51,33,0.30), transparent 65%),
+      var(--forest-deep);
+    padding: 20px 18px 24px;
+  }
+  .grain {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.05; mix-blend-mode: overlay; pointer-events: none;
+  }
+
+  .hero-temp { font-weight: 700; font-size: 34px; color: var(--cloud); position: relative; }
+  .hero-sub { font-size: 12.5px; color: rgba(240,235,222,0.7); margin-top: 6px; display: flex; align-items: center; gap: 5px; position: relative; }
+  .hero-sub svg { flex: none; }
+
+  .divider { height: 1px; background: linear-gradient(90deg, var(--bark), transparent 85%); opacity: 0.75; margin: 16px 0; position: relative; }
+
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.02em; color: rgba(240,235,222,0.6); margin-bottom: 10px; position: relative; display: flex; align-items: baseline; justify-content: space-between; }
+  .section-label .hint { font-weight: 500; font-size: 10px; color: rgba(240,235,222,0.4); text-transform: none; letter-spacing: 0; }
+
+  /* ---- chart ---- */
+  .chart-wrap { position: relative; }
+  .chart-legend { display: flex; gap: 16px; font-size: 10.5px; color: rgba(240,235,222,0.65); margin-bottom: 8px; }
+  .chart-legend span { display: flex; align-items: center; gap: 5px; }
+  .legend-swatch { width: 10px; height: 8px; border-radius: 2px; }
+  .chart-svg { width: 100%; height: auto; display: block; }
+
+  /* ---- compact card ---- */
+  .picks-grid { display: flex; flex-wrap: wrap; gap: 8px; position: relative; }
+  .pick-card {
+    position: relative; width: 100px; height: 104px; border-radius: 14px; overflow: hidden;
+    background: linear-gradient(160deg, rgba(240,235,222,0.10), rgba(240,235,222,0.02)), var(--forest-mid);
+    border: 1px solid rgba(240,235,222,0.16);
+    display: flex; flex-direction: column; justify-content: space-between; padding: 8px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 6px 14px -8px rgba(0,0,0,0.5);
+  }
+  .pick-card.warn { border-color: rgba(217,153,33,0.4); }
+  .pick-card .top-row { display: flex; align-items: flex-start; justify-content: space-between; }
+  .pick-card .rank {
+    font-size: 10px; font-weight: 700; color: rgba(240,235,222,0.55);
+    width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: rgba(107,143,77,0.28);
+  }
+  .pick-card.warn .rank { background: rgba(217,153,33,0.28); }
+  .pick-card .sunrise-badge {
+    width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: rgba(217,153,33,0.22);
+  }
+  .pick-card .sunrise-badge svg { width: 10.5px; height: 10.5px; stroke: var(--caution); }
+  .pick-card .name { font-size: 11px; font-weight: 600; line-height: 1.22; color: var(--cloud); }
+  .pick-card .latin { font-size: 9px; font-style: italic; color: rgba(240,235,222,0.55); margin-top: 1px; }
+  .pick-card .dots { display: flex; gap: 2.5px; margin-top: 4px; }
+  .pick-card .dots span { width: 4px; height: 4px; border-radius: 50%; background: rgba(240,235,222,0.25); }
+  .pick-card .dots span.on { background: var(--moss); }
+
+  /* ---- season chip ---- */
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; position: relative; }
+  .chip { display: flex; align-items: center; gap: 6px; padding: 6px 12px 6px 9px; border-radius: 100px;
+    background: rgba(107,143,77,0.2); border: 1px solid rgba(107,143,77,0.45); font-size: 11.5px; font-weight: 600; color: var(--cloud); }
+  .chip.warn { background: rgba(217,153,33,0.16); border-color: rgba(217,153,33,0.45); }
+  .chip svg { width: 11px; height: 11px; stroke: var(--moss); flex: none; }
+  .chip.warn svg { stroke: var(--caution); }
+
+  /* ---- rain-incoming notification ---- */
+  .rain-card {
+    position: relative; display: flex; align-items: center; gap: 11px;
+    padding: 11px 13px; border-radius: 13px;
+    background: rgba(77,122,133,0.16); border: 1px solid rgba(77,122,133,0.4);
+  }
+  .rain-icon {
+    flex: none; width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(77,122,133,0.25);
+  }
+  .rain-icon svg { width: 15px; height: 15px; }
+  .rain-headline { font-size: 12.5px; font-weight: 700; color: var(--cloud); }
+  .rain-sub { font-size: 10.5px; color: rgba(240,235,222,0.65); margin-top: 2px; }
+
+  .disclaimer { font-size: 10px; line-height: 1.5; color: rgba(240,235,222,0.45); margin-top: 18px; position: relative; }
+
+  .side-notes { max-width: 420px; margin: 28px auto 0; }
+  .side-notes h3 { font-size: 13px; margin: 0 0 8px; color: var(--studio-text); }
+  .side-notes ul { margin: 0; padding-left: 18px; font-size: 12.5px; line-height: 1.6; color: var(--studio-text-dim); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="eyebrow">Full-tab mockup · reflects intended code order</div>
+  <h1>Predpoveď, top to bottom</h1>
+  <p class="lede">
+    One panel this time, not isolated swatches — hero, chart, top picks, season list, in the
+    order you just described. Two flags below before the mockup: one open decision, one
+    interpretation I'm not certain about.
+  </p>
+
+  <div class="flag info">
+    <strong>Resolved this round:</strong> top picks is <strong>4</strong>. The rain alert
+    requires <em>both</em> ≥5mm rain and ≥26°C heat, matching real foraging experience — same
+    exact condition <code>FlushTriggerDetector</code> already uses for scoring, just read
+    forward instead of backward. The chart is simplified to rain + heat only, last 10 days,
+    no forecast, no humidity — the same two variables the alert is computed from, so the
+    chart now explains the alert instead of showing a third, disconnected metric.
+  </div>
+  <div class="flag">
+    <strong>Assumption, still unconfirmed:</strong> your new ordering didn't mention the season
+    calendar at all. I kept it — positioned after the new rain section — since nothing said to
+    remove it. Tell me if that's wrong.
+  </div>
+
+  <div class="stage">
+    <div class="desktop">
+      <div class="titlebar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="w-label">Predpoveď</span></div>
+      <div class="glass-panel">
+        <div class="grain"></div>
+
+        <!-- HERO -->
+        <div class="hero-temp">18° / 24°</div>
+        <div class="hero-sub">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--water)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C12 2 5 11.5 5 15.8C5 19.7 8.1 22 12 22C15.9 22 19 19.7 19 15.8C19 11.5 12 2 12 2Z"/></svg>
+          Vlhkosť 72% · Zrážky 3.2 mm
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- CHART — simplified: rain + heat only, last 10 days, no forecast -->
+        <div class="chart-wrap">
+          <div class="section-label"><span>Posledných 10 dní</span><span class="hint">teplo · dážď</span></div>
+          <div class="chart-legend">
+            <span><span class="legend-swatch" style="background:var(--caution)"></span>Teplo (°C, max)</span>
+            <span><span class="legend-swatch" style="background:var(--water)"></span>Dážď (mm)</span>
+          </div>
+          <svg class="chart-svg" viewBox="0 0 400 145" preserveAspectRatio="xMidYMid meet">
+            <text x="21" y="8" fill="rgba(240,235,222,0.4)" font-size="8">teplo</text>
+            <g fill="var(--caution)">
+              <rect x="21" y="37.5" width="18" height="14.5" rx="2.5"/>
+              <rect x="57" y="32.25" width="18" height="19.75" rx="2.5"/>
+              <rect x="93" y="24.4" width="18" height="27.6" rx="2.5"/>
+              <rect x="129" y="19.1" width="18" height="32.9" rx="2.5"/>
+              <rect x="165" y="13.9" width="18" height="38.1" rx="2.5"/>
+              <rect x="201" y="8.6" width="18" height="43.4" rx="2.5"/>
+              <rect x="237" y="24.4" width="18" height="27.6" rx="2.5"/>
+              <rect x="273" y="34.9" width="18" height="17.1" rx="2.5"/>
+              <rect x="309" y="40.1" width="18" height="11.9" rx="2.5"/>
+              <rect x="345" y="32.25" width="18" height="19.75" rx="2.5"/>
+            </g>
+
+            <text x="21" y="66" fill="rgba(240,235,222,0.4)" font-size="8">dážď</text>
+            <g fill="var(--water)">
+              <rect x="21" y="116" width="18" height="2" rx="1.5"/>
+              <rect x="57" y="116" width="18" height="2" rx="1.5"/>
+              <rect x="93" y="116" width="18" height="2" rx="1.5"/>
+              <rect x="129" y="116" width="18" height="2" rx="1.5"/>
+              <rect x="165" y="116" width="18" height="2" rx="1.5"/>
+              <rect x="201" y="112.86" width="18" height="5.14" rx="1.5"/>
+              <rect x="237" y="72" width="18" height="46" rx="2.5"/>
+              <rect x="273" y="109.7" width="18" height="8.3" rx="1.5"/>
+              <rect x="309" y="112.86" width="18" height="5.14" rx="1.5"/>
+              <rect x="345" y="116" width="18" height="2" rx="1.5"/>
+            </g>
+            <!-- trigger-day marker: day -3 cleared both thresholds (27°C, 14mm) -->
+            <text x="246" y="66" fill="var(--caution)" font-size="8" text-anchor="middle" font-weight="700">✓ spúšťač</text>
+
+            <g fill="rgba(240,235,222,0.4)" font-size="7.5">
+              <text x="30" y="132" text-anchor="middle">-9</text>
+              <text x="66" y="132" text-anchor="middle">-8</text>
+              <text x="102" y="132" text-anchor="middle">-7</text>
+              <text x="138" y="132" text-anchor="middle">-6</text>
+              <text x="174" y="132" text-anchor="middle">-5</text>
+              <text x="210" y="132" text-anchor="middle">-4</text>
+              <text x="246" y="132" text-anchor="middle">-3</text>
+              <text x="282" y="132" text-anchor="middle">-2</text>
+              <text x="318" y="132" text-anchor="middle">-1</text>
+              <text x="354" y="132" text-anchor="middle" fill="var(--cloud)" font-weight="700">dnes</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- TOP PICKS -->
+        <div class="section-label"><span>Odporúčané dnes</span><span class="hint">top 4</span></div>
+        <div class="picks-grid">
+          <div class="pick-card">
+            <div class="top-row"><span class="rank">1</span></div>
+            <div><div class="name">Hríb smrekový</div><div class="latin">Boletus edulis</div><div class="dots"><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div></div>
+          </div>
+          <div class="pick-card">
+            <div class="top-row"><span class="rank">2</span>
+              <span class="sunrise-badge"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18H20"/><path d="M7 18a5 5 0 0 1 10 0"/><path d="M12 8V5"/><path d="M6.5 11L4.8 9.3"/><path d="M17.5 11L19.2 9.3"/></svg></span>
+            </div>
+            <div><div class="name">Kuriatko jedlé</div><div class="latin">Cantharellus</div><div class="dots"><span class="on"></span><span class="on"></span><span></span><span></span></div></div>
+          </div>
+          <div class="pick-card warn">
+            <div class="top-row"><span class="rank">3</span></div>
+            <div><div class="name">Muchotrávka</div><div class="latin">Amanita</div><div class="dots"><span class="on"></span><span></span><span></span><span></span></div></div>
+          </div>
+          <div class="pick-card">
+            <div class="top-row"><span class="rank">4</span></div>
+            <div><div class="name">Bedľa vysoká</div><div class="latin">Macrolepiota</div><div class="dots"><span class="on"></span><span class="on"></span><span></span><span></span></div></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- RAIN INCOMING (the real meaning of "notifications") -->
+        <div class="section-label"><span>Blíži sa dážď</span><span class="hint">predpoveď, nie história</span></div>
+        <div class="rain-card">
+          <div class="rain-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--water)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C12 2 5 11.5 5 15.8C5 19.7 8.1 22 12 22C15.9 22 19 19.7 19 15.8C19 11.5 12 2 12 2Z"/></svg>
+          </div>
+          <div class="rain-copy">
+            <div class="rain-headline">O 2 dni · 11 mm dažďa a 28°C</div>
+            <div class="rain-sub">Dážď aj teplo spolu — sleduj skóre približne o 4–9 dní</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- SEASON CALENDAR (kept — see assumption flag above) -->
+        <div class="section-label"><span>Sezóna tento mesiac</span><span class="hint">predpoklad — pozri poznámku vyššie</span></div>
+        <div class="chips">
+          <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C7 5 4.5 9.5 4.5 14C4.5 18 7.5 21 12 21C12 21 12 12 12 3Z"/><path d="M12 21C12 21 16.5 19 18.5 15C19.5 13 19.5 10.5 19.5 9.5C15 10.5 12 14 12 21Z" opacity="0.55"/></svg>Hríb dubový</div>
+          <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C7 5 4.5 9.5 4.5 14C4.5 18 7.5 21 12 21C12 21 12 12 12 3Z"/><path d="M12 21C12 21 16.5 19 18.5 15C19.5 13 19.5 10.5 19.5 9.5C15 10.5 12 14 12 21Z" opacity="0.55"/></svg>Kuriatko jedlé</div>
+          <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C7 5 4.5 9.5 4.5 14C4.5 18 7.5 21 12 21C12 21 12 12 12 3Z"/><path d="M12 21C12 21 16.5 19 18.5 15C19.5 13 19.5 10.5 19.5 9.5C15 10.5 12 14 12 21Z" opacity="0.55"/></svg>Suchohríb hnedý</div>
+          <div class="chip warn"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C7 5 4.5 9.5 4.5 14C4.5 18 7.5 21 12 21C12 21 12 12 12 3Z"/><path d="M12 21C12 21 16.5 19 18.5 15C19.5 13 19.5 10.5 19.5 9.5C15 10.5 12 14 12 21Z" opacity="0.55"/></svg>Muchotrávka</div>
+        </div>
+
+        <div class="disclaimer">Tento zoznam je len orientačný odhad na základe počasia a sezóny. Pred zberom si nález vždy overte s odborníkom.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="side-notes">
+    <h3>What I deliberately did NOT invent</h3>
+    <ul>
+      <li>Chart data is hand-computed, not random — a dry/hot spell (days −9 to −4, heat
+      climbing to 33°C) then day −3 clears <em>both</em> real trigger thresholds at once (27°C
+      and 14mm) — marked "✓ spúšťač" on the chart. That's a real backward-looking flush trigger
+      already firing in today's actual score, not decoration.</li>
+      <li>Grain is on the panel background, not on the chart itself — a noise texture under
+      data bars would hurt legibility, so I held it back there. That's my call, flagging it
+      rather than silently deviating from §4's "card fills" wording.</li>
+      <li>The rain card's "11mm and 28°C in 2 days" is a separate, forward-looking event in the
+      forecast — deliberately a different day/numbers than the chart's day −3 trigger, so the
+      mockup shows both a past trigger (affecting today's score) and a future one (the alert)
+      without them being the same event twice.</li>
+      <li>The 5mm+26°C condition and the "4–9 days later" window are
+      <code>FlushTriggerDetector</code>'s existing rule, read forward instead of backward — not
+      new numbers.</li>
+    </ul>
+  </div>
+</div>
+
+</body></html>
