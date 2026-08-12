@@ -27,11 +27,18 @@ struct CompactSpeciesCardView: View {
             CachedAsyncImage(url: photo?.imageURL) { image in
                 image.resizable().aspectRatio(contentMode: .fill)
             } placeholder: {
-                ZStack {
+                // Glyph is top-aligned (not the ZStack default center) and shrunk from the
+                // original 0.28 scale: centered, it lands behind the bottom-anchored text
+                // block whenever that block grows tall (2-line name + latin + warning label
+                // — confirmed on `amanita-phalloides`, whose "Muchotrávka zelená" name
+                // wraps). Top padding clears the badge row (rank/flush badges occupy
+                // roughly the top 26pt: 8pt content padding + 18pt badge diameter).
+                ZStack(alignment: .top) {
                     DesignSystem.Colors.bark
                     Image(systemName: "photo")
-                        .font(.system(size: DesignSystem.compactCardSize * 0.28))
+                        .font(.system(size: DesignSystem.compactCardSize * 0.16))
                         .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.5))
+                        .padding(.top, DesignSystem.compactCardBadgeSize + DesignSystem.spacingSmall)
                 }
             }
             .frame(width: DesignSystem.compactCardSize, height: DesignSystem.compactCardSize)
@@ -84,7 +91,7 @@ struct CompactSpeciesCardView: View {
                     }
                 }
             }
-            .padding(8)
+            .padding(DesignSystem.spacingSmall)
         }
         .frame(width: DesignSystem.compactCardSize, height: DesignSystem.compactCardSize)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.58))

@@ -207,6 +207,11 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   corrected plan/spec.
 
 ## Open Issues
+- **7 species have no photo in `species-photos.json`** — `tylopilus-felleus`,
+  `amanita-muscaria`, `amanita-phalloides`, `laetiporus-sulphureus`,
+  `tricholoma-terreum`, `armillaria-mellea`, `gyromitra-esculenta` (all
+  poisonous/caution species) fall back to `CompactSpeciesCardView`'s bark-colored
+  placeholder; Alexander will supply real photos for these in a future build.
 - **Dataset common names need a native-speaker pass** — the v1 final review flagged a few
   possibly-off Slovak common names (e.g. `coprinus-comatus` → "Hnojník obyčajný" vs. the
   more standard "hnojník ochlpený"; `calocybe-gambosa` → "Penízovka hľuznatá" uses what may

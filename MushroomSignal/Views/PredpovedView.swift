@@ -148,7 +148,11 @@ struct PredpovedView: View {
             }
         }
         .task {
-            photosBySpeciesID = (try? SpeciesPhotoDatabase.loadAll()).map { Dictionary(grouping: $0, by: \.speciesId) } ?? [:]
+            do {
+                photosBySpeciesID = Dictionary(grouping: try SpeciesPhotoDatabase.loadAll(), by: \.speciesId)
+            } catch {
+                predpovedLogger.error("Failed to load species photo dataset: \(String(describing: error), privacy: .public)")
+            }
         }
     }
 

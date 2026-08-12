@@ -141,7 +141,18 @@ struct WeatherRainChartView: View {
                     .cornerRadius(DesignSystem.chartBarCornerRadius * 0.5)
                 }
                 .frame(height: DesignSystem.chartRainPanelHeight)
-                .chartYAxis(.hidden)
+                .chartYAxis {
+                    // Not `.chartYAxis(.hidden)`: fully hiding the axis releases the trailing
+                    // label gutter's reserved width, making this chart's plot area wider than
+                    // the temp chart's above it and desynchronizing their shared x (day) scale
+                    // — confirmed on real screenshots (0.5% mismatch before, 2.5% after,
+                    // worst at the 30-day range). Keeping the axis present but invisible
+                    // (clear labels, no tick marks) preserves the same gutter width so both
+                    // panels keep identical plot-area widths and stay pixel-aligned.
+                    AxisMarks(position: .trailing) { _ in
+                        AxisValueLabel().foregroundStyle(.clear)
+                    }
+                }
                 .chartXAxis {
                     AxisMarks(values: axisMarkDates) { value in
                         AxisValueLabel {
