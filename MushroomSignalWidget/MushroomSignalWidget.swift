@@ -9,19 +9,20 @@ struct ShortlistEntry: TimelineEntry {
     let date: Date
     let region: Region
     let signals: [SpeciesSignal]
+    let dailyWeather: [DailyWeather]
 }
 
 struct ShortlistProvider: TimelineProvider {
     func placeholder(in context: Context) -> ShortlistEntry {
-        ShortlistEntry(date: Date(), region: RegionDatabase.all[0], signals: [])
+        ShortlistEntry(date: Date(), region: RegionDatabase.all[0], signals: [], dailyWeather: [])
     }
 
     func getSnapshot(in context: Context, completion: @escaping (ShortlistEntry) -> Void) {
-        completion(ShortlistEntry(date: Date(), region: RegionDatabase.all[0], signals: []))
+        completion(ShortlistEntry(date: Date(), region: RegionDatabase.all[0], signals: [], dailyWeather: []))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<ShortlistEntry>) -> Void) {
-        let limit = context.family == .systemLarge ? 4 : 3
+        let limit = context.family == .systemLarge ? 9 : 4
         Task {
             let entry = await buildEntry(limit: limit)
             // Awaited BEFORE completion() — WidgetKit may suspend this extension process
@@ -57,15 +58,15 @@ struct ShortlistProvider: TimelineProvider {
             let allSpecies = try SpeciesDatabase.loadAll()
             let month = Calendar.current.component(.month, from: Date())
             let shortlist = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: weather, month: month, flushTriggered: flushTriggered, limit: limit)
-            return ShortlistEntry(date: Date(), region: region, signals: shortlist)
+            return ShortlistEntry(date: Date(), region: region, signals: shortlist, dailyWeather: dailyWeather)
         } catch {
             widgetLogger.error("Timeline refresh failed for region \(region.id, privacy: .public): \(String(describing: error), privacy: .public)")
             if let cached = WeatherSnapshotCache()?.snapshot(for: region.id), let allSpecies = try? SpeciesDatabase.loadAll() {
                 let month = Calendar.current.component(.month, from: Date())
                 let shortlist = SignalPipeline.rankedSignals(species: allSpecies, region: region, weather: cached, month: month, flushTriggered: false, limit: limit)
-                return ShortlistEntry(date: cached.fetchedAt, region: region, signals: shortlist)
+                return ShortlistEntry(date: cached.fetchedAt, region: region, signals: shortlist, dailyWeather: [])
             }
-            return ShortlistEntry(date: Date(), region: region, signals: [])
+            return ShortlistEntry(date: Date(), region: region, signals: [], dailyWeather: [])
         }
     }
 }

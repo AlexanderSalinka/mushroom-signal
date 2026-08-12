@@ -186,7 +186,7 @@ private func previewSignal(name: String, latin: String, edibility: Edibility, sc
     ShortlistEntry(date: .now, region: RegionDatabase.all[4], signals: [
         previewSignal(name: "Hríb dubový", latin: "Boletus reticulatus", edibility: .edible, score: 3),
         previewSignal(name: "Muchotrávka tigrovaná", latin: "Amanita pantherina", edibility: .poisonous, score: 1)
-    ])
+    ], dailyWeather: [])
 }
 
 #Preview("Medium", as: .systemMedium) {
@@ -196,7 +196,7 @@ private func previewSignal(name: String, latin: String, edibility: Edibility, sc
         previewSignal(name: "Hríb dubový", latin: "Boletus reticulatus", edibility: .edible, score: 3),
         previewSignal(name: "Kuriatko jedlé", latin: "Cantharellus cibarius", edibility: .edible, score: 2),
         previewSignal(name: "Muchotrávka tigrovaná", latin: "Amanita pantherina", edibility: .poisonous, score: 1)
-    ])
+    ], dailyWeather: [])
 }
 
 #Preview("Large", as: .systemLarge) {
@@ -207,5 +207,5 @@ private func previewSignal(name: String, latin: String, edibility: Edibility, sc
         previewSignal(name: "Kuriatko jedlé", latin: "Cantharellus cibarius", edibility: .edible, score: 2),
         previewSignal(name: "Plávka zelenkastá", latin: "Russula virescens", edibility: .caution, score: 2),
         previewSignal(name: "Muchotrávka tigrovaná", latin: "Amanita pantherina", edibility: .poisonous, score: 1)
-    ])
+    ], dailyWeather: [])
 }
