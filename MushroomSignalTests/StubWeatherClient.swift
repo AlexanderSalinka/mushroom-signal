@@ -66,3 +66,51 @@ actor DelayedWeatherClient: WeatherClient {
         return [DailyWeather(date: .now, meanTempC: 15, maxTempC: 20, minTempC: 10, precipitationMm: 2, humidityPercent: 75)]
     }
 }
+
+/// Both calls succeed, but resolve in reverse-of-start order: the first-started call is
+/// the slow one, so its success arrives after the second-started (faster) call's success.
+/// Used to prove `AppState.refresh()`'s success-path race guard discards a late-arriving
+/// result from a refresh that is no longer the most recently started one.
+actor ReversedOrderWeatherClient: WeatherClient {
+    struct StubError: Error, Sendable {}
+    private var callCount = 0
+
+    func fetchSnapshot(for region: Region) async throws -> WeatherSnapshot {
+        throw StubError()
+    }
+
+    func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] {
+        [:]
+    }
+
+    func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] {
+        callCount += 1
+        if callCount == 1 {
+            try? await Task.sleep(for: .milliseconds(200))
+            return [DailyWeather(date: .now, meanTempC: 1, maxTempC: 1, minTempC: 1, precipitationMm: 1, humidityPercent: 1)]
+        }
+        return [DailyWeather(date: .now, meanTempC: 99, maxTempC: 99, minTempC: 99, precipitationMm: 99, humidityPercent: 99)]
+    }
+}
+
+/// Records the parameters `fetchDailyBreakdown` was called with, so a test can assert on the
+/// exact fetch contract (e.g. `pastDays`/`forecastDays`) rather than just its return value.
+actor RecordingWeatherClient: WeatherClient {
+    struct StubError: Error, Sendable {}
+    private(set) var capturedPastDays: Int?
+    private(set) var capturedForecastDays: Int?
+
+    func fetchSnapshot(for region: Region) async throws -> WeatherSnapshot {
+        throw StubError()
+    }
+
+    func fetchSnapshots(for points: [GridPoint]) async throws -> [String: WeatherSnapshot] {
+        [:]
+    }
+
+    func fetchDailyBreakdown(for region: Region, pastDays: Int, forecastDays: Int) async throws -> [DailyWeather] {
+        capturedPastDays = pastDays
+        capturedForecastDays = forecastDays
+        return [DailyWeather(date: .now, meanTempC: 15, maxTempC: 20, minTempC: 10, precipitationMm: 2, humidityPercent: 75)]
+    }
+}

@@ -4,7 +4,7 @@ import Foundation
 /// non-toggleable counterpart to `WeatherRainChartView`'s own `visibleDays` (which
 /// supports a user-facing 7/14/30-day range toggle via a private, now-`@SceneStorage`-backed
 /// property, not something a sibling view can call into). `MushroomSignalHeroMiniChart` uses this to stay a pure
-/// view over the same shared `RegionWeatherState.dailyWeather` the full chart already
+/// view over the same shared `AppState.dailyWeather` the full chart already
 /// loads, without a second fetch or a dependency on the full chart's internal state.
 public enum RecentWeatherWindow {
     public static func lastSevenDaysPlusForecast(in dailyWeather: [DailyWeather], asOf today: Date, calendar: Calendar = .current) -> [DailyWeather] {

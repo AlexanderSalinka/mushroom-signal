@@ -45,6 +45,9 @@ final class AppState: ObservableObject {
         if store == nil {
             logger.error("RegionStore init failed — region selection will not persist across launches or sync to the widget")
         }
+        if dailyWeatherCache == nil {
+            logger.error("DailyWeatherCache init failed — stale daily-weather fallback will not be available")
+        }
     }
 
     func selectRegion(_ region: Region) {

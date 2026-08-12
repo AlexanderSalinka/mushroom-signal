@@ -276,15 +276,14 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   by whichever write lands last. Both windows are small in practice (the settings sheet only
   holds its own in-memory copy while open) but this is a real architectural gap, not just a
   hypothetical.
-- **`PredpovedView` triggers a second, near-duplicate weather fetch on top of `AppState`'s own
-  refresh** — `RegionWeatherState.load` fetches `fetchDailyBreakdown(pastDays: 10, forecastDays: 5)`
-  for the selected region; `AppState.refresh()` already fetched `fetchDailyBreakdown(pastDays: 10)`
-  for the same region moments earlier to compute the shortlist. Opening the Predpoveď tab (and
-  each time `.task(id: regionId)` re-fires, including possibly on every tab switch depending on
-  `TabView`'s teardown behavior) re-issues a near-identical network request. A proper fix would
-  hoist the daily breakdown into `AppState` itself and have `PredpovedView` consume it from
-  there — deliberately deferred as a larger refactor rather than folded into the fix wave that
-  found it (2026-08-10 predpoved-tab final review).
+- ~~`PredpovedView` triggers a second, near-duplicate weather fetch on top of `AppState`'s own
+  refresh~~ — **Resolved 2026-08-12.** `RegionWeatherState` (and its own
+  `fetchDailyBreakdown(pastDays: 10, forecastDays: 5)` call) is deleted entirely.
+  `AppState.refresh()` is now the single fetch point — it calls
+  `fetchDailyBreakdown(pastDays: 30, forecastDays: 5)` once per refresh and publishes the result
+  via `AppState.dailyWeather`; `PredpovedView` and `WeatherRainChartView` consume that directly
+  instead of issuing their own request. See
+  `docs/superpowers/specs/2026-08-12-weather-fetch-consolidation-design.md`.
 - **Predpoveď's daily-strip bar gradient (cold-to-hot per bar) is fixed, not data-driven across
   days** — every bar uses the same `caution`-to-`water` gradient regardless of that day's actual
   temperature range, so a 3°C day and a 31°C day render with visually identical colors (only
