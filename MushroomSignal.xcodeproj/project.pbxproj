@@ -40,6 +40,7 @@
 		B3E45FAFCA78015CBE59470B /* MushroomSignalWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81841490E6D542F22EC19628 /* MushroomSignalWidget.swift */; };
 		BA64615E4595508A662B4059 /* RegionWeatherStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 923689C21202B5775F500EE7 /* RegionWeatherStateTests.swift */; };
 		BAB4DFBF3B25AAEFA8DCB13F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3ED179E8F93BB1C9D3122168 /* Assets.xcassets */; };
+		BB4752D5C0F957258D1DAFA6 /* MushroomSignalHeroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755F740BCA17259440C8A702 /* MushroomSignalHeroView.swift */; };
 		BE4EB3EB93DC626A0BE2185B /* SpeciesCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1914F91EBAA6F0E2CCC49638 /* SpeciesCardView.swift */; };
 		C1196A67D5D55F63E294C062 /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A000427DD51C4A972F4FED1D /* NotificationSettingsView.swift */; };
 		C1289E25CCE0D11F12F3C2F6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F342E2888340E1136922BC /* ContentView.swift */; };
@@ -110,6 +111,7 @@
 		5E4A501888FDE6C76A8CC972 /* MushroomSignalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MushroomSignalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FC4F3842084136EC09E4A4E /* MushroomSignalCore */ = {isa = PBXFileReference; lastKnownFileType = folder; name = MushroomSignalCore; path = MushroomSignalCore; sourceTree = SOURCE_ROOT; };
 		7121D9BEBDD981DC5A5A7F87 /* MushroomSignalWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MushroomSignalWidgetBundle.swift; sourceTree = "<group>"; };
+		755F740BCA17259440C8A702 /* MushroomSignalHeroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MushroomSignalHeroView.swift; sourceTree = "<group>"; };
 		774052D1E9A10E6221F64D1D /* MushroomSignalWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MushroomSignalWidget.entitlements; sourceTree = "<group>"; };
 		7C374D590D0DB48C3B165D63 /* ShortlistWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortlistWidgetView.swift; sourceTree = "<group>"; };
 		81841490E6D542F22EC19628 /* MushroomSignalWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MushroomSignalWidget.swift; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 				406769D67F45636883C7A794 /* MapResizeHandle.swift */,
 				0E508520517A594C06FD0468 /* MapScreenView.swift */,
 				D2873607D9B184A734EFDF44 /* MushroomSignalHeroMiniChart.swift */,
+				755F740BCA17259440C8A702 /* MushroomSignalHeroView.swift */,
 				A000427DD51C4A972F4FED1D /* NotificationSettingsView.swift */,
 				C06442830610580CEB0AF161 /* PhotoCreditsView.swift */,
 				461BDE4B8F800D9D3ECFEC01 /* PredpovedView.swift */,
@@ -438,6 +441,7 @@
 				16E3AAA1E68A9D8C55B22B38 /* MapScreenView.swift in Sources */,
 				534EE6B719E4EFF861B5CA40 /* MushroomSignalApp.swift in Sources */,
 				92DA8D91ED83F72AC9844687 /* MushroomSignalHeroMiniChart.swift in Sources */,
+				BB4752D5C0F957258D1DAFA6 /* MushroomSignalHeroView.swift in Sources */,
 				0DDA9573388B544E8983F1DD /* NotificationSettingsState.swift in Sources */,
 				C1196A67D5D55F63E294C062 /* NotificationSettingsView.swift in Sources */,
 				0FAF8DADEDA96F713383337F /* PhotoCreditsView.swift in Sources */,
