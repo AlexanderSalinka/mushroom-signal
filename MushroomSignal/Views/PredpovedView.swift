@@ -13,6 +13,10 @@ struct PredpovedView: View {
     @State private var allSpecies: [Species] = []
     @State private var photosBySpeciesID: [String: [SpeciesPhoto]] = [:]
 
+    private var region: Region {
+        RegionDatabase.find(id: regionId) ?? RegionDatabase.all[0]
+    }
+
     private var todayEntry: DailyWeather? {
         let calendar = Calendar.current
         return weatherState.dailyWeather.first { calendar.isDateInToday($0.date) }
@@ -35,86 +39,9 @@ struct PredpovedView: View {
         Array(appState.signals.filter { $0.score > 0 }.prefix(4))
     }
 
-    private func slovakDayWord(_ count: Int) -> String {
-        switch count {
-        case 1: return "deň"
-        case 2...4: return "dni"
-        default: return "dní"
-        }
-    }
-
-    private var upcomingRainEvent: RainEvent? {
-        UpcomingRainDetector.nextTriggerEvent(in: weatherState.dailyWeather, asOf: Date())
-    }
-
-    private var nearMissInsight: NearMissRainInsight.Case? {
-        guard upcomingRainEvent == nil else { return nil }
-        return NearMissRainInsight.describe(in: weatherState.dailyWeather, asOf: Date())
-    }
-
-    private func nearMissText(for insight: NearMissRainInsight.Case) -> String {
-        switch insight {
-        case .rainWithoutHeat(let date, let precipitationMm, _):
-            let daysUntil = max(1, Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: Date()), to: Calendar.current.startOfDay(for: date)).day ?? 1)
-            return "O \(daysUntil) \(slovakDayWord(daysUntil)) mierny dážď (\(String(format: "%.0f", precipitationMm)) mm), ale bez dostatočného tepla na nárast rastu."
-        case .heatWithoutRain(let date, _, let maxTempC):
-            let daysUntil = max(1, Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: Date()), to: Calendar.current.startOfDay(for: date)).day ?? 1)
-            return "O \(daysUntil) \(slovakDayWord(daysUntil)) teplo (\(Int(maxTempC.rounded()))°C), ale bez výraznejšieho dažďa."
-        }
-    }
-
-    private var rainIncomingSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
-            Text("Blíži sa dážď")
-                .font(.system(size: DesignSystem.captionSize, weight: .bold))
-                .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-            if let event = upcomingRainEvent {
-                let daysUntil = max(1, Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: Date()), to: Calendar.current.startOfDay(for: event.date)).day ?? 1)
-                HStack(spacing: 11) {
-                    DropletShape()
-                        .stroke(DesignSystem.Colors.water, style: StrokeStyle(lineWidth: 1.8, lineCap: .round, lineJoin: .round))
-                        .frame(width: 15, height: 15)
-                        .frame(width: 30, height: 30)
-                        .background(Circle().fill(DesignSystem.Colors.water.opacity(0.22)))
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("O \(daysUntil) \(slovakDayWord(daysUntil)) · \(String(format: "%.0f", event.precipitationMm)) mm dažďa a \(Int(event.maxTempC.rounded()))°C")
-                            .font(.system(size: DesignSystem.captionSize * 0.65, weight: .bold))
-                            .foregroundStyle(DesignSystem.Colors.cloud)
-                        Text("Dážď aj teplo spolu — sleduj skóre o 4–9 dní")
-                            .font(.system(size: DesignSystem.captionSize * 0.55))
-                            .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.65))
-                    }
-                }
-                .padding(11)
-                .background(DesignSystem.Colors.water.opacity(0.16))
-                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.55))
-                .overlay(
-                    RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.55)
-                        .stroke(DesignSystem.Colors.water.opacity(0.4), lineWidth: 1)
-                )
-            } else if weatherState.isLoading {
-                Text("Načítavam predpoveď…")
-                    .font(.system(size: DesignSystem.bodySize))
-                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-            } else if weatherState.errorMessage != nil {
-                Text("Predpoveď nie je k dispozícii.")
-                    .font(.system(size: DesignSystem.bodySize))
-                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-            } else if let nearMiss = nearMissInsight {
-                Text(nearMissText(for: nearMiss))
-                    .font(.system(size: DesignSystem.bodySize))
-                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-            } else {
-                Text("Žiadny výraznejší dážď v predpovedi.")
-                    .font(.system(size: DesignSystem.bodySize))
-                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
-            }
-        }
-    }
-
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: DesignSystem.spacingMedium) {
+            LazyVStack(alignment: .leading, spacing: DesignSystem.spacingMedium) {
                 if let error = appState.errorMessage {
                     Text(error)
                         .font(.system(size: DesignSystem.captionSize))
@@ -131,7 +58,7 @@ struct PredpovedView: View {
                 if !visibleTopSignals.isEmpty {
                     ForestPanel { topPicksSection }
                 }
-                ForestPanel { rainIncomingSection }
+                ForestPanel { MushroomSignalHeroView(signals: appState.signals, dailyWeather: weatherState.dailyWeather, region: region, today: Date()) }
                 ForestPanel { seasonCalendarSection }
                 disclaimer
             }
