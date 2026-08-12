@@ -2,8 +2,8 @@ import Foundation
 
 /// A fixed 7-day-back + all-forecast window over daily weather — the minimal,
 /// non-toggleable counterpart to `WeatherRainChartView`'s own `visibleDays` (which
-/// supports a user-facing 7/14/30-day range toggle via private `@State`, not something a
-/// sibling view can call into). `MushroomSignalHeroMiniChart` uses this to stay a pure
+/// supports a user-facing 7/14/30-day range toggle via a private, now-`@SceneStorage`-backed
+/// property, not something a sibling view can call into). `MushroomSignalHeroMiniChart` uses this to stay a pure
 /// view over the same shared `RegionWeatherState.dailyWeather` the full chart already
 /// loads, without a second fetch or a dependency on the full chart's internal state.
 public enum RecentWeatherWindow {

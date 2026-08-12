@@ -58,7 +58,19 @@ struct PredpovedView: View {
                 if !visibleTopSignals.isEmpty {
                     ForestPanel { topPicksSection }
                 }
-                ForestPanel { MushroomSignalHeroView(signals: appState.signals, dailyWeather: weatherState.dailyWeather, region: region, today: Date()) }
+                ForestPanel {
+                    if weatherState.isLoading && weatherState.dailyWeather.isEmpty {
+                        Text("Načítavam predpoveď…")
+                            .font(.system(size: DesignSystem.bodySize))
+                            .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+                    } else if weatherState.errorMessage != nil {
+                        Text("Predpoveď nie je k dispozícii.")
+                            .font(.system(size: DesignSystem.bodySize))
+                            .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
+                    } else {
+                        MushroomSignalHeroView(signals: appState.signals, dailyWeather: weatherState.dailyWeather, region: region, today: Date())
+                    }
+                }
                 ForestPanel { seasonCalendarSection }
                 disclaimer
             }

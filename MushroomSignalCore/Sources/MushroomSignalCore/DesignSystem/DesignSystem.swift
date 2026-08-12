@@ -109,8 +109,7 @@ public enum DesignSystem {
     /// `chipCornerRadius` chips, which were too small to fit full names).
     public static let seasonRowCornerRadius: Double = 12
     /// `MushroomSignalHeroView`'s icon badge diameter for loud states (flush-happening,
-    /// rain-incoming) — a real focal point, ~2x the icon badge `rainIncomingSection` used
-    /// before this view replaced it.
+    /// rain-incoming) — a real focal point, ~2x the 30pt inline droplet badge it replaces.
     public static let heroIconBadgeSize: Double = 64
     /// `MushroomSignalHeroView`'s icon glyph size inside `heroIconBadgeSize`, loud states —
     /// ~53% of the badge, matching the glyph-to-badge ratio the replaced view already used

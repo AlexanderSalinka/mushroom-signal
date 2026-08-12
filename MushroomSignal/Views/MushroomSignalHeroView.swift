@@ -3,9 +3,9 @@ import SwiftUI
 import AppKit
 import MushroomSignalCore
 
-/// Replaces `rainIncomingSection` — one prominent panel combining the temperature+rain
-/// trigger state, a mini chart (loud states only), and region/season context. See
-/// docs/superpowers/specs/2026-08-12-mushroom-signal-hero-widget-design.md.
+/// Replaces the old plain-text rain-incoming section — one prominent panel combining the
+/// temperature+rain trigger state, a mini chart (loud states only), and region/season
+/// context. See docs/superpowers/specs/2026-08-12-mushroom-signal-hero-widget-design.md.
 struct MushroomSignalHeroView: View {
     let signals: [SpeciesSignal]
     let dailyWeather: [DailyWeather]
@@ -27,7 +27,7 @@ struct MushroomSignalHeroView: View {
         MushroomSignalHeroState.resolve(signals: signals, dailyWeather: dailyWeather, asOf: today)
     }
 
-    private var isLoud: Bool {
+    private func isLoud(_ state: MushroomSignalHeroState) -> Bool {
         switch state {
         case .flushHappening, .rainIncoming: return true
         case .nearMiss, .noRain: return false
@@ -54,7 +54,7 @@ struct MushroomSignalHeroView: View {
         max(1, Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: today), to: Calendar.current.startOfDay(for: date)).day ?? 1)
     }
 
-    private var headline: String {
+    private func headline(for state: MushroomSignalHeroState) -> String {
         switch state {
         case .flushHappening: return "Huby práve rastú"
         case .rainIncoming: return "Blíži sa dážď"
@@ -63,7 +63,7 @@ struct MushroomSignalHeroView: View {
         }
     }
 
-    private var subline: String {
+    private func subline(for state: MushroomSignalHeroState) -> String {
         switch state {
         case .flushHappening:
             let count = signals.filter { $0.score == 4 }.count
@@ -92,19 +92,20 @@ struct MushroomSignalHeroView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
+        let currentState = state
+        return VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
             HStack(alignment: .top, spacing: DesignSystem.spacingSmall) {
-                badge
+                badge(for: currentState)
                 VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
-                    Text(headline)
+                    Text(headline(for: currentState))
                         .font(.system(size: DesignSystem.titleSize, weight: .bold))
                         .foregroundStyle(DesignSystem.Colors.cloud)
-                    Text(subline)
+                    Text(subline(for: currentState))
                         .font(.system(size: DesignSystem.bodySize))
                         .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.7))
                 }
             }
-            if isLoud {
+            if isLoud(currentState) {
                 MushroomSignalHeroMiniChart(dailyWeather: dailyWeather, today: today)
             }
             Text(contextRow)
@@ -114,7 +115,7 @@ struct MushroomSignalHeroView: View {
     }
 
     @ViewBuilder
-    private var badge: some View {
+    private func badge(for state: MushroomSignalHeroState) -> some View {
         switch state {
         case .flushHappening:
             FlushHappeningBadge(reduceMotion: reduceMotion)
@@ -158,7 +159,7 @@ private struct FlushHappeningBadge: View {
                 .animation(reduceMotion ? nil : .easeInOut(duration: 3.4).repeatForever(autoreverses: true), value: isBreathing)
 
             ZStack {
-                ForEach(Array(caps.enumerated()), id: \.offset) { index, cap in
+                ForEach(Array(caps.enumerated()), id: \.offset) { _, cap in
                     MushroomCapShape()
                         .stroke(DesignSystem.Colors.mossAccent, style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
                         .frame(width: DesignSystem.heroIconGlyphSize * cap.size, height: DesignSystem.heroIconGlyphSize * cap.size)
@@ -184,6 +185,7 @@ private struct FlushHappeningBadge: View {
         .task {
             guard !reduceMotion else { return }
             try? await Task.sleep(for: .seconds(1.07))
+            guard !Task.isCancelled else { return }
             isBreathing = true
         }
         .onDisappear {

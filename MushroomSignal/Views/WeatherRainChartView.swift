@@ -22,6 +22,9 @@ private struct TodayMarkerXPreferenceKey: PreferenceKey {
 struct WeatherRainChartView: View {
     let dailyWeather: [DailyWeather]
     let today: Date
+    /// Also persists across app relaunches via SceneStorage — a reasonable "sticky" default,
+    /// not just incidental. Originally added to survive `LazyVStack` remounts; the relaunch
+    /// persistence is a welcome side effect, not a bug.
     @SceneStorage("weatherRainChartView.selectedRange") private var selectedRange: Int = 7
     @State private var todayMarkerX: CGFloat?
 
