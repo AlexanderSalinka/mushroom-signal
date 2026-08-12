@@ -253,10 +253,14 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   licenses (CC-BY, CC-BY-SA) legally require attribution by name, which isn't captured yet.
   Fine for local personal use — **must fill in the real photographer + exact license per photo
   before any public release or distribution of the app.**
-- **Widget small/medium families never got the 20pt typography floor** — Task 3 of the
-  2026-08-08 UI visual redesign, cancelled outright by Alexander on 2026-08-09 (not deferred).
-  Widget text still uses its pre-floor sizes. If revisited, re-scope from scratch — see the
-  cancelled task's note in `docs/superpowers/plans/2026-08-08-ui-visual-redesign.md`.
+- ~~Widget small/medium families never got the 20pt typography floor~~ — **Closed,
+  intentionally exempt (Alexander, 2026-08-12).** Not a gap to fix — the widget is its
+  own extension target, not "the app," and its current small/medium text sizes are the
+  intended design, not a missed floor application. The 20pt floor rule (`DesignSystem`,
+  CLAUDE.md) applies to the companion app; the widget is explicitly exempt. Original
+  cancellation context (2026-08-09, before this was formalized as a permanent exemption
+  rather than a deferred task) kept in
+  `docs/superpowers/plans/2026-08-08-ui-visual-redesign.md`'s Task 3 note.
 - ~~`RegionBoundaries`' hand-approximated kraj polygon coordinates render jagged ("broken
   glass") borders`~~ — **Resolved 2026-08-12.** Replaced entirely with real ZBGIS
   government boundary data (topology-preserving-simplified, 2,218 points total), not
