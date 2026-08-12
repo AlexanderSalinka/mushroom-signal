@@ -257,9 +257,10 @@ tracked it is gitignored and gets deleted at the end of each plan's cycle.
   2026-08-08 UI visual redesign, cancelled outright by Alexander on 2026-08-09 (not deferred).
   Widget text still uses its pre-floor sizes. If revisited, re-scope from scratch — see the
   cancelled task's note in `docs/superpowers/plans/2026-08-08-ui-visual-redesign.md`.
-- **`RegionBoundaries`' hand-approximated kraj polygon coordinates render jagged ("broken
-  glass") borders** — deferred follow-up from the 2026-08-09 map-markers spec, confirmed
-  real by Alexander. Redrawing them for smoother edges is a future pass, not blocking.
+- ~~`RegionBoundaries`' hand-approximated kraj polygon coordinates render jagged ("broken
+  glass") borders`~~ — **Resolved 2026-08-12.** Replaced entirely with real ZBGIS
+  government boundary data (topology-preserving-simplified, 2,218 points total), not
+  just smoothed — see `docs/superpowers/specs/2026-08-12-real-region-boundaries-design.md`.
 - **`WatchedAlertEvaluator` always evaluates with `flushTriggered: false`** — a watched
   species can score visibly lower via the notification path than the widget's own shortlist
   shows for the same region/day right after a real flush-triggering rain event. Evaluating
