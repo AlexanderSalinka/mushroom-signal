@@ -27,67 +27,6 @@ struct LeafShape: Shape {
     }
 }
 
-/// A classic teardrop/raindrop silhouette.
-struct DropletShape: Shape {
-    func path(in rect: CGRect) -> Path {
-        let w = rect.width, h = rect.height, x = rect.minX, y = rect.minY
-        var path = Path()
-        path.move(to: CGPoint(x: x + w * 0.5, y: y))
-        path.addCurve(
-            to: CGPoint(x: x + w * 0.92, y: y + h * 0.65),
-            control1: CGPoint(x: x + w * 0.5, y: y),
-            control2: CGPoint(x: x + w * 0.92, y: y + h * 0.4)
-        )
-        path.addCurve(
-            to: CGPoint(x: x + w * 0.5, y: y + h),
-            control1: CGPoint(x: x + w * 0.92, y: y + h * 0.9),
-            control2: CGPoint(x: x + w * 0.73, y: y + h)
-        )
-        path.addCurve(
-            to: CGPoint(x: x + w * 0.08, y: y + h * 0.65),
-            control1: CGPoint(x: x + w * 0.27, y: y + h),
-            control2: CGPoint(x: x + w * 0.08, y: y + h * 0.9)
-        )
-        path.addCurve(
-            to: CGPoint(x: x + w * 0.5, y: y),
-            control1: CGPoint(x: x + w * 0.08, y: y + h * 0.4),
-            control2: CGPoint(x: x + w * 0.5, y: y)
-        )
-        path.closeSubpath()
-        return path
-    }
-}
-
-/// A horizon line, a rising sun arc, and three short rays — a warm-day/flush-trigger motif.
-struct SunriseShape: Shape {
-    func path(in rect: CGRect) -> Path {
-        let w = rect.width, h = rect.height, x = rect.minX, y = rect.minY
-        var path = Path()
-        path.move(to: CGPoint(x: x, y: y + h * 0.75))
-        path.addLine(to: CGPoint(x: x + w, y: y + h * 0.75))
-
-        path.move(to: CGPoint(x: x + w * 0.29, y: y + h * 0.75))
-        path.addArc(
-            center: CGPoint(x: x + w * 0.5, y: y + h * 0.75),
-            radius: w * 0.21,
-            startAngle: .degrees(180),
-            endAngle: .degrees(0),
-            clockwise: true
-        )
-
-        path.move(to: CGPoint(x: x + w * 0.5, y: y + h * 0.33))
-        path.addLine(to: CGPoint(x: x + w * 0.5, y: y + h * 0.13))
-
-        path.move(to: CGPoint(x: x + w * 0.27, y: y + h * 0.46))
-        path.addLine(to: CGPoint(x: x + w * 0.12, y: y + h * 0.29))
-
-        path.move(to: CGPoint(x: x + w * 0.73, y: y + h * 0.46))
-        path.addLine(to: CGPoint(x: x + w * 0.88, y: y + h * 0.29))
-
-        return path
-    }
-}
-
 /// A loose scatter of dots, evoking a spore print — used as a filled shape, not stroked.
 struct SporeShape: Shape {
     func path(in rect: CGRect) -> Path {
