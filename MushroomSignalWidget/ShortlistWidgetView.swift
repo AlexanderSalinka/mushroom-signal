@@ -66,7 +66,7 @@ struct ShortlistWidgetView: View {
                     }
                 }
                 VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
-                    ForEach(Array(entry.signals.dropFirst(3).prefix(6).enumerated()), id: \.element.species.id) { index, signal in
+                    ForEach(Array(entry.signals.dropFirst(3).prefix(3).enumerated()), id: \.element.species.id) { index, signal in
                         rankedRow(rank: index + 4, signal: signal)
                     }
                 }
@@ -137,12 +137,40 @@ struct ShortlistWidgetView: View {
         max(1, Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: from), to: Calendar.current.startOfDay(for: to)).day ?? 1)
     }
 
+    /// Unclamped day difference — unlike `daysBetween(_:_:)` (which floors at 1 and thus can
+    /// never report "today"), this can return 0. Feeds `slovakDaysUntil`/`slovakDaysAgo` below,
+    /// which need the real same-day case to say "dnes" instead of "1 day ago/until".
+    private func rawDaysBetween(_ from: Date, _ to: Date) -> Int {
+        Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: from), to: Calendar.current.startOfDay(for: to)).day ?? 0
+    }
+
+    /// Slovak "in N days" phrasing, with correct grammatical case for the day count:
+    /// 0 → "dnes" (today), 1 → singular "deň", 2–4 → paucal "dni", 5+ → plural "dní".
+    private func slovakDaysUntil(_ days: Int) -> String {
+        switch days {
+        case ..<1: return "dnes"
+        case 1: return "O 1 deň"
+        case 2, 3, 4: return "O \(days) dni"
+        default: return "O \(days) dní"
+        }
+    }
+
+    /// Slovak "N days ago" phrasing, with correct grammatical case for the day count:
+    /// 0 → "dnes" (today), 1 → singular "dňom", 2+ → "dňami".
+    private func slovakDaysAgo(_ days: Int) -> String {
+        switch days {
+        case ..<1: return "dnes"
+        case 1: return "pred 1 dňom"
+        default: return "pred \(days) dňami"
+        }
+    }
+
     private var rainHeadline: String {
         if let event = upcomingRainEvent {
-            return "O \(daysBetween(entry.date, event.date)) dní · \(String(format: "%.0f", event.precipitationMm)) mm"
+            return "\(slovakDaysUntil(rawDaysBetween(entry.date, event.date))) · \(String(format: "%.0f", event.precipitationMm)) mm"
         }
         if let last = lastRainfall {
-            return "Naposledy pred \(daysBetween(last.date, entry.date)) dňami"
+            return "Naposledy \(slovakDaysAgo(rawDaysBetween(last.date, entry.date)))"
         }
         return "Bez výraznejšieho dažďa"
     }
@@ -150,7 +178,7 @@ struct ShortlistWidgetView: View {
     private var rainSubline: String? {
         guard let last = lastRainfall else { return nil }
         if upcomingRainEvent != nil {
-            return "Naposledy pred \(daysBetween(last.date, entry.date)) dňami · \(String(format: "%.0f", last.precipitationMm)) mm"
+            return "Naposledy \(slovakDaysAgo(rawDaysBetween(last.date, entry.date))) · \(String(format: "%.0f", last.precipitationMm)) mm"
         }
         return "\(String(format: "%.0f", last.precipitationMm)) mm"
     }
@@ -206,11 +234,13 @@ struct ShortlistWidgetView: View {
             Text(headline)
                 .font(.system(size: DesignSystem.captionSize * 0.65, weight: .bold))
                 .foregroundStyle(DesignSystem.Colors.cloud)
+                .lineLimit(1)
             if let subline {
                 Text(subline)
                     .font(.system(size: DesignSystem.captionSize * 0.5))
                     .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.7))
                     .multilineTextAlignment(.center)
+                    .lineLimit(1)
             }
         }
         .frame(maxWidth: .infinity)
@@ -274,8 +304,16 @@ struct ShortlistWidgetView: View {
     @ViewBuilder
     private var emptyStateIfNeeded: some View {
         if entry.signals.isEmpty {
+            let size: Double = {
+                switch family {
+                case .systemSmall, .systemMedium:
+                    return DesignSystem.captionSize * 0.5
+                default:
+                    return DesignSystem.bodySize
+                }
+            }()
             Text("Žiadne údaje")
-                .font(.system(size: DesignSystem.bodySize))
+                .font(.system(size: size))
                 .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
         }
     }
@@ -362,6 +400,7 @@ struct ShortlistWidgetView: View {
             Text((hasWarning ? "⚠️ " : "") + signal.species.commonNameSk)
                 .font(.system(size: DesignSystem.captionSize * 0.7, weight: .semibold))
                 .foregroundStyle(color)
+                .lineLimit(1)
             Spacer()
             Text(String(repeating: "●", count: max(0, min(4, signal.score))) + String(repeating: "○", count: 4 - max(0, min(4, signal.score))))
                 .font(.system(size: DesignSystem.captionSize * 0.55))

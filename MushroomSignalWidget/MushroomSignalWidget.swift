@@ -22,7 +22,7 @@ struct ShortlistProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<ShortlistEntry>) -> Void) {
-        let limit = context.family == .systemLarge ? 9 : 4
+        let limit = context.family == .systemLarge ? 6 : 4
         Task {
             let entry = await buildEntry(limit: limit)
             // Awaited BEFORE completion() — WidgetKit may suspend this extension process
@@ -81,5 +81,6 @@ struct MushroomSignalWidget: Widget {
         .configurationDisplayName("Mushroom Signal")
         .description("Aktuálne huby vo vašom kraji")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .contentMarginsDisabled()
     }
 }
