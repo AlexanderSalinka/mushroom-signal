@@ -25,13 +25,13 @@ struct ShortlistWidgetView: View {
     }
 
     private var smallBody: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
-            regionHeader
+        VStack(alignment: .leading, spacing: 2) {
+            compactRegionHeader
             infoBand(icon: SunriseShape(), color: DesignSystem.Colors.caution, headline: temperatureHeadline, subline: temperatureSubline)
             infoBand(icon: DropletShape(), color: DesignSystem.Colors.water, headline: rainHeadline, subline: rainSubline)
-            VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
+            VStack(alignment: .leading, spacing: 1) {
                 ForEach(entry.signals.prefix(4), id: \.species.id) { signal in
-                    row(for: signal, nameFont: .system(size: DesignSystem.bodySize, weight: .semibold), showLatin: false)
+                    row(for: signal, nameFont: .system(size: DesignSystem.captionSize * 0.5, weight: .semibold), showLatin: false)
                 }
                 emptyStateIfNeeded
             }
@@ -40,12 +40,12 @@ struct ShortlistWidgetView: View {
     }
 
     private var mediumBody: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
-            regionHeader
-            weatherTileRow
-            VStack(alignment: .leading, spacing: DesignSystem.spacingSmall) {
+        VStack(alignment: .leading, spacing: 2) {
+            compactRegionHeader
+            compactWeatherTileRow
+            VStack(alignment: .leading, spacing: 2) {
                 ForEach(entry.signals.prefix(4), id: \.species.id) { signal in
-                    row(for: signal, nameFont: .system(size: DesignSystem.bodySize, weight: .semibold), showLatin: false, inlineLatin: true)
+                    row(for: signal, nameFont: .system(size: DesignSystem.captionSize * 0.52, weight: .semibold), showLatin: false, inlineLatin: true)
                 }
                 emptyStateIfNeeded
             }
@@ -92,6 +92,19 @@ struct ShortlistWidgetView: View {
                 .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.55))
         }
         .frame(maxWidth: .infinity)
+    }
+
+    /// `.systemSmall`/`.systemMedium`-only compact header: single line (name + date combined),
+    /// used instead of `regionHeader` because the real ~155pt content budget for both families
+    /// can't fit two full-height header lines plus everything else. `.systemLarge` keeps the
+    /// two-line `regionHeader` above, untouched.
+    private var compactRegionHeader: some View {
+        Text("\(entry.region.nameSk) · \(Self.headerDateFormatter.string(from: entry.date))")
+            .font(.system(size: DesignSystem.captionSize * 0.42, weight: .semibold))
+            .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.8))
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .frame(maxWidth: .infinity)
     }
 
     private var sevenDayAverage: WeatherSnapshot? {
@@ -144,34 +157,41 @@ struct ShortlistWidgetView: View {
 
     /// `.systemSmall`'s weather band — circle-badge-plus-text, full-width. See this task's
     /// note above: this is this plan's own synthesis, not spec-verbatim code.
+    ///
+    /// Sized specifically for `.systemSmall`'s ~155pt content budget (task-3 fix round,
+    /// 2026-08-13) — exclusively used by `smallBody`, so shrinking it here cannot affect any
+    /// other family.
     private func infoBand(icon: some Shape, color: Color, headline: String, subline: String?) -> some View {
-        HStack(spacing: DesignSystem.spacingSmall) {
+        HStack(spacing: 4) {
             ZStack {
                 Circle()
                     .fill(color.opacity(0.22))
-                    .frame(width: 26, height: 26)
-                icon
-                    .stroke(color, style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
                     .frame(width: 14, height: 14)
+                icon
+                    .stroke(color, style: StrokeStyle(lineWidth: 1.2, lineCap: .round, lineJoin: .round))
+                    .frame(width: 8, height: 8)
             }
-            VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
+            VStack(alignment: .leading, spacing: 0) {
                 Text(headline)
-                    .font(.system(size: DesignSystem.captionSize * 0.8, weight: .bold))
+                    .font(.system(size: DesignSystem.captionSize * 0.46, weight: .bold))
                     .foregroundStyle(DesignSystem.Colors.cloud)
                 if let subline {
                     Text(subline)
-                        .font(.system(size: DesignSystem.captionSize * 0.6))
+                        .font(.system(size: DesignSystem.captionSize * 0.34))
                         .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.7))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                 }
             }
             Spacer(minLength: 0)
         }
-        .padding(8)
+        .padding(.horizontal, 4)
+        .padding(.vertical, 2)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(color.opacity(0.14))
-        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.35))
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.3))
         .overlay(
-            RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.35)
+            RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.3)
                 .stroke(color.opacity(0.4), lineWidth: 1)
         )
     }
@@ -210,6 +230,47 @@ struct ShortlistWidgetView: View {
         }
     }
 
+    /// `.systemMedium`-only smaller sibling of `squareTile`/`weatherTileRow` (task-3 fix round,
+    /// 2026-08-13). `squareTile`/`weatherTileRow` above are also used by `.systemLarge` and are
+    /// left completely untouched; this is a separate pair of helpers so shrinking medium's tiles
+    /// cannot affect large's rendering.
+    private func compactSquareTile(icon: some Shape, color: Color, headline: String, subline: String?) -> some View {
+        VStack(spacing: 0) {
+            icon
+                .stroke(color, style: StrokeStyle(lineWidth: 1.3, lineCap: .round, lineJoin: .round))
+                .frame(width: 8, height: 8)
+                .frame(width: 15, height: 15)
+                .background(Circle().fill(color.opacity(0.25)))
+            Text(headline)
+                .font(.system(size: DesignSystem.captionSize * 0.46, weight: .bold))
+                .foregroundStyle(DesignSystem.Colors.cloud)
+            if let subline {
+                Text(subline)
+                    .font(.system(size: DesignSystem.captionSize * 0.36))
+                    .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.7))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 4)
+        .padding(.vertical, 3)
+        .background(color.opacity(0.18))
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.3))
+        .overlay(
+            RoundedRectangle(cornerRadius: DesignSystem.cardCornerRadius * 0.3)
+                .stroke(color.opacity(0.45), lineWidth: 1)
+        )
+    }
+
+    private var compactWeatherTileRow: some View {
+        HStack(spacing: 4) {
+            compactSquareTile(icon: SunriseShape(), color: DesignSystem.Colors.caution, headline: temperatureHeadline, subline: temperatureSubline)
+            compactSquareTile(icon: DropletShape(), color: DesignSystem.Colors.water, headline: rainHeadline, subline: rainSubline)
+        }
+    }
+
     @ViewBuilder
     private var emptyStateIfNeeded: some View {
         if entry.signals.isEmpty {
@@ -222,6 +283,12 @@ struct ShortlistWidgetView: View {
     /// - Parameter inlineLatin: When true (medium layout only), the latin name is appended inline after
     ///   the common name on the same line, using medium's extra width instead of a second line of height.
     ///   Mutually exclusive with `showLatin` (large's two-line form) in practice, but not enforced structurally.
+    ///
+    /// Only ever called from `smallBody`/`mediumBody` (large uses `podiumSquare`/`rankedRow`
+    /// instead) — its internal caption-sized text (`latinText`, the score dots, and the dead
+    /// `showLatin` branch, unreachable since neither live call site passes `showLatin: true`)
+    /// was shrunk in the task-3 fix round, 2026-08-13, alongside the `nameFont` callers already
+    /// pass in. This cannot affect `.systemLarge`.
     private func row(for signal: SpeciesSignal, nameFont: Font, showLatin: Bool, inlineLatin: Bool = false) -> some View {
         let clampedScore = max(0, min(4, signal.score))
         let hasWarning = signal.species.edibility != .edible
@@ -230,10 +297,10 @@ struct ShortlistWidgetView: View {
             .font(nameFont)
             .foregroundStyle(hasWarning ? warningColor : DesignSystem.Colors.cloud)
         let latinText = Text(" · " + signal.species.latinName)
-            .font(.system(size: DesignSystem.captionSize).italic())
+            .font(.system(size: DesignSystem.captionSize * 0.55).italic())
             .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
         return HStack {
-            VStack(alignment: .leading, spacing: DesignSystem.spacingTight) {
+            VStack(alignment: .leading, spacing: 0) {
                 if inlineLatin {
                     (nameText + latinText)
                         .lineLimit(1)
@@ -244,7 +311,7 @@ struct ShortlistWidgetView: View {
                         .minimumScaleFactor(0.8)
                     if showLatin {
                         Text(signal.species.latinName)
-                            .font(.system(size: DesignSystem.captionSize).italic())
+                            .font(.system(size: DesignSystem.captionSize * 0.55).italic())
                             .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.6))
                             .lineLimit(1)
                             .minimumScaleFactor(0.8)
@@ -253,7 +320,7 @@ struct ShortlistWidgetView: View {
             }
             Spacer()
             Text(String(repeating: "●", count: clampedScore) + String(repeating: "○", count: 4 - clampedScore))
-                .font(.system(size: DesignSystem.captionSize))
+                .font(.system(size: DesignSystem.captionSize * 0.55))
                 .foregroundStyle(DesignSystem.Colors.mossAccent)
         }
     }
