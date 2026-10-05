@@ -235,12 +235,15 @@ struct ShortlistWidgetView: View {
                 .font(.system(size: DesignSystem.captionSize * 0.65, weight: .bold))
                 .foregroundStyle(DesignSystem.Colors.cloud)
                 .lineLimit(1)
+                // "Naposledy pred 10 dňami" was cut to "Naposledy pred 10…" (2026-10-05)
+                .minimumScaleFactor(0.6)
             if let subline {
                 Text(subline)
                     .font(.system(size: DesignSystem.captionSize * 0.5))
                     .foregroundStyle(DesignSystem.Colors.cloud.opacity(0.7))
                     .multilineTextAlignment(.center)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             }
         }
         .frame(maxWidth: .infinity)
@@ -373,7 +376,9 @@ struct ShortlistWidgetView: View {
             Text((hasWarning ? "⚠️ " : "") + signal.species.commonNameSk)
                 .font(.system(size: isFirst ? DesignSystem.captionSize * 0.7 : DesignSystem.captionSize * 0.6, weight: .bold))
                 .foregroundStyle(hasWarning ? color : DesignSystem.Colors.cloud)
-                .lineLimit(1)
+                // two lines: "⚠️ Trúdnik sírový" was cut to "Trúdnik síro…" on one line (2026-10-05)
+                .lineLimit(2)
+                .multilineTextAlignment(.center)
                 .minimumScaleFactor(0.7)
             Text(String(repeating: "●", count: max(0, min(4, signal.score))) + String(repeating: "○", count: 4 - max(0, min(4, signal.score))))
                 .font(.system(size: DesignSystem.captionSize * 0.5))
