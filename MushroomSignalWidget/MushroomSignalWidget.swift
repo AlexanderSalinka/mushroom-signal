@@ -49,7 +49,7 @@ struct ShortlistProvider: TimelineProvider {
             WeatherSnapshotCache()?.store(weather)
             let dailyWeather: [DailyWeather]
             do {
-                dailyWeather = try await client.fetchDailyBreakdown(for: region, pastDays: 10)
+                dailyWeather = try await client.fetchDailyBreakdown(for: region, pastDays: WidgetWeatherWindow.pastDays, forecastDays: WidgetWeatherWindow.forecastDays)
             } catch {
                 dailyWeather = []
                 widgetLogger.error("Daily breakdown fetch failed for region \(region.id, privacy: .public): \(String(describing: error), privacy: .public)")
