@@ -28,7 +28,7 @@ macOS widget + companion app: mushroom-foraging forecasts for Slovakia.
 - Check signing identity status with `security find-identity -v -p codesigning`
 - Signing identity display name and the actual resolved Team ID can differ (confirmed: identity showed "874AQNKWTM", entitlements resolved to "UMPK75W8X6") — verify with the *built* entitlements (`codesign -d --entitlements :- <path>`), don't assume the identity string is the Team ID
 - Headless-launch a signed build directly: `DerivedData/Build/Products/Debug/MushroomSignal.app` (repo-relative, now that builds use the pinned `-derivedDataPath` above) — fine for testing app logic/UI, but the widget gallery will NOT see this copy; use the `/Applications` run procedure above whenever the widget itself needs testing
-- No git remote is configured — this repo is 100% local; don't assume `git push`/PR workflows work without setting one up first
+- Remote: `origin` = GitHub `AlexanderSalinka/mushroom-signal`, PUBLIC and open to contributions (MIT) since 2026-10-06 — never commit secrets or personal data; anything pushed is world-readable
 
 ## Testing Patterns
 - Network code: inject a mocked `URLProtocol` via `URLSessionConfiguration` (see `OpenMeteoClientTests.swift`) — tests must never hit the live network
